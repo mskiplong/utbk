@@ -538,6 +538,18 @@ tr:hover td{background:var(--sf)}
           <div style="font-size:11px;color:var(--tx2)">Format: JSON atau CSV</div>
           <input type="file" id="qFile" accept=".json,.csv" class="hidden" onchange="handleQF(this.files[0]);this.value=''">
         </div>
+        <div style="margin-top:16px;border-top:1px solid var(--bd);padding-top:14px">
+          <label class="lbl">📋 Atau Paste Langsung</label>
+          <textarea id="qPaste" class="inp ta" placeholder='Paste JSON atau CSV di sini...
+Contoh JSON:
+[{"section":"Penalaran Umum","question":"2+2=?","options":["3","4","5","6","7"],"answer":"B","difficulty":"easy"}]' style="min-height:110px;font-family:ui-monospace,monospace;font-size:11px"></textarea>
+          <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn btn-p btn-sm" onclick="importQFromPaste()">⬇ Import dari Paste</button>
+            <button class="btn btn-g btn-sm" onclick="downloadSample('soal-json')">📄 Contoh JSON</button>
+            <button class="btn btn-g btn-sm" onclick="downloadSample('soal-csv')">📄 Contoh CSV</button>
+            <button class="btn btn-g btn-sm" onclick="$('qPaste').value=''">🗑 Clear</button>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Soal List per Section -->
@@ -562,6 +574,18 @@ tr:hover td{background:var(--sf)}
           <div style="font-weight:700;color:var(--tx);margin-bottom:3px">Upload Data PTN (JSON/CSV)</div>
           <div style="font-size:11px;color:var(--tx2)">[{ptn,prodi,jenjang,pg,daya_tampung,peminat,keketatan}]</div>
           <input type="file" id="ptnFile" accept=".json,.csv" class="hidden" onchange="handlePF(this.files[0]);this.value=''">
+        </div>
+        <div style="margin-top:16px;border-top:1px solid var(--bd);padding-top:14px">
+          <label class="lbl">📋 Atau Paste Langsung</label>
+          <textarea id="ptnPaste" class="inp ta" placeholder='Paste JSON atau CSV di sini...
+Contoh JSON:
+[{"ptn":"UNIVERSITAS INDONESIA","prodi":"TEKNIK INFORMATIKA","jenjang":"Sarjana","pg":720,"daya_tampung":50,"peminat":1200,"keketatan":0.0417}]' style="min-height:100px;font-family:ui-monospace,monospace;font-size:11px"></textarea>
+          <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn btn-p btn-sm" onclick="importPTNFromPaste()">⬇ Import dari Paste</button>
+            <button class="btn btn-g btn-sm" onclick="downloadSample('ptn-json')">📄 Contoh JSON</button>
+            <button class="btn btn-g btn-sm" onclick="downloadSample('ptn-csv')">📄 Contoh CSV</button>
+            <button class="btn btn-g btn-sm" onclick="$('ptnPaste').value=''">🗑 Clear</button>
+          </div>
         </div>
       </div>
     </div>
@@ -589,21 +613,46 @@ tr:hover td{background:var(--sf)}
 
   <!-- BACKUP TAB -->
   <div id="dbBak" class="hidden">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:14px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
       <div class="card"><div class="cb">
         <div style="font-size:30px;margin-bottom:9px">💾</div>
-        <h3 style="font-weight:700;margin-bottom:5px">Backup Lengkap</h3>
-        <p style="color:var(--tx2);font-size:12px;margin-bottom:14px;line-height:1.6">Export semua data ke file JSON</p>
-        <button class="btn btn-s btn-fl" onclick="backupAll()">⬇ Download Backup</button>
+        <h3 style="font-weight:700;margin-bottom:5px">Backup Pilihan</h3>
+        <p style="color:var(--tx2);font-size:12px;margin-bottom:10px">Pilih data yang ingin di-backup</p>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;font-size:12px">
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="bkQ" checked> 📚 Soal (<span id="bkQC">0</span>)</label>
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="bkP" checked> 🏛 PTN (<span id="bkPC">0</span>)</label>
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="bkR" checked> 🏆 Hasil Tryout</label>
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="bkU" checked> 👥 Users</label>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-s btn-fl" onclick="backupSelected()">⬇ Download Pilihan</button>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          <button class="btn btn-g btn-sm" style="flex:1" onclick="toggleBk(true)">✓ Semua</button>
+          <button class="btn btn-g btn-sm" style="flex:1" onclick="toggleBk(false)">✗ Reset</button>
+          <button class="btn btn-p btn-sm" style="flex:1" onclick="backupAll()">Backup Full</button>
+        </div>
       </div></div>
       <div class="card"><div class="cb">
         <div style="font-size:30px;margin-bottom:9px">🔄</div>
         <h3 style="font-weight:700;margin-bottom:5px">Restore Data</h3>
-        <p style="color:var(--tx2);font-size:12px;margin-bottom:5px;line-height:1.6"><strong style="color:var(--rd)">⚠️ Data saat ini akan ditimpa!</strong></p>
-        <p style="color:var(--tx2);font-size:11px;margin-bottom:14px">Mendukung format SNBTPro v1–v3 dan format custom {questions,ptn}</p>
-        <div class="uzone" onclick="$('bakFile').click()">
-          <div style="font-size:26px;margin-bottom:5px">📤</div>
-          <div style="font-size:12px;font-weight:600;color:var(--tx)">Upload File Backup</div>
+        <div class="fg"><label class="lbl">Mode Restore</label>
+          <select id="rstMode" class="sel" onchange="$('rstOpts').classList.toggle('hidden',this.value!=='selective')">
+            <option value="replace">Ganti Semua (overwrite)</option>
+            <option value="merge">Gabung (merge, skip duplikat)</option>
+            <option value="selective">Pilihan (pilih data)</option>
+          </select>
+        </div>
+        <div id="rstOpts" class="hidden" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;font-size:12px">
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="rsQ" checked> 📚 Soal</label>
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="rsP" checked> 🏛 PTN</label>
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="rsR" checked> 🏆 Hasil</label>
+          <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="rsU"> 👥 Users</label>
+        </div>
+        <p style="color:var(--tx2);font-size:11px;margin-bottom:10px">⚠️ Hati-hati, mode 'Ganti' akan menghapus data saat ini</p>
+        <div class="uzone" onclick="$('bakFile').click()" style="padding:18px">
+          <div style="font-size:24px;margin-bottom:4px">📤</div>
+          <div style="font-size:12px;font-weight:600">Upload File Backup</div>
           <input type="file" id="bakFile" accept=".json" class="hidden" onchange="doRestore(this.files[0]);this.value=''">
         </div>
       </div></div>
@@ -621,6 +670,7 @@ tr:hover td{background:var(--sf)}
   <h2 style="font-size:18px;font-weight:800;margin-bottom:18px">🛡 Panel Admin</h2>
   <div class="tabs">
     <button class="tab active" onclick="sTab('aU',this)">👥 Pengguna</button>
+    <button class="tab" onclick="sTab('aAns',this)">📝 Jawaban Siswa</button>
     <button class="tab" onclick="sTab('aSt',this)">📊 Statistik</button>
   </div>
   <div id="aU">
@@ -629,6 +679,18 @@ tr:hover td{background:var(--sf)}
       <button class="btn btn-p btn-sm" onclick="openAddUser()">+ Tambah</button>
     </div>
     <div class="card"><div class="tw"><table id="uTbl"><thead><tr><th>#</th><th>Username</th><th>Nama</th><th>Role</th><th>Status</th><th>Tryout</th><th>Aksi</th></tr></thead><tbody id="uBody"></tbody></table></div></div>
+  </div>
+  <div id="aAns" class="hidden">
+    <div class="card">
+      <div class="ch"><div class="ct">📝 Lembar Jawaban Siswa</div></div>
+      <div class="cb">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:14px">
+          <div><label class="lbl">Pilih Siswa</label><select id="admUserSel" class="sel" onchange="admLoadResults()"></select></div>
+          <div><label class="lbl">Pilih Tryout</label><select id="admTrySel" class="sel" onchange="admShowDetail()"></select></div>
+        </div>
+        <div id="admAnsDetail"></div>
+      </div>
+    </div>
   </div>
   <div id="aSt" class="hidden">
     <div class="sg" style="margin-bottom:16px" id="aStG"></div>
@@ -1138,7 +1200,7 @@ function renderRasioChart(data){
 }
 
 /* ══ DATABASE ══ */
-function initDB(){renderQCards();renderPTNTable();renderStorI();}
+function initDB(){renderQCards();renderPTNTable();renderStorI();updateBkCounts();}
 
 /* ─── SOAL MANAGEMENT ─── */
 function renderQCards(){
@@ -1398,30 +1460,31 @@ function backupAll(){dl(JSON.stringify({version:'3.0',date:new Date().toISOStrin
 
 function doRestore(file){
   if(!file)return;
-  if(!confirm('⚠️ Data saat ini akan ditimpa! Lanjutkan?'))return;
+  const mode=$('rstMode')?.value||'replace';
+  if(mode==='replace' && !confirm('⚠️ Mode GANTI SEMUA akan menghapus data saat ini! Lanjutkan?'))return;
   const reader=new FileReader();
   reader.onload=ev=>{
     try{
       const bk=JSON.parse(ev.target.result);
-      if(bk.users&&bk.ptnData&&bk.questions){
-        DB={users:bk.users||[],questions:bk.questions||{},ptnData:bk.ptnData||[],results:bk.results||[]};
-        save();initDB();renderHome();
-        toast(`✅ Restore OK — ${Object.values(DB.questions).flat().length} soal, ${DB.ptnData.length} PTN`,'success');
-      }else if(bk.questions&&bk.ptn){
-        const newQ={};
-        Object.entries(bk.questions).forEach(([sec,qs])=>{
-          if(!Array.isArray(qs)||!qs.length)return;
-          const match=SUBS.find(s=>s.name===sec||s.name.toLowerCase()===sec.toLowerCase()||s.code===sec);
-          const key=match?match.name:sec;
-          if(!newQ[key])newQ[key]=[];
-          qs.forEach(q=>{if(!['easy','medium','hard'].includes(q.difficulty))q.difficulty='medium';newQ[key].push(q);});
-        });
-        const newPTN=(bk.ptn||[]).filter(p=>p.ptn&&p.prodi&&p.pg);
-        DB.questions={...DB.questions,...newQ};
-        DB.ptnData=[...DB.ptnData,...newPTN].filter((p,i,a)=>a.findIndex(x=>x.ptn===p.ptn&&x.prodi===p.prodi)===i);
-        save();initDB();renderHome();
-        toast(`✅ Import OK — ${Object.values(newQ).flat().length} soal, ${newPTN.length} PTN baru`,'success');
-      }else{toast('❌ Format tidak dikenali','error');}
+      const selQ=$('rsQ')?.checked, selP=$('rsP')?.checked, selR=$('rsR')?.checked, selU=$('rsU')?.checked;
+      
+      if(mode==='replace'){
+        DB={users:bk.users||DB.users,questions:bk.questions||{},ptnData:bk.ptnData||[],results:bk.results||[]};
+        save();initDB();renderHome();toast(`✅ Restore penuh selesai`,'success');
+      }else if(mode==='merge'){
+        // merge
+        if(bk.questions)Object.entries(bk.questions).forEach(([k,v])=>{if(!DB.questions[k])DB.questions[k]=[];DB.questions[k].push(...v);});
+        if(bk.ptnData){DB.ptnData=[...DB.ptnData,...bk.ptnData].filter((p,i,a)=>a.findIndex(x=>x.ptn===p.ptn&&x.prodi===p.prodi)===i);}
+        if(bk.results){bk.results.forEach(ur=>{const ex=DB.results.find(r=>r.userId===ur.userId);if(ex)ex.results.push(...ur.results);else DB.results.push(ur);});}
+        if(bk.users){bk.users.forEach(u=>{if(!DB.users.find(x=>x.username===u.username))DB.users.push(u);});}
+        save();initDB();renderHome();toast('✅ Merge selesai','success');
+      }else if(mode==='selective'){
+        if(selQ && bk.questions)DB.questions=bk.questions;
+        if(selP && bk.ptnData)DB.ptnData=bk.ptnData;
+        if(selR && bk.results)DB.results=bk.results;
+        if(selU && bk.users)DB.users=bk.users;
+        save();initDB();renderHome();toast('✅ Restore pilihan selesai','success');
+      }
     }catch(err){toast('❌ '+err.message,'error');}
   };
   reader.readAsText(file);
@@ -1436,7 +1499,6 @@ function renderStorI(){
 }
 
 /* ─── ADMIN ─── */
-function initAdmin(){renderUserTable();renderAdmStats();}
 function renderUserTable(){
   $('uBody').innerHTML=DB.users.map((u,i)=>{
     const tr=DB.results.find(r=>r.userId===u.id);const tc=tr?tr.results.length:0;
@@ -1462,6 +1524,166 @@ function renderAdmStats(){
   if(allS.length){const ctx=$('aChart').getContext('2d');if(CH.adm)CH.adm.destroy();const bins=Array(10).fill(0);allS.forEach(s=>{const i=Math.min(9,Math.floor((s-300)/50));bins[Math.max(0,i)]++;});const isDark=darkMode,tc=isDark?'#8b949e':'#656d76',gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';CH.adm=new Chart($('aChart').getContext('2d'),{type:'bar',data:{labels:bins.map((_,i)=>`${300+i*50}–${349+i*50}`),datasets:[{label:'Siswa',data:bins,backgroundColor:'rgba(88,166,255,.6)',borderColor:'#58a6ff',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc,font:{size:9}}},y:{ticks:{color:tc},grid:{color:gc}}}}});}
 }
 
+/* ─── ADMIN ANSWER REVIEW ─── */
+function initAdmin(){
+  renderUserTable();
+  renderAdmStats();
+  // populate siswa
+  const sel=$('admUserSel');
+  if(sel){
+    sel.innerHTML='<option value="">— Pilih Siswa —</option>'+DB.users.filter(u=>u.role==='siswa').map(u=>`<option value="${u.id}">${u.name} (@${u.username})</option>`).join('');
+    $('admTrySel').innerHTML='<option value="">— Pilih Tryout —</option>';
+    $('admAnsDetail').innerHTML='<p style="color:var(--tx2);text-align:center;padding:20px">Pilih siswa untuk melihat lembar jawaban</p>';
+  }
+}
+function admLoadResults(){
+  const uid=$('admUserSel').value;
+  const sel=$('admTrySel');
+  if(!uid){sel.innerHTML='<option value="">— Pilih Tryout —</option>';return;}
+  const ur=DB.results.find(r=>r.userId===uid);
+  const results=ur?.results||[];
+  sel.innerHTML='<option value="">— Pilih Tryout —</option>'+results.map(r=>`<option value="${r.id}">${r.label} — ${r.date} (Skor: ${r.finalScore})</option>`).join('');
+  $('admAnsDetail').innerHTML='';
+}
+function admShowDetail(){
+  const uid=$('admUserSel').value;
+  const rid=$('admTrySel').value;
+  const cont=$('admAnsDetail');
+  if(!uid||!rid){cont.innerHTML='';return;}
+  const ur=DB.results.find(r=>r.userId===uid);
+  const res=ur?.results.find(x=>x.id===rid);
+  if(!res){cont.innerHTML='<p>Tidak ditemukan</p>';return;}
+  const user=DB.users.find(u=>u.id===uid);
+  let html=`<div style="background:var(--sf);padding:12px;border-radius:var(--rs);margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
+    <div><strong>${user.name}</strong> <span style="color:var(--tx2)">@${user.username}</span><br><span style="font-size:11px;color:var(--tx2)">${res.label} • ${res.date}</span></div>
+    <div style="text-align:right"><div style="font-size:24px;font-weight:800;color:var(--ac)">${res.finalScore}</div><div style="font-size:10px;color:var(--tx2)">Skor IRT</div></div>
+  </div>`;
+  html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px;margin-bottom:14px">`;
+  SUBS.forEach(s=>{
+    const ss=res.sections?.[s.name];
+    html+=`<div style="background:var(--bg3);padding:8px;border-radius:8px;text-align:center;border-left:3px solid ${s.col}">
+      <div style="font-size:10px;color:${s.col};font-weight:700">${s.code}</div>
+      <div style="font-size:16px;font-weight:700">${ss?.scaled||'-'}</div>
+      <div style="font-size:10px;color:var(--tx2)">${ss?.correct||0}/${ss?.total||0}</div>
+    </div>`;
+  });
+  html+='</div>';
+  // detail jawaban
+  html+='<div style="max-height:600px;overflow-y:auto">';
+  const L=['A','B','C','D','E'];
+  res.questions.forEach((q,i)=>{
+    const ua=res.answers[i];
+    const ca=normAns(q.answer);
+    const ok=ua&&isCorr(ua,ca);
+    const sk=!ua;
+    const cls=sk?'skipped':ok?'correct':'wrong';
+    const ico=sk?'⬜':ok?'✅':'❌';
+    const opts=normOpts(q);
+    html+=`<div class="ritem ${cls}" style="margin-bottom:8px">
+      <div style="display:flex;gap:8px"><span style="font-size:16px">${ico}</span>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--tx2);margin-bottom:4px">${i+1}. ${q.section} • <span class="badge d${(q.difficulty||'m')[0]}">${(q.difficulty||'medium').toUpperCase()}</span> • Bobot ${IRT[q.difficulty||'medium']}</div>
+        ${q.passage?`<div style="font-size:11px;font-style:italic;background:var(--sf);padding:6px;border-radius:6px;margin-bottom:6px">${q.passage}</div>`:''}
+        <div style="font-weight:500;margin-bottom:6px">${q.question}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">
+          ${opts.map((o,oi)=>{
+            const l=L[oi];
+            const isCa=isCorr(l,q.answer);
+            const isUa=ua===l;
+            let st='background:var(--sf);border:1px solid var(--bd);color:var(--tx2)';
+            if(isCa) st='background:var(--gnd);border:1px solid var(--gn);color:var(--gn);font-weight:600';
+            if(isUa&&!isCa) st='background:var(--rdd);border:1px solid var(--rd);color:var(--rd);font-weight:600';
+            return `<span style="${st};padding:3px 8px;border-radius:5px;font-size:11px">${l}. ${o} ${isUa?'← jawaban siswa':''} ${isCa?'✓ kunci':''}</span>`;
+          }).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--tx2)">Jawaban siswa: <strong style="color:${sk?'var(--yw)':ok?'var(--gn)':'var(--rd)'}">${ua||'— KOSONG —'}</strong> | Kunci: <strong style="color:var(--gn)">${ca}</strong></div>
+        ${q.explanation?`<div style="margin-top:6px;padding:8px;background:rgba(88,166,255,.08);border-left:3px solid var(--ac);border-radius:4px;font-size:11px;line-height:1.5"><strong>💡 Pembahasan:</strong> ${q.explanation}</div>`:''}
+      </div></div>
+    </div>`;
+  });
+  html+='</div>';
+  cont.innerHTML=html;
+}
+
+/* ─── PASTE IMPORT ─── */
+function importQFromPaste(){
+  const txt=$('qPaste').value.trim();
+  if(!txt){toast('Paste kosong','error');return;}
+  try{
+    let parsed=[];
+    if(txt.startsWith('[')||txt.startsWith('{')){
+      parsed=JSON.parse(txt);if(!Array.isArray(parsed))parsed=[parsed];
+    }else{
+      const res=Papa.parse(txt,{header:true,skipEmptyLines:true});
+      parsed=res.data.map(row=>({section:row.section,passage:row.passage||'',question:row.question,options:[row.option_a,row.option_b,row.option_c,row.option_d,row.option_e].filter(Boolean),answer:row.answer,difficulty:(row.difficulty||'medium').toLowerCase(),explanation:row.explanation||''}));
+    }
+    const target=$('upSec').value;
+    let added=0;
+    parsed.forEach(q=>{
+      if(!q.question)return;
+      let sec=target==='auto'?q.section:target;
+      const match=SUBS.find(s=>s.name===sec||s.name.toLowerCase()===sec?.toLowerCase());
+      if(!match)return;
+      q.section=match.name;
+      if(!DB.questions[q.section])DB.questions[q.section]=[];
+      DB.questions[q.section].push({...q,id:Date.now().toString()+Math.random()});
+      added++;
+    });
+    save();renderQCards();renderHome();toast(`✅ ${added} soal diimpor dari paste`,'success');$('qPaste').value='';
+  }catch(e){toast('❌ Gagal parse: '+e.message,'error');}
+}
+function importPTNFromPaste(){
+  const txt=$('ptnPaste').value.trim();
+  if(!txt){toast('Paste kosong','error');return;}
+  try{
+    let parsed=[];
+    if(txt.startsWith('[')||txt.startsWith('{')){
+      parsed=JSON.parse(txt);if(!Array.isArray(parsed))parsed=[parsed];
+    }else{
+      const res=Papa.parse(txt,{header:true,skipEmptyLines:true});
+      parsed=res.data;
+    }
+    parsed=parsed.map(r=>({ptn:(r.ptn||'').toUpperCase(),prodi:(r.prodi||'').toUpperCase(),jenjang:r.jenjang||'Sarjana',pg:parseFloat(r.pg),daya_tampung:parseInt(r.daya_tampung||0),peminat:parseInt(r.peminat||0),keketatan:parseFloat(r.keketatan||0)})).filter(p=>p.ptn&&p.prodi&&p.pg);
+    DB.ptnData=[...DB.ptnData,...parsed];
+    DB.ptnData=DB.ptnData.filter((p,i,a)=>a.findIndex(x=>x.ptn===p.ptn&&x.prodi===p.prodi)===i);
+    save();renderPTNTable();toast(`✅ ${parsed.length} PTN diimpor`,'success');$('ptnPaste').value='';
+  }catch(e){toast('❌ '+e.message,'error');}
+}
+function downloadSample(type){
+  if(type==='soal-json'){
+    const sample=[{section:"Penalaran Umum",passage:"",question:"Jika semua A adalah B, dan sebagian B adalah C, maka...",options:["Semua A adalah C","Sebagian A adalah C","Tidak ada A adalah C","Tidak dapat disimpulkan","Semua C adalah A"],answer:"D",explanation:"Tidak dapat dipastikan hubungan A dan C",difficulty:"medium"},{section:"Pengetahuan Kuantitatif",question:"2x + 5 = 15, maka x = ?",options:["3","4","5","6","7"],answer:"C",difficulty:"easy"}];
+    dl(JSON.stringify(sample,null,2),'contoh_soal.json','application/json');
+  }else if(type==='soal-csv'){
+    const csv='section,passage,question,option_a,option_b,option_c,option_d,option_e,answer,explanation,difficulty\nPenalaran Umum,,Jika 2+2=?,3,4,5,6,7,B,Dasar matematika,easy';
+    dl(csv,'contoh_soal.csv','text/csv');
+  }else if(type==='ptn-json'){
+    const sample=[{ptn:"UNIVERSITAS INDONESIA",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:720,daya_tampung:60,peminat:1200,keketatan:0.05},{ptn:"UGM",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:750,daya_tampung:80,peminat:3500,keketatan:0.0229}];
+    dl(JSON.stringify(sample,null,2),'contoh_ptn.json','application/json');
+  }else if(type==='ptn-csv'){
+    const csv='ptn,prodi,jenjang,pg,daya_tampung,peminat,keketatan\nUNIVERSITAS INDONESIA,TEKNIK INFORMATIKA,Sarjana,720,60,1200,0.05';
+    dl(csv,'contoh_ptn.csv','text/csv');
+  }
+}
+
+/* ─── BACKUP SELECTIVE ─── */
+function backupSelected(){
+  const data={version:'3.1',date:new Date().toISOString()};
+  if($('bkQ')?.checked) data.questions=DB.questions;
+  if($('bkP')?.checked) data.ptnData=DB.ptnData;
+  if($('bkR')?.checked) data.results=DB.results;
+  if($('bkU')?.checked) data.users=DB.users;
+  dl(JSON.stringify(data,null,2),`snbtpro_pilihan_${new Date().toISOString().split('T')[0]}.json`,'application/json');
+  toast('✅ Backup pilihan diunduh','success');
+}
+function toggleBk(all){
+  ['bkQ','bkP','bkR','bkU'].forEach(id=>{const el=$(id);if(el)el.checked=all;});
+}
+function updateBkCounts(){
+  const qc=Object.values(DB.questions).reduce((s,a)=>s+a.length,0);
+  if($('bkQC'))$('bkQC').textContent=qc;
+  if($('bkPC'))$('bkPC').textContent=DB.ptnData.length;
+}
+
 /* ══ UTILS ══ */
 function $(id){return document.getElementById(id);}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -1481,5 +1703,5 @@ function defPTN(){return[
 initTheme();load();
 window.getMyR=getMyR;
 </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0571350cbeb0557',t:'MTc4MDQwOTc4MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
