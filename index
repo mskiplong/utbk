@@ -158,6 +158,7 @@ tr:hover td{background:var(--sf)}
 .opbtn.wrng{border-color:var(--rd);background:var(--rdd);color:var(--rd)}
 .opc{min-width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px;flex-shrink:0}
 .pbox{background:linear-gradient(135deg,rgba(88,166,255,.06),rgba(188,140,255,.04));border:1px solid rgba(88,166,255,.18);border-radius:var(--rs);padding:14px;margin-bottom:14px;font-size:12.5px;line-height:1.75;color:var(--tx2);font-style:italic}
+.pbox img{max-width:100%;height:auto;border-radius:8px;margin:8px 0;border:1px solid var(--bd);display:block}
 .dbadge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:9px;font-weight:700;margin-bottom:8px}
 .de{background:var(--gnd);color:var(--gn)}
 .dm{background:var(--ywd);color:var(--yw)}
@@ -711,7 +712,7 @@ Contoh JSON:
           <select id="sDiff" class="sel"><option value="easy">Easy (×1.0)</option><option value="medium" selected>Medium (×1.5)</option><option value="hard">Hard (×2.0)</option></select>
         </div>
       </div>
-      <div class="fg"><label class="lbl">Teks Bacaan/Passage (opsional)</label><textarea id="sPass" class="inp ta" placeholder="Teks bacaan jika soal berbasis wacana..."></textarea></div>
+      <div class="fg"><label class="lbl">Teks Bacaan/Passage (opsional) – support gambar</label><textarea id="sPass" class="inp ta" placeholder="Teks bacaan, atau HTML <img src='https://...'> untuk gambar. Contoh: <p>Bacaan...</p><img src='https://i.imgur.com/contoh.png'>"></textarea></div>
       <div class="fg"><label class="lbl">Pertanyaan *</label><textarea id="sQ" class="inp ta" placeholder="Tulis pertanyaan di sini..."></textarea></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div class="fg"><label class="lbl">Pilihan A *</label><input id="sOA" class="inp" placeholder="Pilihan A"></div>
@@ -719,7 +720,7 @@ Contoh JSON:
         <div class="fg"><label class="lbl">Pilihan C *</label><input id="sOC" class="inp" placeholder="Pilihan C"></div>
         <div class="fg"><label class="lbl">Pilihan D</label><input id="sOD" class="inp" placeholder="Pilihan D (opsional)"></div>
         <div class="fg"><label class="lbl">Pilihan E</label><input id="sOE" class="inp" placeholder="Pilihan E (opsional)"></div>
-        <div class="fg"><label class="lbl">Jawaban Benar *</label><input id="sAns" class="inp" placeholder='Contoh: "A" atau "A,B"'></div>
+        <div class="fg"><label class="lbl">Jawaban Benar / Bobot TKP *</label><input id="sAns" class="inp" placeholder='TIU/TWK/TPA/TBI: "A" | TKP: "5,4,3,2,1" (A=5,B=4...) atau "A:5,B:4,C:3,D:2,E:1"'></div></atem:invoke></atem:function_calls>
       </div>
       <div class="fg"><label class="lbl">Penjelasan (opsional)</label><textarea id="sExp" class="inp ta" placeholder="Penjelasan jawaban..."></textarea></div>
     </div>
@@ -761,12 +762,41 @@ function calcSTAN(qs,ans){
   qs.forEach((q,i)=>{
     const s=sec[q.section];if(!s)return;
     const ua=ans[i],ca=normAns(q.answer);
-    if(!ua)s.skip++;
-    else if(isCorr(ua,ca)){
-      s.correct++;
-      // TIU, TWK, TPA, TBI = 5, TKP = 5 (Simplified, as standard app doesn't support 1-5 per question)
-      s.score += (s.name === 'Tes Karakteristik Pribadi') ? 5 : 5;
-    }else s.wrong++;
+    if(!ua){s.skip++; return;}
+    
+    // TKP: pembobotan 1-5 per opsi
+    if(q.section === 'Tes Karakteristik Pribadi'){
+      s.correct++; // semua jawaban dihitung
+      let weight = 0;
+      // Format answer bisa: "5,4,3,2,1" atau "A:5,B:4,C:3,D:2,E:1" atau "A"
+      if(typeof q.answer === 'string' && q.answer.includes(',')){
+        const parts = q.answer.split(',');
+        const map = {};
+        const letters = ['A','B','C','D','E'];
+        parts.forEach((p,idx)=>{
+          p = p.trim();
+          if(p.includes(':')){
+            const [k,v] = p.split(':');
+            map[k.trim().toUpperCase()] = parseInt(v) || 0;
+          } else {
+            map[letters[idx]] = parseInt(p) || 0;
+          }
+        });
+        weight = map[ua.toUpperCase()] || 0;
+      } else {
+        // fallback: jika hanya 1 kunci, beri 5 untuk jawaban terbaik, 1 untuk lainnya
+        weight = isCorr(ua, ca) ? 5 : 1;
+      }
+      s.score += weight;
+    } else {
+      // TIU, TWK, TPA, TBI: benar +5, salah 0
+      if(isCorr(ua,ca)){
+        s.correct++;
+        s.score += 5;
+      } else {
+        s.wrong++;
+      }
+    }
   });
   const scaled={};
   SUBS.forEach(s=>{
@@ -942,7 +972,7 @@ function renderQ(){
   $('ePrg').textContent=`Soal ${exam.idx+1}/${exam.qs.length} — ${q.section}: ${li+1}/${sn}`;
   const diff=q.difficulty||'medium';
   $('eDiff').innerHTML=`<span class="dbadge d${diff[0]}">${diff.toUpperCase()}</span>`;
-  const pa=$('ePas');if(q.passage){pa.classList.remove('hidden');pa.textContent=q.passage;}else{pa.classList.add('hidden');}
+  const pa=$('ePas');if(q.passage){pa.classList.remove('hidden');pa.innerHTML=q.passage;}else{pa.classList.add('hidden');}
   $('eQ').textContent=`${exam.idx+1}. ${q.question}`;
   const opts=normOpts(q);const L=['A','B','C','D','E'];
   $('eOpts').innerHTML=opts.map((o,i)=>{const l=L[i],sel=exam.ans[exam.idx]===l;return`<button class="opbtn${sel?' sel':''}" onclick="selAns('${l}')"><span class="opc">${l}</span><span>${o}</span></button>`;}).join('');
@@ -1004,7 +1034,7 @@ function toggleRev(rid){
     const ua=r.answers[i],ca=normAns(q.answer);
     const ok=ua&&isCorr(ua,ca),sk=!ua;const cls=sk?'skipped':ok?'correct':'wrong',ico=sk?'⬜':ok?'✅':'❌';
     const opts=normOpts(q);const diff=q.difficulty||'medium';
-    h+=`<div class="ritem ${cls}"><div style="display:flex;gap:7px;align-items:flex-start"><span style="font-size:14px;flex-shrink:0">${ico}</span><div style="flex:1"><div style="font-size:10px;color:var(--tx2);margin-bottom:3px">${i+1}. ${q.section} <span class="badge d${diff[0]}" style="font-size:9px">${diff}</span></div>${q.passage?`<div style="font-size:10.5px;font-style:italic;color:var(--tx2);margin-bottom:5px;padding:7px;background:var(--sf);border-radius:6px">${q.passage.substring(0,120)}...</div>`:''}<div style="font-size:12.5px;font-weight:500;margin-bottom:7px;line-height:1.6">${q.question}</div><div style="display:flex;flex-wrap:wrap;gap:4px">${opts.map((o,oi)=>{const l=L[oi];const isCa=isCorr(l,q.answer);const isUa=ua===l;let st='background:var(--sf);border:1px solid var(--bd);';if(isCa)st='background:var(--gnd);border:1px solid rgba(63,185,80,.4);color:var(--gn);';if(isUa&&!isCa)st='background:var(--rdd);border:1px solid rgba(248,81,73,.4);color:var(--rd);';return`<span style="${st}border-radius:5px;padding:2px 8px;font-size:10.5px"><strong>${l}.</strong> ${o}</span>`;}).join('')}</div>${q.explanation?`<div style="font-size:10.5px;color:var(--tx2);margin-top:6px;padding:7px;background:var(--sf);border-radius:6px;line-height:1.5">💡 ${q.explanation}</div>`:''}</div></div></div>`;
+    h+=`<div class="ritem ${cls}"><div style="display:flex;gap:7px;align-items:flex-start"><span style="font-size:14px;flex-shrink:0">${ico}</span><div style="flex:1"><div style="font-size:10px;color:var(--tx2);margin-bottom:3px">${i+1}. ${q.section} <span class="badge d${diff[0]}" style="font-size:9px">${diff}</span></div>${q.passage?`<div style="font-size:10.5px;font-style:italic;color:var(--tx2);margin-bottom:5px;padding:7px;background:var(--sf);border-radius:6px">${q.passage}</div>`:''}<div style="font-size:12.5px;font-weight:500;margin-bottom:7px;line-height:1.6">${q.question}</div><div style="display:flex;flex-wrap:wrap;gap:4px">${opts.map((o,oi)=>{const l=L[oi];const isCa=isCorr(l,q.answer);const isUa=ua===l;let st='background:var(--sf);border:1px solid var(--bd);';if(isCa)st='background:var(--gnd);border:1px solid rgba(63,185,80,.4);color:var(--gn);';if(isUa&&!isCa)st='background:var(--rdd);border:1px solid rgba(248,81,73,.4);color:var(--rd);';return`<span style="${st}border-radius:5px;padding:2px 8px;font-size:10.5px"><strong>${l}.</strong> ${o}</span>`;}).join('')}</div>${q.explanation?`<div style="font-size:10.5px;color:var(--tx2);margin-top:6px;padding:7px;background:var(--sf);border-radius:6px;line-height:1.5">💡 ${q.explanation}</div>`:''}</div></div></div>`;
   });
   h+=`</div></div>`;el.innerHTML=h;el.scrollIntoView({behavior:'smooth'});
 }
@@ -1145,7 +1175,7 @@ function renderQList(secName){
         <thead><tr><th>#</th><th>Soal</th><th>Difficulty</th><th>Jawaban</th><th>Aksi</th></tr></thead>
         <tbody>${paged.map((q,i)=>{const globalIdx=start+i;const diff=q.difficulty||'medium';return`<tr>
           <td style="color:var(--tx2);font-size:10px">${globalIdx+1}</td>
-          <td style="max-width:320px"><div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px" title="${q.question}">${q.question}</div>${q.passage?`<div style="font-size:10px;color:var(--tx2);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px">📄 ${q.passage.substring(0,60)}...</div>`:''}</td>
+          <td style="max-width:320px"><div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px" title="${q.question}">${q.question}</div>${q.passage?`<div style="font-size:10px;color:var(--tx2);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px">📄 ${q.passage}</div>`:''}</td>
           <td><span class="badge d${diff[0]}" style="font-size:9px">${diff}</span></td>
           <td><span class="badge bg-green" style="font-size:10px">${q.answer}</span></td>
           <td><div class="tact"><button class="btn btn-w btn-sm" onclick="openSoalModal(${globalIdx},'${secName}')">✏ Ubah</button><button class="btn btn-d btn-sm" onclick="delSoal('${secName}',${globalIdx})">🗑</button></div></td>
@@ -1594,5 +1624,5 @@ function defPTN(){return[
 initTheme();load();
 window.getMyR=getMyR;
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0571350cbeb0557',t:'MTc4MDQwOTc4MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a084be89c87bb5e2',t:'MTc4MDg4ODY1NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0571350cbeb0557',t:'MTc4MDQwOTc4MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a084be89c87bb5e2',t:'MTc4MDg4ODY1NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a08f4520ee19659e',t:'MTc4MDk5OTAyNA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
