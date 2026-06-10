@@ -3,10 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>STANPro — Simulasi PMB PKN STAN 2026</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<title>SNBTPro — Simulasi SNBT 4LANDIA 2027</title>
+<script src="assets/chart.umd.min.js"></script>
+<script src="assets/papaparse.min.js"></script>
+<script src="assets/chartjs-plugin-annotation.min.js"></script>
+<script>
+if (window.Chart && window['chartjs-plugin-annotation']) {
+  Chart.register(window['chartjs-plugin-annotation']);
+}
+</script>
 <style>
 :root{--r:14px;--rs:8px;--rl:20px;--tr:all .22s cubic-bezier(.4,0,.2,1);--sh:0 4px 24px rgba(0,0,0,.18);--shl:0 8px 40px rgba(0,0,0,.28)}
 [data-theme="dark"]{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;--sf:rgba(255,255,255,.04);--sf2:rgba(255,255,255,.08);--bd:rgba(255,255,255,.09);--bd2:rgba(255,255,255,.16);--tx:#e6edf3;--tx2:#8b949e;--tx3:#6e7681;--ac:#58a6ff;--ac2:#388bfd;--acg:rgba(88,166,255,.18);--gn:#3fb950;--gnd:rgba(63,185,80,.14);--yw:#d29922;--ywd:rgba(210,153,34,.14);--rd:#f85149;--rdd:rgba(248,81,73,.14);--pu:#bc8cff;--pud:rgba(188,140,255,.14);--or:#ffa657;--cy:#39c5cf;--nb:rgba(13,17,23,.93)}
@@ -158,7 +163,9 @@ tr:hover td{background:var(--sf)}
 .opbtn.wrng{border-color:var(--rd);background:var(--rdd);color:var(--rd)}
 .opc{min-width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px;flex-shrink:0}
 .pbox{background:linear-gradient(135deg,rgba(88,166,255,.06),rgba(188,140,255,.04));border:1px solid rgba(88,166,255,.18);border-radius:var(--rs);padding:14px;margin-bottom:14px;font-size:12.5px;line-height:1.75;color:var(--tx2);font-style:italic}
-.pbox img{max-width:100%;height:auto;border-radius:8px;margin:8px 0;border:1px solid var(--bd);display:block}
+.ibox{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);padding:10px;margin-bottom:14px}
+.ibox img{display:block;width:100%;max-width:100%;max-height:420px;object-fit:contain;border-radius:8px;background:var(--bg3)}
+.ihelp{margin-top:8px;font-size:10.5px;color:var(--tx2);line-height:1.6}
 .dbadge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font-size:9px;font-weight:700;margin-bottom:8px}
 .de{background:var(--gnd);color:var(--gn)}
 .dm{background:var(--ywd);color:var(--yw)}
@@ -225,9 +232,9 @@ tr:hover td{background:var(--sf)}
   <div class="lbg"></div>
   <div class="lcard">
     <div style="text-align:center;margin-bottom:24px">
-      <div style="width:52px;height:52px;background:linear-gradient(135deg,#58a6ff,#bc8cff);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;box-shadow:0 4px 18px rgba(88,166,255,.35)">🏛️</div>
-      <h1 style="font-size:22px;font-weight:900;margin-bottom:4px">STAN<span style="color:var(--ac)">Pro</span></h1>
-      <p style="font-size:11px;color:var(--tx2)">Platform Simulasi PMB PKN STAN 2026</p>
+      <div style="width:52px;height:52px;background:linear-gradient(135deg,#58a6ff,#bc8cff);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px;box-shadow:0 4px 18px rgba(88,166,255,.35)">🎓</div>
+      <h1 style="font-size:22px;font-weight:900;margin-bottom:4px">SNBT<span style="color:var(--ac)">Pro</span></h1>
+      <p style="font-size:11px;color:var(--tx2)">Platform Simulasi SNBT 4LANDIA 2027</p>
     </div>
     <div id="loginErr" class="hidden" style="background:var(--rdd);border:1px solid rgba(248,81,73,.3);border-radius:9px;padding:9px 13px;color:var(--rd);font-size:12px;margin-bottom:14px">⚠️ Username atau password salah!</div>
     <div class="fg"><label class="lbl">Username</label><input id="lgU" class="inp" placeholder="Masukkan username"></div>
@@ -243,11 +250,12 @@ tr:hover td{background:var(--sf)}
 <!-- NAV -->
 <nav class="nav hidden" id="mainNav">
   <div class="nav-w">
-    <div class="logo"><div class="logo-i">🏛️</div>STAN<span>Pro</span></div>
+    <div class="logo"><div class="logo-i">🎓</div>SNBT<span>Pro</span></div>
     <div class="nav-links" id="navLinks">
       <button class="ni" onclick="G('home')">🏠 Beranda</button>
       <button class="ni" onclick="G('sim')">▶ Simulasi</button>
       <button class="ni" onclick="G('hasil')">📊 Hasil</button>
+      <button class="ni" onclick="G('rasio')">🎯 Rasionalisasi</button>
       <button class="ni admin-only hidden" onclick="G('db')">🗄 Database</button>
       <button class="ni admin-only hidden" onclick="G('admin')">🛡 Admin</button>
     </div>
@@ -265,6 +273,7 @@ tr:hover td{background:var(--sf)}
     <button class="ni" onclick="G('home');closeMob()">🏠 Beranda</button>
     <button class="ni" onclick="G('sim');closeMob()">▶ Simulasi</button>
     <button class="ni" onclick="G('hasil');closeMob()">📊 Hasil</button>
+    <button class="ni" onclick="G('rasio');closeMob()">🎯 Rasionalisasi</button>
     <button class="ni admin-only hidden" onclick="G('db');closeMob()">🗄 Database</button>
     <button class="ni admin-only hidden" onclick="G('admin');closeMob()">🛡 Admin</button>
   </div>
@@ -278,30 +287,31 @@ tr:hover td{background:var(--sf)}
 <div class="pg">
   <div class="card hero" style="margin-bottom:22px">
     <div class="hbg"></div>
-    <div class="hbadge">⭐ Sistem Penilaian PMB PKN STAN 2026 — Tanpa Nilai Minus</div>
-    <h1 class="ht"><span class="gr">Simulasi PMB PKN STAN</span><br><span style="color:var(--tx)">Tahun 2026</span></h1>
-    <p class="hd">Persiapkan dirimu untuk menembus Politeknik Keuangan Negara STAN dengan latihan soal terstruktur sesuai standar terbaru. Fokus, teliti, dan raih impianmu!</p>
+    <div class="hbadge">⭐ Sistem IRT SNBT 2027 — Tanpa Nilai Minus</div>
+    <h1 class="ht"><span class="gr">Simulasi UTBK/SNBT</span><br><span style="color:var(--tx)">2027 4LANDIA</span></h1>
+    <p class="hd">IRT-Item Response Theory mengajarkan bahwa setiap respons punya bobot, seperti hidup yang menilai setiap usaha; maka belajar dengan rasional dan teruslah melangkah solusinya</p>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-p btn-lg" onclick="G('sim')">▶ Mulai Simulasi</button>
+      <button class="btn btn-g btn-lg" onclick="G('rasio')">🎯 Rasionalisasi PTN</button>
     </div>
   </div>
   <div class="sg" style="margin-bottom:22px">
     <div class="sc" style="--al:var(--ac)"><div class="sv" id="hTQ">0</div><div class="sl">Total Soal</div></div>
-    <div class="sc" style="--al:var(--gn)"><div class="sv" id="hTP">0</div><div class="sl">Data Subtes</div></div>
+    <div class="sc" style="--al:var(--gn)"><div class="sv" id="hTP">0</div><div class="sl">Data PTN</div></div>
     <div class="sc" style="--al:var(--pu)"><div class="sv" id="hTT">0</div><div class="sl">Tryout Selesai</div></div>
-    <div class="sc" style="--al:var(--or)"><div class="sv">5</div><div class="sl">Materi Ujian</div></div>
+    <div class="sc" style="--al:var(--or)"><div class="sv">7</div><div class="sl">Subtes SNBT</div></div>
   </div>
   <div class="card" style="margin-bottom:22px">
-    <div class="ch"><div class="ct">📋 Struktur Materi PMB PKN STAN 2026</div></div>
+    <div class="ch"><div class="ct">📋 Struktur Subtes SNBT 2027</div></div>
     <div class="tw"><table><thead><tr><th>Subtes</th><th>Kode</th><th>Soal</th><th>Waktu</th><th>Grup</th><th>Tersedia</th></tr></thead><tbody id="hSubT"></tbody></table></div>
   </div>
   <div class="irt" style="margin-bottom:22px">
-    <h4>🔬 Sistem Penilaian PMB PKN STAN 2026</h4>
+    <h4>🔬 Sistem Penilaian IRT SNBT 2027</h4>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;font-size:12px;color:var(--tx2);line-height:1.7">
-      <div><strong style="color:var(--tx)">✅ Tidak Ada Nilai Minus</strong><br>Jawaban salah = 0. Manfaatkan semua kesempatan!</div>
-      <div><strong style="color:var(--tx)">⚖️ Skor Benar</strong><br>TIU, TWK, TPA, TBI: Benar ×5.0</div>
-      <div><strong style="color:var(--tx)">📐 TKP (Karakteristik)</strong><br>Nilai bertingkat: 1, 2, 3, 4, 5 tergantung kualitas jawaban.</div>
-      <div><strong style="color:var(--tx)">🏆 Kelulusan</strong><br>Harus mencapai Passing Grade di setiap subtes.</div>
+      <div><strong style="color:var(--tx)">✅ Tidak Ada Nilai Minus</strong><br>Jawaban salah = 0. Jawab semua soal!</div>
+      <div><strong style="color:var(--tx)">⚖️ Bobot IRT</strong><br>Easy ×1.0 | Medium ×1.5 | Hard ×2.0</div>
+      <div><strong style="color:var(--tx)">📐 θ = (Σwt_benar/Σwt_total)×6−3</strong><br>Skor = 300+(θ+3)/6×500</div>
+      <div><strong style="color:var(--tx)">🏆 Final</strong><br>TPS=avg(PU,PPU,KMBM,PK)<br>Lit=avg(LBI,LBIng)<br>Final=(TPS+Lit+PM)/3</div>
     </div>
   </div>
   <div class="card hidden" id="hRec">
@@ -315,7 +325,7 @@ tr:hover td{background:var(--sf)}
 <div id="pg-sim" class="hidden">
   <div id="simReady" class="pg-sm">
     <div class="card">
-      <div class="ch"><div class="ct">⏱️ Simulasi PMB PKN STAN 2026</div></div>
+      <div class="ch"><div class="ct">⏱️ Simulasi UTBK SNBT 2027</div></div>
       <div class="cb">
         <div class="tabs">
           <button class="tab active" onclick="sTab('sInfo',this)">Info</button>
@@ -324,8 +334,8 @@ tr:hover td{background:var(--sf)}
         </div>
         <div id="sInfo">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-            <div class="sc" style="--al:var(--ac);text-align:center"><div style="font-size:26px;margin-bottom:4px">⏱️</div><div class="sv">160 Mnt</div><div class="sl">Durasi Total</div></div>
-            <div class="sc" style="--al:var(--pu);text-align:center"><div style="font-size:26px;margin-bottom:4px">📝</div><div class="sv">210</div><div class="sl">Total Soal</div></div>
+            <div class="sc" style="--al:var(--ac);text-align:center"><div style="font-size:26px;margin-bottom:4px">⏱️</div><div class="sv">115 Mnt</div><div class="sl">Durasi</div></div>
+            <div class="sc" style="--al:var(--pu);text-align:center"><div style="font-size:26px;margin-bottom:4px">📝</div><div class="sv">160</div><div class="sl">Total Soal</div></div>
           </div>
           <div id="sSubI" style="margin-bottom:16px"></div>
           <div id="sWarn" class="hidden" style="background:var(--ywd);border:1px solid rgba(210,153,34,.3);border-radius:var(--rs);padding:11px 13px;font-size:11.5px;color:var(--yw);margin-bottom:14px">⚠️ Beberapa subtes belum punya soal. Gunakan placeholder. Upload di Database.</div>
@@ -333,20 +343,22 @@ tr:hover td{background:var(--sf)}
         </div>
         <div id="sScor" class="hidden">
           <div class="irt">
-            <h4>📐 Alur Penilaian PMB PKN STAN</h4>
+            <h4>📐 Alur Penilaian IRT</h4>
             <div style="font-size:12px;color:var(--tx2);line-height:2">
-              <div><span style="color:var(--ac);font-weight:700">1.</span> TIU, TWK, TPA, TBI: Benar <strong style="color:var(--gn)">+5</strong> | Salah/Kosong <strong style="color:var(--rd)">0</strong></div>
-              <div><span style="color:var(--ac);font-weight:700">2.</span> TKP: Benar <strong style="color:var(--gn)">+1 sampai +5</strong> | Salah/Kosong <strong style="color:var(--rd)">0</strong></div>
-              <div><span style="color:var(--ac);font-weight:700">3.</span> Skor Akhir = Σ (Benar × Bobot)</div>
-              <div><span style="color:var(--ac);font-weight:700">4.</span> <strong style="color:var(--pu)">Kelulusan: Harus melampaui Passing Grade di setiap subtes.</strong></div>
+              <div><span style="color:var(--ac);font-weight:700">1.</span> Benar=bobot | Salah/Kosong=<strong style="color:var(--gn)">0</strong></div>
+              <div><span style="color:var(--ac);font-weight:700">2.</span> θ=(Σwt_benar/Σwt_total)×6−3 → [−3,+3]</div>
+              <div><span style="color:var(--ac);font-weight:700">3.</span> Skor_sub=300+(θ+3)/6×500 → [300,800]</div>
+              <div><span style="color:var(--ac);font-weight:700">4.</span> TPS=avg(PU+PPU+KMBM+PK)</div>
+              <div><span style="color:var(--ac);font-weight:700">5.</span> Literasi=avg(LBI+LBIng)</div>
+              <div><span style="color:var(--ac);font-weight:700">6.</span> <strong style="color:var(--pu)">Final=(TPS+Literasi+PM)/3</strong></div>
             </div>
           </div>
         </div>
         <div id="sFmt" class="hidden">
           <div class="tabs"><button class="tab active" onclick="sTab('fJ',this)">JSON</button><button class="tab" onclick="sTab('fC',this)">CSV</button></div>
-          <div id="fJ"><pre style="background:var(--bg3);border-radius:var(--rs);padding:12px;font-size:10.5px;color:var(--gn);overflow-x:auto;line-height:1.6;border:1px solid var(--bd)">[{"id":1,"section":"Tes Intelegensia Umum","passage":"","question":"Pertanyaan?","options":["A","B","C","D","E"],"answer":"A","explanation":"","difficulty":"easy"}]</pre></div>
-          <div id="fC" class="hidden"><pre style="background:var(--bg3);border-radius:var(--rs);padding:12px;font-size:10.5px;color:var(--gn);overflow-x:auto;line-height:1.6;border:1px solid var(--bd)">id,section,passage,question,option_a,option_b,option_c,option_d,option_e,answer,explanation,difficulty</pre></div>
-          <p style="font-size:11px;color:var(--tx2);margin-top:10px;line-height:1.7"><strong style="color:var(--tx)">answer</strong>: "A"–"E" atau multi "A,B" | <strong style="color:var(--tx)">difficulty</strong>: easy|medium|hard</p>
+          <div id="fJ"><pre style="background:var(--bg3);border-radius:var(--rs);padding:12px;font-size:10.5px;color:var(--gn);overflow-x:auto;line-height:1.6;border:1px solid var(--bd)">[{"id":1,"section":"Penalaran Umum","passage":"Paragraf opsional","passageImage":"https://drive.google.com/file/d/FILE_ID/view?usp=sharing","question":"Pertanyaan?","options":["A","B","C","D","E"],"answer":"A","explanation":"","difficulty":"easy"}]</pre></div>
+          <div id="fC" class="hidden"><pre style="background:var(--bg3);border-radius:var(--rs);padding:12px;font-size:10.5px;color:var(--gn);overflow-x:auto;line-height:1.6;border:1px solid var(--bd)">id,section,passage,passage_image,question,option_a,option_b,option_c,option_d,option_e,answer,explanation,difficulty</pre></div>
+          <p style="font-size:11px;color:var(--tx2);margin-top:10px;line-height:1.7"><strong style="color:var(--tx)">answer</strong>: "A"–"E" atau multi "A,B" | <strong style="color:var(--tx)">difficulty</strong>: easy|medium|hard | <strong style="color:var(--tx)">passageImage</strong>: link gambar biasa, path lokal (mis. <code>images/contoh-soal-utbk.svg</code>), atau share Google Drive publik</p>
         </div>
       </div>
     </div>
@@ -370,6 +382,7 @@ tr:hover td{background:var(--sf)}
             <div class="cb">
               <div id="eDiff" style="margin-bottom:8px"></div>
               <div id="ePas" class="pbox hidden"></div>
+              <div id="eImg" class="hidden"></div>
               <p id="eQ" style="font-size:14px;font-weight:500;line-height:1.7;margin-bottom:14px;color:var(--tx)"></p>
               <div id="eOpts"></div>
               <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--bd)">
@@ -445,9 +458,53 @@ tr:hover td{background:var(--sf)}
   </div>
 </div>
 
+<!-- RASIONALISASI -->
+<div id="pg-rasio" class="hidden pg">
+  <div style="margin-bottom:20px"><h2 style="font-size:18px;font-weight:800;margin-bottom:3px">🎯 Rasionalisasi PTN</h2><p style="color:var(--tx2);font-size:12px">Bandingkan skor IRT kamu dengan Passing Grade PTN</p></div>
+  <div class="card" style="margin-bottom:14px">
+    <div class="cb">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:14px">
+        <div><label class="lbl">Dari Hasil Tryout</label><select class="sel" id="rSel" onchange="onRSel()"><option value="">— Pilih —</option></select></div>
+        <div><label class="lbl">Input Manual (300–800)</label><input id="rMan" class="inp" type="number" min="300" max="800" placeholder="Contoh: 680" oninput="onRMan()"></div>
+      </div>
+      <div id="rScD" class="hidden" style="background:var(--acg);border:1px solid rgba(88,166,255,.25);border-radius:var(--rs);padding:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div><div style="font-size:10px;color:var(--tx2)">Skor IRT</div><div id="rScV" style="font-size:40px;font-weight:900;color:var(--ac);line-height:1">0</div></div>
+        <div style="font-size:11.5px;color:var(--tx2);display:flex;gap:12px;flex-wrap:wrap"><span>🟢 Aman ≥PG+20</span><span>🟡 Peluang PG±20</span><span>🔴 Risiko &lt;PG−20</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div class="cb" style="padding:12px 16px">
+      <div style="display:flex;gap:9px;align-items:flex-end;flex-wrap:wrap">
+        <div style="flex:1;min-width:120px"><label class="lbl">Cari PTN</label><input class="inp" id="fPTN" placeholder="Nama universitas..." oninput="renderRasio()"></div>
+        <div style="flex:1;min-width:120px"><label class="lbl">Cari Prodi</label><input class="inp" id="fProdi" placeholder="Nama prodi..." oninput="renderRasio()"></div>
+        <div><label class="lbl">Mode</label>
+          <div style="display:flex;gap:5px">
+            <button class="btn btn-p btn-sm" id="mBp" onclick="setRM('peluang')">Peluang</button>
+            <button class="btn btn-g btn-sm" id="mBa" onclick="setRM('aman')">Aman</button>
+            <button class="btn btn-g btn-sm" id="mBs" onclick="setRM('semua')">Semua</button>
+          </div>
+        </div>
+        <button class="btn btn-g btn-sm" onclick="resetRasio()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+  <div id="rSum" class="hidden" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+    <div class="sc" style="--al:var(--gn);text-align:center"><div class="sv" id="cA" style="color:var(--gn)">0</div><div class="sl">Aman</div></div>
+    <div class="sc" style="--al:var(--yw);text-align:center"><div class="sv" id="cP" style="color:var(--yw)">0</div><div class="sl">Peluang</div></div>
+    <div class="sc" style="--al:var(--rd);text-align:center"><div class="sv" id="cR" style="color:var(--rd)">0</div><div class="sl">Risiko</div></div>
+  </div>
+  <div class="card hidden" id="rChC" style="margin-bottom:14px">
+    <div class="ch"><div class="ct">📊 Skor vs PG (Top 10)</div></div>
+    <div class="cb"><div class="cw"><canvas id="rasioChart"></canvas></div></div>
+  </div>
+  <div id="rList"></div>
+  <div id="rEmp" class="card" style="text-align:center;padding:46px 18px"><div style="font-size:46px;margin-bottom:10px">🎯</div><p style="color:var(--tx2)">Masukkan skor untuk melihat rasionalisasi PTN</p></div>
+</div>
 
-<!-- DATABASE -->
+<!-- DATABASE (Admin) -->
 <div id="pg-db" class="hidden pg">
+  <h2 style="font-size:18px;font-weight:800;margin-bottom:18px">🗄 Database & Manajemen</h2>
   <div class="tabs">
     <button class="tab active" onclick="sTab('dbQ',this)">📚 Soal</button>
     <button class="tab" onclick="sTab('dbPTN',this)">🏛 PTN</button>
@@ -472,11 +529,13 @@ tr:hover td{background:var(--sf)}
         <div class="fg"><label class="lbl">Override Kategori</label>
           <select class="sel" id="upSec" style="max-width:360px">
             <option value="auto">Auto-detect dari field 'section'</option>
-            <option value="Tes Intelegensia Umum">Tes Intelegensia Umum</option>
-            <option value="Tes Wawasan Kebangsaan">Tes Wawasan Kebangsaan</option>
-            <option value="Tes Karakteristik Pribadi">Tes Karakteristik Pribadi</option>
-            <option value="Tes Potensi Akademik">Tes Potensi Akademik</option>
-            <option value="Tes Bahasa Inggris">Tes Bahasa Inggris</option>
+            <option value="Penalaran Umum">Penalaran Umum</option>
+            <option value="Pengetahuan dan Pemahaman Umum">Pengetahuan dan Pemahaman Umum</option>
+            <option value="Kemampuan Memahami Bacaan dan Menulis">Kemampuan Memahami Bacaan dan Menulis</option>
+            <option value="Pengetahuan Kuantitatif">Pengetahuan Kuantitatif</option>
+            <option value="Literasi dalam Bahasa Indonesia">Literasi dalam Bahasa Indonesia</option>
+            <option value="Literasi dalam Bahasa Inggris">Literasi dalam Bahasa Inggris</option>
+            <option value="Penalaran Matematika">Penalaran Matematika</option>
           </select>
         </div>
         <div class="uzone" onclick="$('qFile').click()" id="qUZ"
@@ -614,7 +673,6 @@ Contoh JSON:
     </div>
   </div>
 </div>
-</div>
 
 <!-- ADMIN -->
 <div id="pg-admin" class="hidden pg">
@@ -645,7 +703,7 @@ Contoh JSON:
   </div>
   <div id="aSt" class="hidden">
     <div class="sg" style="margin-bottom:16px" id="aStG"></div>
-    <div class="card"><div class="ch"><div class="ct">📈 Distribusi Skor</div></div><div class="cb"><div class="cw"><canvas id="aChart"></canvas></div></div></div>
+    <div class="card"><div class="ch"><div class="ct">📈 Distribusi Skor (IRT)</div></div><div class="cb"><div class="cw"><canvas id="aChart"></canvas></div></div></div>
   </div>
 </div>
 
@@ -701,18 +759,32 @@ Contoh JSON:
       <div class="fg2">
         <div class="fg"><label class="lbl">Subtes *</label>
           <select id="sSection" class="sel">
-            <option value="Tes Intelegensia Umum">Tes Intelegensia Umum</option>
-            <option value="Tes Wawasan Kebangsaan">Tes Wawasan Kebangsaan</option>
-            <option value="Tes Karakteristik Pribadi">Tes Karakteristik Pribadi</option>
-            <option value="Tes Potensi Akademik">Tes Potensi Akademik</option>
-            <option value="Tes Bahasa Inggris">Tes Bahasa Inggris</option>
+            <option value="Penalaran Umum">Penalaran Umum</option>
+            <option value="Pengetahuan dan Pemahaman Umum">Pengetahuan dan Pemahaman Umum</option>
+            <option value="Kemampuan Memahami Bacaan dan Menulis">Kemampuan Memahami Bacaan dan Menulis</option>
+            <option value="Pengetahuan Kuantitatif">Pengetahuan Kuantitatif</option>
+            <option value="Literasi dalam Bahasa Indonesia">Literasi dalam Bahasa Indonesia</option>
+            <option value="Literasi dalam Bahasa Inggris">Literasi dalam Bahasa Inggris</option>
+            <option value="Penalaran Matematika">Penalaran Matematika</option>
           </select>
         </div>
         <div class="fg"><label class="lbl">Difficulty</label>
           <select id="sDiff" class="sel"><option value="easy">Easy (×1.0)</option><option value="medium" selected>Medium (×1.5)</option><option value="hard">Hard (×2.0)</option></select>
         </div>
       </div>
-      <div class="fg"><label class="lbl">Teks Bacaan/Passage (opsional) – support gambar</label><textarea id="sPass" class="inp ta" placeholder="Teks bacaan, atau HTML <img src='https://...'> untuk gambar. Contoh: <p>Bacaan...</p><img src='https://i.imgur.com/contoh.png'>"></textarea></div>
+      <div class="fg"><label class="lbl">Teks Bacaan/Passage (opsional)</label><textarea id="sPass" class="inp ta" placeholder="Teks bacaan jika soal berbasis wacana..."></textarea></div>
+      <div class="fg">
+        <label class="lbl">Link Gambar Stimulus (opsional)</label>
+        <input id="sImg" class="inp" placeholder="Tempel URL gambar, path lokal, atau link share Google Drive" oninput="if(this.value.trim())$('sImgData').value='';updSoalImagePreview()">
+        <input id="sImgData" type="hidden">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button type="button" class="btn btn-g btn-sm" onclick="$('sImgFile').click()">🖼 Upload Gambar Lokal</button>
+          <button type="button" class="btn btn-g btn-sm" onclick="clearSoalImage()">🗑 Hapus Gambar</button>
+          <input id="sImgFile" type="file" accept="image/*" class="hidden" onchange="handleSoalImageFile(this.files[0]);this.value=''">
+        </div>
+        <div id="sImgMeta" class="ihelp">Boleh kosong. Mendukung link gambar biasa, path lokal seperti <strong>images/contoh-soal-utbk.svg</strong>, atau link Google Drive publik.</div>
+        <div id="sImgPrev" class="hidden" style="margin-top:10px"></div>
+      </div>
       <div class="fg"><label class="lbl">Pertanyaan *</label><textarea id="sQ" class="inp ta" placeholder="Tulis pertanyaan di sini..."></textarea></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
         <div class="fg"><label class="lbl">Pilihan A *</label><input id="sOA" class="inp" placeholder="Pilihan A"></div>
@@ -720,7 +792,7 @@ Contoh JSON:
         <div class="fg"><label class="lbl">Pilihan C *</label><input id="sOC" class="inp" placeholder="Pilihan C"></div>
         <div class="fg"><label class="lbl">Pilihan D</label><input id="sOD" class="inp" placeholder="Pilihan D (opsional)"></div>
         <div class="fg"><label class="lbl">Pilihan E</label><input id="sOE" class="inp" placeholder="Pilihan E (opsional)"></div>
-        <div class="fg"><label class="lbl">Jawaban Benar / Bobot TKP *</label><input id="sAns" class="inp" placeholder='TIU/TWK/TPA/TBI: "A" | TKP: "5,4,3,2,1" (A=5,B=4...) atau "A:5,B:4,C:3,D:2,E:1"'></div></atem:invoke></atem:function_calls>
+        <div class="fg"><label class="lbl">Jawaban Benar *</label><input id="sAns" class="inp" placeholder='Contoh: "A" atau "A,B"'></div>
       </div>
       <div class="fg"><label class="lbl">Penjelasan (opsional)</label><textarea id="sExp" class="inp ta" placeholder="Penjelasan jawaban..."></textarea></div>
     </div>
@@ -747,69 +819,44 @@ Contoh JSON:
 <script>
 /* ══ CONSTANTS ══ */
 const SUBS=[
-  {name:"Tes Intelegensia Umum",        code:"TIU", n:35,time:100,grp:"SKD",     col:"#58a6ff", score:5},
-  {name:"Tes Wawasan Kebangsaan",       code:"TWK", n:30,time:100,grp:"SKD",     col:"#bc8cff", score:5},
-  {name:"Tes Karakteristik Pribadi",    code:"TKP", n:45,time:100,grp:"SKD",     col:"#3fb950", score:5},
-  {name:"Tes Potensi Akademik",         code:"TPA", n:50,time:60, grp:"TPA",     col:"#d29922", score:5},
-  {name:"Tes Bahasa Inggris",           code:"TBI", n:50,time:60, grp:"TBI",     col:"#f85149", score:5},
+  {name:"Penalaran Umum",                        code:"PU",   n:30,time:30,grp:"TPS",     col:"#58a6ff"},
+  {name:"Pengetahuan dan Pemahaman Umum",        code:"PPU",  n:20,time:15,grp:"TPS",     col:"#bc8cff"},
+  {name:"Kemampuan Memahami Bacaan dan Menulis", code:"KMBM", n:20,time:25,grp:"TPS",     col:"#3fb950"},
+  {name:"Pengetahuan Kuantitatif",               code:"PK",   n:20,time:20,grp:"TPS",     col:"#d29922"},
+  {name:"Literasi dalam Bahasa Indonesia",       code:"LBI",  n:30,time:45,grp:"Literasi",col:"#f85149"},
+  {name:"Literasi dalam Bahasa Inggris",         code:"LBIng",n:20,time:30,grp:"Literasi",col:"#39c5cf"},
+  {name:"Penalaran Matematika",                  code:"PM",   n:20,time:30,grp:"PM",      col:"#ffa657"},
 ];
-const TOTAL_Q=210, EXAM_SEC=160*60;
+const TOTAL_Q=160, EXAM_SEC=115*60;
+const IRT={easy:1.0,medium:1.5,hard:2.0};
 
-/* ══ SCORING ENGINE ══ */
-function calcSTAN(qs,ans){
+/* ══ IRT ENGINE ══ */
+function calcIRT(qs,ans){
   const sec={};
-  SUBS.forEach(s=>{sec[s.name]={score:0,total:s.n,correct:0,wrong:0,skip:0};});
+  SUBS.forEach(s=>{sec[s.name]={wC:0,wT:0,correct:0,wrong:0,skip:0,total:s.n};});
   qs.forEach((q,i)=>{
     const s=sec[q.section];if(!s)return;
+    const w=IRT[q.difficulty]||IRT.medium;
+    s.wT+=w;
     const ua=ans[i],ca=normAns(q.answer);
-    if(!ua){s.skip++; return;}
-    
-    // TKP: pembobotan 1-5 per opsi
-    if(q.section === 'Tes Karakteristik Pribadi'){
-      s.correct++; // semua jawaban dihitung
-      let weight = 0;
-      // Format answer bisa: "5,4,3,2,1" atau "A:5,B:4,C:3,D:2,E:1" atau "A"
-      if(typeof q.answer === 'string' && q.answer.includes(',')){
-        const parts = q.answer.split(',');
-        const map = {};
-        const letters = ['A','B','C','D','E'];
-        parts.forEach((p,idx)=>{
-          p = p.trim();
-          if(p.includes(':')){
-            const [k,v] = p.split(':');
-            map[k.trim().toUpperCase()] = parseInt(v) || 0;
-          } else {
-            map[letters[idx]] = parseInt(p) || 0;
-          }
-        });
-        weight = map[ua.toUpperCase()] || 0;
-      } else {
-        // fallback: jika hanya 1 kunci, beri 5 untuk jawaban terbaik, 1 untuk lainnya
-        weight = isCorr(ua, ca) ? 5 : 1;
-      }
-      s.score += weight;
-    } else {
-      // TIU, TWK, TPA, TBI: benar +5, salah 0
-      if(isCorr(ua,ca)){
-        s.correct++;
-        s.score += 5;
-      } else {
-        s.wrong++;
-      }
-    }
+    if(!ua)s.skip++;
+    else if(isCorr(ua,ca)){s.wC+=w;s.correct++;}
+    else s.wrong++;
   });
   const scaled={};
   SUBS.forEach(s=>{
     const d=sec[s.name];
+    const ratio=d.wT>0?d.wC/d.wT:0;
+    const theta=ratio*6-3;
+    const score=Math.round(300+(theta+3)/6*500);
+    d.scaled=clamp(score,300,800);d.theta=Math.round(theta*100)/100;d.ratio=Math.round(ratio*1000)/10;
     scaled[s.name]=d;
   });
-  const sum=Object.values(scaled).reduce((a,b)=>a+b.score,0);
-  const groups={
-    SKD: SUBS.filter(s=>s.grp==='SKD').reduce((a,b)=>a+scaled[b.name].score,0),
-    TPA: scaled['Tes Potensi Akademik']?.score||0,
-    TBI: scaled['Tes Bahasa Inggris']?.score||0,
-  };
-  return{sections:scaled,groups,finalScore:sum};
+  const avg=ns=>{const v=ns.map(n=>scaled[n]?.scaled||300);return Math.round(v.reduce((a,b)=>a+b,0)/v.length);};
+  const TPS=avg(SUBS.filter(s=>s.grp==='TPS').map(s=>s.name));
+  const Lit=avg(SUBS.filter(s=>s.grp==='Literasi').map(s=>s.name));
+  const PM=avg(SUBS.filter(s=>s.grp==='PM').map(s=>s.name));
+  return{sections:scaled,groups:{TPS,Literasi:Lit,PM},finalScore:clamp(Math.round((TPS+Lit+PM)/3),300,800)};
 }
 function normAns(a){
   if(!a)return'A';
@@ -822,13 +869,103 @@ function normAns(a){
 function isCorr(u,c){return String(c).split(',').map(x=>x.trim().toUpperCase()).includes(String(u).toUpperCase());}
 function normOpts(q){if(Array.isArray(q.options))return q.options.map(o=>String(o).replace(/^[A-Ea-e][.)]\s*/,'').trim());return['A','B','C','D','E'];}
 function clamp(v,mn,mx){return Math.max(mn,Math.min(mx,v));}
+function escAttr(v){return String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function getDriveId(url){
+  const s=String(url||'').trim();
+  if(!s)return'';
+  let m=s.match(/\/file\/d\/([a-zA-Z0-9_-]+)/); if(m)return m[1];
+  m=s.match(/[?&]id=([a-zA-Z0-9_-]+)/); if(m)return m[1];
+  m=s.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m)return m[1];
+  return'';
+}
+function resolveImg(url,mode='main'){
+  const s=String(url||'').trim();
+  if(!s)return'';
+  const id=getDriveId(s);
+  if(!id)return s;
+  return mode==='fallback' ? `https://drive.google.com/thumbnail?id=${id}&sz=w1600` : `https://drive.google.com/uc?export=view&id=${id}`;
+}
+function renderStimulusImage(url,label='Gambar stimulus'){
+  const raw=String(url||'').trim();
+  if(!raw)return'';
+  const src=resolveImg(raw,'main');
+  const fallback=resolveImg(raw,'fallback');
+  return `<div class="ibox"><img src="${escAttr(src)}" data-fallback="${escAttr(fallback)}" alt="${escAttr(label)}" loading="lazy" referrerpolicy="no-referrer" onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;return;}this.insertAdjacentHTML('afterend','<div class=&quot;ihelp&quot;>Gambar gagal dimuat. Pastikan link Google Drive publik, path lokal benar, atau file memang berupa gambar.</div>');this.remove();"><div class="ihelp">Jika gambar tidak muncul, pastikan link Google Drive dibagikan ke siapa saja yang memiliki link, atau gunakan upload gambar lokal.</div></div>`;
+}
+function isDataImg(v){return /^data:image\//i.test(String(v||''));}
+function getSoalImageValue(){return $('sImg')?.value.trim()||$('sImgData')?.value.trim()||'';}
+function clearSoalImage(){
+  if($('sImg'))$('sImg').value='';
+  if($('sImgData'))$('sImgData').value='';
+  if($('sImgMeta'))$('sImgMeta').innerHTML='Boleh kosong. Mendukung link gambar biasa, path lokal seperti <strong>images/contoh-soal-utbk.svg</strong>, atau link Google Drive publik.';
+  updSoalImagePreview();
+}
+function updSoalImagePreview(){
+  const wrap=$('sImgPrev');
+  if(!wrap)return;
+  const val=getSoalImageValue();
+  if(!val){wrap.classList.add('hidden');wrap.innerHTML='';return;}
+  wrap.classList.remove('hidden');
+  wrap.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:6px">Preview gambar stimulus</div>${renderStimulusImage(val,'Preview gambar stimulus')}`;
+}
+function handleSoalImageFile(file){
+  if(!file)return;
+  if(!String(file.type||'').startsWith('image/')){toast('File harus berupa gambar','error');return;}
+  const setMeta=msg=>{if($('sImgMeta'))$('sImgMeta').innerHTML=msg;};
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const raw=e.target.result;
+    if(file.type==='image/svg+xml' || file.size<=450*1024){
+      $('sImg').value='';
+      $('sImgData').value=raw;
+      setMeta(`Menggunakan upload lokal: <strong>${file.name}</strong> (${Math.round(file.size/1024)} KB)`);
+      updSoalImagePreview();
+      return;
+    }
+    const img=new Image();
+    img.onload=()=>{
+      const maxW=1400,maxH=1400;
+      let {width,height}=img;
+      const scale=Math.min(1,maxW/width,maxH/height);
+      width=Math.round(width*scale);height=Math.round(height*scale);
+      const canvas=document.createElement('canvas');
+      canvas.width=width;canvas.height=height;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,width,height);
+      const out=canvas.toDataURL('image/webp',0.88);
+      $('sImg').value='';
+      $('sImgData').value=out;
+      const approxKb=Math.round((out.length*3/4)/1024);
+      setMeta(`Menggunakan upload lokal: <strong>${file.name}</strong> • dikompresi menjadi kira-kira ${approxKb} KB untuk menghemat storage browser.`);
+      updSoalImagePreview();
+    };
+    img.onerror=()=>toast('Gagal memproses gambar lokal','error');
+    img.src=raw;
+  };
+  reader.readAsDataURL(file);
+}
+function ensureSampleQuestions(){
+  const total=Object.values(DB.questions||{}).reduce((s,a)=>s+(a?.length||0),0);
+  if(total>0)return;
+  DB.questions['Pengetahuan Kuantitatif']=[{
+    id:'sample-img-pk-1',
+    section:'Pengetahuan Kuantitatif',
+    passage:'Perhatikan diagram batang berikut.',
+    passageImage:'images/contoh-soal-utbk.svg',
+    question:'Berdasarkan diagram, pada hari apakah penjualan buku paling tinggi?',
+    options:['Senin','Selasa','Rabu','Kamis','Semua sama'],
+    answer:'D',
+    explanation:'Batang tertinggi ada pada hari Kamis dengan nilai 90.',
+    difficulty:'easy'
+  }];
+}
 
 /* ══ STATE ══ */
 let DB={users:[],questions:{},ptnData:[],results:[]};
 let CU=null;
 let exam={active:false,qs:[],ans:{},flags:new Set(),idx:0,timer:null,left:EXAM_SEC};
 let CH={trend:null,radar:null,bar:null,rasio:null,adm:null};
-let rMode='peluang',rScore=0;
+let rMode='peluang',rScore=0,pgRefs=[];
 let darkMode=true;
 let qListPage={}; // {sectionName: pageNum}
 
@@ -844,6 +981,10 @@ function load(){
     ];save();
   }
   if(!DB.ptnData.length){DB.ptnData=defPTN();save();}
+  const beforeQ=Object.values(DB.questions||{}).reduce((s,a)=>s+(a?.length||0),0);
+  ensureSampleQuestions();
+  const afterQ=Object.values(DB.questions||{}).reduce((s,a)=>s+(a?.length||0),0);
+  if(afterQ!==beforeQ)save();
 }
 
 /* ══ THEME ══ */
@@ -919,7 +1060,7 @@ function renderHome(){
     $('hRec').classList.remove('hidden');
     $('hRecL').innerHTML=rec.map(r=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:11px;background:var(--sf);border-radius:var(--rs);margin-bottom:7px;border:1px solid var(--bd)">
       <div><div style="font-weight:700;font-size:13px">${r.label}</div><div style="color:var(--tx2);font-size:10px">${r.date}</div></div>
-      <div style="text-align:right"><div style="font-size:22px;font-weight:900;color:var(--ac)">${r.finalScore}</div><div style="font-size:10px;color:var(--tx2)">Skor Total</div></div>
+      <div style="text-align:right"><div style="font-size:22px;font-weight:900;color:var(--ac)">${r.finalScore}</div><div style="font-size:10px;color:var(--tx2)">Skor IRT</div></div>
     </div>`).join('');
   }else{$('hRec').classList.add('hidden');}
 }
@@ -971,8 +1112,16 @@ function renderQ(){
   const ss=getSS(q.section),sn=si?.n||0,li=exam.idx-ss;
   $('ePrg').textContent=`Soal ${exam.idx+1}/${exam.qs.length} — ${q.section}: ${li+1}/${sn}`;
   const diff=q.difficulty||'medium';
-  $('eDiff').innerHTML=`<span class="dbadge d${diff[0]}">${diff.toUpperCase()}</span>`;
-  const pa=$('ePas');if(q.passage){pa.classList.remove('hidden');pa.innerHTML=q.passage;}else{pa.classList.add('hidden');}
+  $('eDiff').innerHTML=`<span class="dbadge d${diff[0]}">${diff.toUpperCase()} • IRT ×${IRT[diff]||1.5}</span>`;
+  const pa=$('ePas');if(q.passage){pa.classList.remove('hidden');pa.textContent=q.passage;}else{pa.classList.add('hidden');}
+  const pi=$('eImg');
+  if(q.passageImage||q.imageUrl||q.image_url){
+    pi.classList.remove('hidden');
+    pi.innerHTML=renderStimulusImage(q.passageImage||q.imageUrl||q.image_url,`Stimulus gambar soal ${exam.idx+1}`);
+  }else{
+    pi.classList.add('hidden');
+    pi.innerHTML='';
+  }
   $('eQ').textContent=`${exam.idx+1}. ${q.question}`;
   const opts=normOpts(q);const L=['A','B','C','D','E'];
   $('eOpts').innerHTML=opts.map((o,i)=>{const l=L[i],sel=exam.ans[exam.idx]===l;return`<button class="opbtn${sel?' sel':''}" onclick="selAns('${l}')"><span class="opc">${l}</span><span>${o}</span></button>`;}).join('');
@@ -1003,9 +1152,9 @@ function confFinish(){
 }
 function finishExam(){
   closeM('confModal');if(exam.timer)clearInterval(exam.timer);exam.active=false;
-  const irt=calcSTAN(exam.qs,exam.ans);
+  const irt=calcIRT(exam.qs,exam.ans);
   const myR=getMyR();
-  const result={id:Date.now().toString(),date:new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),dateTime:new Date().toISOString(),label:`Tryout ${myR.length+1}`,finalScore:irt.finalScore,totalScore:irt.finalScore,groups:irt.groups,sections:irt.sections,answers:{...exam.ans},flags:[...exam.flags],questions:exam.qs.map(q=>({id:q.id,section:q.section,question:q.question,options:q.options,answer:q.answer,passage:q.passage||'',explanation:q.explanation||'',difficulty:q.difficulty||'medium'})),duration:EXAM_SEC-exam.left};
+  const result={id:Date.now().toString(),date:new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),dateTime:new Date().toISOString(),label:`Tryout ${myR.length+1}`,finalScore:irt.finalScore,totalScore:irt.finalScore,groups:irt.groups,sections:irt.sections,answers:{...exam.ans},flags:[...exam.flags],questions:exam.qs.map(q=>({id:q.id,section:q.section,question:q.question,options:q.options,answer:q.answer,passage:q.passage||'',passageImage:q.passageImage||q.imageUrl||q.image_url||'',explanation:q.explanation||'',difficulty:q.difficulty||'medium'})),duration:EXAM_SEC-exam.left};
   addMyR(result);$('simActive').classList.add('hidden');renderResScreen(result);
 }
 function renderResScreen(r){
@@ -1017,7 +1166,7 @@ function renderResScreen(r){
     <div class="sc" style="text-align:center;--al:var(--rd)"><div style="font-size:9px;font-weight:700;color:var(--rd)">LITERASI</div><div class="sv">${r.groups?.Literasi||'-'}</div><div class="sl" style="font-size:10px">LBI+LBIng</div></div>
     <div class="sc" style="text-align:center;--al:var(--or)"><div style="font-size:9px;font-weight:700;color:var(--or)">PM</div><div class="sv">${r.groups?.PM||'-'}</div></div>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:7px;margin-bottom:14px">${SUBS.map(s=>{const ss=r.sections?.[s.name];return`<div class="sc" style="text-align:center;padding:10px;--al:${s.col}"><div style="font-size:9px;font-weight:700;color:${s.col};margin-bottom:2px">${s.code}</div><div style="font-size:18px;font-weight:700">${ss?.scaled||'-'}</div><div style="font-size:10px;color:var(--tx2)">${ss?.correct||0}/${ss?.total||0}</div></div>`;}).join('')}</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:7px;margin-bottom:14px">${SUBS.map(s=>{const ss=r.sections?.[s.name];return`<div class="sc" style="text-align:center;padding:10px;--al:${s.col}"><div style="font-size:9px;font-weight:700;color:${s.col};margin-bottom:2px">${s.code}</div><div style="font-size:18px;font-weight:700">${ss?.scaled||'-'}</div><div style="font-size:10px;color:var(--tx2)">${ss?.correct||0}/${ss?.total||0}</div><div style="font-size:9px;color:var(--pu)">θ=${ss?.theta||'-'}</div></div>`;}).join('')}</div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
     <button class="btn btn-p" onclick="G('hasil')">📊 Lihat Hasil</button>
     <button class="btn btn-s" onclick="G('rasio')">🎯 Rasionalisasi</button>
@@ -1034,7 +1183,7 @@ function toggleRev(rid){
     const ua=r.answers[i],ca=normAns(q.answer);
     const ok=ua&&isCorr(ua,ca),sk=!ua;const cls=sk?'skipped':ok?'correct':'wrong',ico=sk?'⬜':ok?'✅':'❌';
     const opts=normOpts(q);const diff=q.difficulty||'medium';
-    h+=`<div class="ritem ${cls}"><div style="display:flex;gap:7px;align-items:flex-start"><span style="font-size:14px;flex-shrink:0">${ico}</span><div style="flex:1"><div style="font-size:10px;color:var(--tx2);margin-bottom:3px">${i+1}. ${q.section} <span class="badge d${diff[0]}" style="font-size:9px">${diff}</span></div>${q.passage?`<div style="font-size:10.5px;font-style:italic;color:var(--tx2);margin-bottom:5px;padding:7px;background:var(--sf);border-radius:6px">${q.passage}</div>`:''}<div style="font-size:12.5px;font-weight:500;margin-bottom:7px;line-height:1.6">${q.question}</div><div style="display:flex;flex-wrap:wrap;gap:4px">${opts.map((o,oi)=>{const l=L[oi];const isCa=isCorr(l,q.answer);const isUa=ua===l;let st='background:var(--sf);border:1px solid var(--bd);';if(isCa)st='background:var(--gnd);border:1px solid rgba(63,185,80,.4);color:var(--gn);';if(isUa&&!isCa)st='background:var(--rdd);border:1px solid rgba(248,81,73,.4);color:var(--rd);';return`<span style="${st}border-radius:5px;padding:2px 8px;font-size:10.5px"><strong>${l}.</strong> ${o}</span>`;}).join('')}</div>${q.explanation?`<div style="font-size:10.5px;color:var(--tx2);margin-top:6px;padding:7px;background:var(--sf);border-radius:6px;line-height:1.5">💡 ${q.explanation}</div>`:''}</div></div></div>`;
+    h+=`<div class="ritem ${cls}"><div style="display:flex;gap:7px;align-items:flex-start"><span style="font-size:14px;flex-shrink:0">${ico}</span><div style="flex:1"><div style="font-size:10px;color:var(--tx2);margin-bottom:3px">${i+1}. ${q.section} <span class="badge d${diff[0]}" style="font-size:9px">${diff}</span></div>${q.passage?`<div style="font-size:10.5px;font-style:italic;color:var(--tx2);margin-bottom:5px;padding:7px;background:var(--sf);border-radius:6px">${q.passage.substring(0,120)}...</div>`:''}${q.passageImage?renderStimulusImage(q.passageImage,`Gambar soal ${i+1}`):''}<div style="font-size:12.5px;font-weight:500;margin-bottom:7px;line-height:1.6">${q.question}</div><div style="display:flex;flex-wrap:wrap;gap:4px">${opts.map((o,oi)=>{const l=L[oi];const isCa=isCorr(l,q.answer);const isUa=ua===l;let st='background:var(--sf);border:1px solid var(--bd);';if(isCa)st='background:var(--gnd);border:1px solid rgba(63,185,80,.4);color:var(--gn);';if(isUa&&!isCa)st='background:var(--rdd);border:1px solid rgba(248,81,73,.4);color:var(--rd);';return`<span style="${st}border-radius:5px;padding:2px 8px;font-size:10.5px"><strong>${l}.</strong> ${o}</span>`;}).join('')}</div>${q.explanation?`<div style="font-size:10.5px;color:var(--tx2);margin-top:6px;padding:7px;background:var(--sf);border-radius:6px;line-height:1.5">💡 ${q.explanation}</div>`:''}</div></div></div>`;
   });
   h+=`</div></div>`;el.innerHTML=h;el.scrollIntoView({behavior:'smooth'});
 }
@@ -1047,7 +1196,7 @@ function renderHasil(){
   $('noR').classList.toggle('hidden',r.length>0);
   $('hasilC').classList.toggle('hidden',r.length===0);
   if(!r.length)return;
-  renderTrend();renderRTable(r);
+  popPGRef();renderTrend();renderRTable(r);
   const last=r[r.length-1];renderResultDetail(last);$('selRL').textContent=`${last.label} — ${last.date}`;
   $('rSelBtns').innerHTML=r.map(x=>`<button class="btn btn-g btn-sm" onclick="selResult('${x.id}',this)">${x.label} (${x.finalScore})</button>`).join('');
   const lb=$('rSelBtns').lastElementChild;if(lb){lb.classList.add('btn-p');}
@@ -1063,7 +1212,7 @@ function addPGRef(){
   if(!pgRefs.find(x=>x.pg===pg&&x.label===label)){pgRefs.push({pg,label});renderTrend();}
   sel.value='';
 }
-function clearPGRefs(){renderTrend();toast('Referensi PG dihapus','info');}
+function clearPGRefs(){pgRefs=[];renderTrend();toast('Referensi PG dihapus','info');}
 const TC=['#f85149','#d29922','#3fb950','#bc8cff','#39c5cf','#ffa657'];
 function renderTrend(){
   const r=getMyR();if(!r.length)return;
@@ -1071,22 +1220,24 @@ function renderTrend(){
   const scores=r.map(x=>x.finalScore||x.totalScore);
   const ma3=movAvg(scores,3),ma5=movAvg(scores,5);
   const isDark=darkMode,gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',tc=isDark?'#8b949e':'#656d76';
+  const annots={};
+  pgRefs.forEach((ref,i)=>{annots[`pg${i}`]={type:'line',yMin:ref.pg,yMax:ref.pg,borderColor:TC[i%TC.length],borderWidth:1.5,borderDash:[6,4],label:{display:true,content:`${ref.label} (${ref.pg})`,position:'end',backgroundColor:'transparent',color:TC[i%TC.length],font:{size:9}}};});
   CH.trend=new Chart(ctx,{type:'line',data:{labels:r.map(x=>x.label),datasets:[
-    {label:'Skor Final',data:scores,borderColor:'#58a6ff',backgroundColor:'rgba(88,166,255,.08)',fill:true,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#58a6ff',pointBorderColor:'#fff',pointBorderWidth:2,tension:.3},
+    {label:'Skor Final IRT',data:scores,borderColor:'#58a6ff',backgroundColor:'rgba(88,166,255,.08)',fill:true,borderWidth:2.5,pointRadius:5,pointBackgroundColor:'#58a6ff',pointBorderColor:'#fff',pointBorderWidth:2,tension:.3},
     {label:'MA(3)',data:ma3,borderColor:'#ffa657',backgroundColor:'transparent',borderDash:[6,3],borderWidth:2,pointRadius:0,tension:.4},
     {label:'MA(5)',data:ma5,borderColor:'#bc8cff',backgroundColor:'transparent',borderDash:[4,4],borderWidth:1.5,pointRadius:0,tension:.4},
-    {label:'SKD',data:r.map(x=>x.groups?.SKD||null),borderColor:'#58a6ff',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
-    {label:'TPA',data:r.map(x=>x.groups?.TPA||null),borderColor:'#f85149',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
-    {label:'TBI',data:r.map(x=>x.groups?.TBI||null),borderColor:'#ffa657',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:tc,font:{size:11},usePointStyle:true}},tooltip:{backgroundColor:isDark?'#1c2128':'#fff',titleColor:isDark?'#e6edf3':'#1f2328',bodyColor:tc,borderColor:isDark?'rgba(255,255,255,.12)':'rgba(0,0,0,.12)',borderWidth:1,padding:10}},scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},y:{min:0,ticks:{color:tc},grid:{color:gc}}}}});
+    {label:'TPS',data:r.map(x=>x.groups?.TPS||null),borderColor:'#58a6ff',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
+    {label:'Literasi',data:r.map(x=>x.groups?.Literasi||null),borderColor:'#f85149',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
+    {label:'PM',data:r.map(x=>x.groups?.PM||null),borderColor:'#ffa657',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:tc,font:{size:11},usePointStyle:true}},tooltip:{backgroundColor:isDark?'#1c2128':'#fff',titleColor:isDark?'#e6edf3':'#1f2328',bodyColor:tc,borderColor:isDark?'rgba(255,255,255,.12)':'rgba(0,0,0,.12)',borderWidth:1,padding:10},annotation:{annotations:annots}},scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},y:{min:300,max:800,ticks:{color:tc},grid:{color:gc}}}}});
 }
 function renderRTable(results){
   const t=$('rTbl');
-  t.querySelector('thead tr').innerHTML=['Tryout','Tgl',...SUBS.map(s=>s.code),'SKD','TPA','TBI','<strong>Final</strong>','Δ'].map(h=>`<th>${h}</th>`).join('');
+  t.querySelector('thead tr').innerHTML=['Tryout','Tgl',...SUBS.map(s=>s.code),'TPS','Lit','PM','<strong>Final</strong>','Δ'].map(h=>`<th>${h}</th>`).join('');
   t.querySelector('tbody').innerHTML=results.map((r,i)=>{
     const prev=results[i-1];const delta=prev?r.finalScore-prev.finalScore:null;
     const dH=delta===null?'—':delta>0?`<span style="color:var(--gn)">▲+${delta}</span>`:delta<0?`<span style="color:var(--rd)">▼${delta}</span>`:'<span style="color:var(--tx2)">—</span>';
-    return`<tr><td style="font-weight:700">${r.label}</td><td style="color:var(--tx2);font-size:10px">${r.date}</td>${SUBS.map(s=>`<td style="text-align:center;color:${s.col}">${r.sections?.[s.name]?.score||'—'}</td>`).join('')}<td style="text-align:center;color:var(--ac)">${r.groups?.SKD||'—'}</td><td style="text-align:center;color:var(--rd)">${r.groups?.TPA||'—'}</td><td style="text-align:center;color:var(--or)">${r.groups?.TBI||'—'}</td><td style="text-align:center"><strong style="color:var(--ac);font-size:14px">${r.finalScore||r.totalScore}</strong></td><td style="text-align:center">${dH}</td></tr>`;
+    return`<tr><td style="font-weight:700">${r.label}</td><td style="color:var(--tx2);font-size:10px">${r.date}</td>${SUBS.map(s=>`<td style="text-align:center;color:${s.col}">${r.sections?.[s.name]?.scaled||'—'}</td>`).join('')}<td style="text-align:center;color:var(--ac)">${r.groups?.TPS||'—'}</td><td style="text-align:center;color:var(--rd)">${r.groups?.Literasi||'—'}</td><td style="text-align:center;color:var(--or)">${r.groups?.PM||'—'}</td><td style="text-align:center"><strong style="color:var(--ac);font-size:14px">${r.finalScore||r.totalScore}</strong></td><td style="text-align:center">${dH}</td></tr>`;
   }).join('');
 }
 function selResult(id,btn){
@@ -1097,21 +1248,21 @@ function selResult(id,btn){
 function renderResultDetail(r){
   if(!r)return;renderRadar(r);renderBar(r);
   $('rDet').innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px">
-    <div class="sc" style="text-align:center;--al:var(--ac)"><div style="font-size:9px;font-weight:700;color:var(--ac)">SKD</div><div class="sv">${r.groups?.SKD||'—'}</div></div>
-    <div class="sc" style="text-align:center;--al:var(--rd)"><div style="font-size:9px;font-weight:700;color:var(--rd)">TPA</div><div class="sv">${r.groups?.TPA||'—'}</div></div>
-    <div class="sc" style="text-align:center;--al:var(--or)"><div style="font-size:9px;font-weight:700;color:var(--or)">TBI</div><div class="sv">${r.groups?.TBI||'—'}</div></div>
+    <div class="sc" style="text-align:center;--al:var(--ac)"><div style="font-size:9px;font-weight:700;color:var(--ac)">TPS</div><div class="sv">${r.groups?.TPS||'—'}</div></div>
+    <div class="sc" style="text-align:center;--al:var(--rd)"><div style="font-size:9px;font-weight:700;color:var(--rd)">LITERASI</div><div class="sv">${r.groups?.Literasi||'—'}</div></div>
+    <div class="sc" style="text-align:center;--al:var(--or)"><div style="font-size:9px;font-weight:700;color:var(--or)">PM</div><div class="sv">${r.groups?.PM||'—'}</div></div>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:7px">${SUBS.map(s=>{const ss=r.sections?.[s.name];return`<div class="sc" style="text-align:center;padding:10px;--al:${s.col}"><div style="font-size:9px;font-weight:700;color:${s.col};margin-bottom:2px">${s.code}</div><div style="font-size:18px;font-weight:700">${ss?.score||'—'}</div><div style="font-size:10px;color:var(--tx2)">${ss?.correct||0}/${ss?.total||0}</div><div style="font-size:9px;color:var(--pu)">Poin: ${ss?.score||'—'}</div></div>`;}).join('')}</div>`;
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:7px">${SUBS.map(s=>{const ss=r.sections?.[s.name];return`<div class="sc" style="text-align:center;padding:10px;--al:${s.col}"><div style="font-size:9px;font-weight:700;color:${s.col};margin-bottom:2px">${s.code}</div><div style="font-size:18px;font-weight:700">${ss?.scaled||'—'}</div><div style="font-size:10px;color:var(--tx2)">${ss?.correct||0}/${ss?.total||0}</div><div style="font-size:9px;color:var(--pu)">θ=${ss?.theta||'—'}</div><div class="pb" style="height:3px;margin-top:5px"><div class="pf" style="width:${ss?.ratio||0}%;background:${s.col}"></div></div></div>`;}).join('')}</div>`;
 }
 function renderRadar(r){
   const ctx=$('rChart').getContext('2d');if(CH.radar)CH.radar.destroy();
   const isDark=darkMode,gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.08)',tc=isDark?'#8b949e':'#656d76';
-  CH.radar=new Chart(ctx,{type:'radar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor Total',data:SUBS.map(s=>r.sections?.[s.name]?.score||0),backgroundColor:'rgba(88,166,255,.15)',borderColor:'#58a6ff',pointBackgroundColor:SUBS.map(s=>s.col),pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:0,max:Math.max(250,Math.max(...SUBS.map(s=>s.n*5))),ticks:{color:tc,font:{size:8},stepSize:50,backdropColor:'transparent'},grid:{color:gc},pointLabels:{color:tc,font:{size:10}}}}}});
+  CH.radar=new Chart(ctx,{type:'radar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor IRT',data:SUBS.map(s=>r.sections?.[s.name]?.scaled||300),backgroundColor:'rgba(88,166,255,.15)',borderColor:'#58a6ff',pointBackgroundColor:SUBS.map(s=>s.col),pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:300,max:800,ticks:{color:tc,font:{size:8},stepSize:100,backdropColor:'transparent'},grid:{color:gc},pointLabels:{color:tc,font:{size:10}}}}}});
 }
 function renderBar(r){
   const ctx=$('bChart').getContext('2d');if(CH.bar)CH.bar.destroy();
   const isDark=darkMode,gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',tc=isDark?'#8b949e':'#656d76';
-  CH.bar=new Chart(ctx,{type:'bar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor',data:SUBS.map(s=>r.sections?.[s.name]?.score||0),backgroundColor:SUBS.map(s=>s.col+'88'),borderColor:SUBS.map(s=>s.col),borderWidth:2,borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{min:0,max:Math.max(250,Math.max(...SUBS.map(s=>s.n*5))),ticks:{color:tc},grid:{color:gc}}}}});
+  CH.bar=new Chart(ctx,{type:'bar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor',data:SUBS.map(s=>r.sections?.[s.name]?.scaled||300),backgroundColor:SUBS.map(s=>s.col+'88'),borderColor:SUBS.map(s=>s.col),borderWidth:2,borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{min:300,max:800,ticks:{color:tc},grid:{color:gc}}}}});
 }
 function exportR(fmt){
   const r=getMyR();if(!r.length){toast('Belum ada hasil','error');return;}
@@ -1119,6 +1270,57 @@ function exportR(fmt){
   else{const rows=[['Label','Tanggal','Final',...SUBS.map(s=>s.code),'TPS','Lit','PM']];r.forEach(x=>rows.push([x.label,x.date,x.finalScore,...SUBS.map(s=>x.sections?.[s.name]?.scaled||''),x.groups?.TPS||'',x.groups?.Literasi||'',x.groups?.PM||'']));dl(rows.map(r=>r.join(',')).join('\n'),'hasil_snbtpro.csv','text/csv');}
 }
 function clearAllR(){if(!confirm('Hapus semua hasil tryout?'))return;const i=DB.results.findIndex(r=>r.userId===CU.id);if(i>=0)DB.results.splice(i,1);save();renderHasil();renderHome();toast('Hasil dihapus','info');}
+
+/* ══ RASIONALISASI ══ */
+function initRasio(){
+  const sel=$('rSel');const r=getMyR();
+  sel.innerHTML='<option value="">— Pilih —</option>'+r.map(x=>`<option value="${x.id}">${x.label} — ${x.date} (${x.finalScore})</option>`).join('');
+  if(rScore)renderRasio();
+}
+function onRSel(){const id=$('rSel').value;const r=getMyR().find(x=>x.id===id);if(r){rScore=r.finalScore||r.totalScore;$('rMan').value='';renderRasio();}}
+function onRMan(){const v=parseInt($('rMan').value);if(v>=300&&v<=800){rScore=v;$('rSel').value='';renderRasio();}}
+function setRM(m){rMode=m;['aman','peluang','semua'].forEach(x=>{$('mB'+x[0]).className=x===m?'btn btn-p btn-sm':'btn btn-g btn-sm';});renderRasio();}
+function resetRasio(){$('fPTN').value='';$('fProdi').value='';setRM('peluang');}
+function renderRasio(){
+  if(!rScore){$('rEmp').classList.remove('hidden');$('rScD').classList.add('hidden');$('rSum').style.display='none';$('rList').innerHTML='';$('rChC').classList.add('hidden');return;}
+  $('rEmp').classList.add('hidden');$('rScD').classList.remove('hidden');$('rScD').style.display='flex';$('rScV').textContent=rScore;$('rSum').style.display='grid';$('rChC').classList.remove('hidden');
+  const fp=$('fPTN').value.toLowerCase(),fpr=$('fProdi').value.toLowerCase();
+  const all=DB.ptnData.map(p=>{const d=rScore-p.pg;return{...p,diff:d,status:d>=20?'aman':d>=-20?'peluang':'risiko'};}).sort((a,b)=>b.pg-a.pg);
+  $('cA').textContent=all.filter(x=>x.status==='aman').length;
+  $('cP').textContent=all.filter(x=>x.status==='peluang').length;
+  $('cR').textContent=all.filter(x=>x.status==='risiko').length;
+  const filtered=all.filter(p=>(!fp||p.ptn.toLowerCase().includes(fp))&&(!fpr||p.prodi.toLowerCase().includes(fpr))&&(rMode==='semua'||(rMode==='aman'&&p.status==='aman')||(rMode==='peluang'&&p.status!=='risiko')));
+  renderRasioChart(filtered.slice(0,10));
+  if(!filtered.length){$('rList').innerHTML=`<div class="card" style="text-align:center;padding:36px;color:var(--tx2)">Tidak ada PTN sesuai filter</div>`;return;}
+  $('rList').innerHTML=filtered.map(p=>{
+    const bc=p.status==='aman'?'var(--gn)':p.status==='peluang'?'var(--yw)':'rgba(248,81,73,.4)';
+    const bCls=p.status==='aman'?'bg-green':p.status==='peluang'?'bg-yellow':'bg-red';
+    const dc=p.diff>=0?'var(--gn)':'var(--rd)';
+    const myP=Math.min(100,(rScore/800)*100),pgP=Math.min(100,(p.pg/800)*100);
+    return`<div class="ptncard ${p.status}" style="border-color:${bc}">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:9px;margin-bottom:10px">
+        <div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span class="badge ${bCls}">${p.status.toUpperCase()}</span><span class="badge bg-purple">${p.jenjang}</span></div>
+          <div style="font-weight:800;font-size:13px;color:var(--tx)">${p.ptn}</div>
+          <div style="color:var(--ac);font-size:12px;font-weight:500">${p.prodi}</div>
+        </div>
+        <div style="display:flex;gap:13px;flex-wrap:wrap;text-align:center">
+          <div><div style="font-size:18px;font-weight:700">${p.pg}</div><div style="font-size:10px;color:var(--tx2)">PG</div></div>
+          <div><div style="font-size:18px;font-weight:700;color:${dc}">${p.diff>=0?'+':''}${p.diff}</div><div style="font-size:10px;color:var(--tx2)">Selisih</div></div>
+          <div><div style="font-size:16px;font-weight:700">${p.daya_tampung}</div><div style="font-size:10px;color:var(--tx2)">DT</div></div>
+          <div><div style="font-size:16px;font-weight:700">${(p.peminat||0).toLocaleString('id-ID')}</div><div style="font-size:10px;color:var(--tx2)">Peminat</div></div>
+          <div><div style="font-size:16px;font-weight:700">${((p.keketatan||0)*100).toFixed(1)}%</div><div style="font-size:10px;color:var(--tx2)">Keketatan</div></div>
+        </div>
+      </div>
+      <div class="sbar"><div class="sbar-f" style="width:${myP}%"></div><div class="sbar-m" style="left:${pgP}%"></div><div class="sbar-l" style="left:${pgP}%">PG ${p.pg}</div></div>
+    </div>`;
+  }).join('');
+}
+function renderRasioChart(data){
+  const ctx=$('rasioChart').getContext('2d');if(CH.rasio)CH.rasio.destroy();
+  const isDark=darkMode,gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',tc=isDark?'#8b949e':'#656d76';
+  CH.rasio=new Chart(ctx,{type:'bar',data:{labels:data.map(d=>`${d.ptn.split(' ').pop()}-${d.prodi.split(' ')[0]}`),datasets:[{label:'Passing Grade',data:data.map(d=>d.pg),backgroundColor:'rgba(210,153,34,.6)',borderColor:'#d29922',borderWidth:1.5,borderRadius:5},{label:'Skor IRT',data:data.map(()=>rScore),backgroundColor:'rgba(88,166,255,.6)',borderColor:'#58a6ff',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{min:300,max:800,ticks:{color:tc},grid:{color:gc}}}}});
+}
 
 /* ══ DATABASE ══ */
 function initDB(){renderQCards();renderPTNTable();renderStorI();updateBkCounts();}
@@ -1175,7 +1377,7 @@ function renderQList(secName){
         <thead><tr><th>#</th><th>Soal</th><th>Difficulty</th><th>Jawaban</th><th>Aksi</th></tr></thead>
         <tbody>${paged.map((q,i)=>{const globalIdx=start+i;const diff=q.difficulty||'medium';return`<tr>
           <td style="color:var(--tx2);font-size:10px">${globalIdx+1}</td>
-          <td style="max-width:320px"><div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px" title="${q.question}">${q.question}</div>${q.passage?`<div style="font-size:10px;color:var(--tx2);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px">📄 ${q.passage}</div>`:''}</td>
+          <td style="max-width:320px"><div style="font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px" title="${q.question}">${q.question}</div>${q.passage?`<div style="font-size:10px;color:var(--tx2);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px">📄 ${q.passage.substring(0,60)}...</div>`:''}${q.passageImage?`<div style="font-size:10px;color:var(--tx2)">🖼 Stimulus gambar</div>`:''}</td>
           <td><span class="badge d${diff[0]}" style="font-size:9px">${diff}</span></td>
           <td><span class="badge bg-green" style="font-size:10px">${q.answer}</span></td>
           <td><div class="tact"><button class="btn btn-w btn-sm" onclick="openSoalModal(${globalIdx},'${secName}')">✏ Ubah</button><button class="btn btn-d btn-sm" onclick="delSoal('${secName}',${globalIdx})">🗑</button></div></td>
@@ -1211,19 +1413,25 @@ function openSoalModal(idx, secName){
   if(idx!==null&&idx>=0){
     const q=(DB.questions[secName]||[])[idx];
     if(!q)return;
+    const imgVal=q.passageImage||q.imageUrl||q.image_url||'';
     $('sSection').value=q.section||secName;
     $('sDiff').value=q.difficulty||'medium';
     $('sPass').value=q.passage||'';
+    $('sImg').value=isDataImg(imgVal)?'':imgVal;
+    $('sImgData').value=isDataImg(imgVal)?imgVal:'';
+    $('sImgMeta').innerHTML=imgVal?`Gambar tersimpan untuk soal ini. ${isDataImg(imgVal)?'Sumber: <strong>upload lokal/browser</strong>.':'Sumber: <strong>link/path</strong>.'}`:'Boleh kosong. Mendukung link gambar biasa, path lokal seperti <strong>images/contoh-soal-utbk.svg</strong>, atau link Google Drive publik.';
     $('sQ').value=q.question||'';
     const opts=normOpts(q);
     ['A','B','C','D','E'].forEach((l,i)=>{$('sO'+l).value=opts[i]||'';});
     $('sAns').value=q.answer||'';
     $('sExp').value=q.explanation||'';
   }else{
-    ['sPass','sQ','sAns','sExp'].forEach(id=>$(id).value='');
+    ['sPass','sImg','sImgData','sQ','sAns','sExp'].forEach(id=>$(id).value='');
+    $('sImgMeta').innerHTML='Boleh kosong. Mendukung link gambar biasa, path lokal seperti <strong>images/contoh-soal-utbk.svg</strong>, atau link Google Drive publik.';
     ['A','B','C','D','E'].forEach(l=>$('sO'+l).value='');
     $('sDiff').value='medium';
   }
+  updSoalImagePreview();
   $('soalModal').classList.remove('hidden');
 }
 
@@ -1231,6 +1439,7 @@ function saveSoal(){
   const section=$('sSection').value;
   const diff=$('sDiff').value;
   const passage=$('sPass').value.trim();
+  const passageImage=getSoalImageValue();
   const question=$('sQ').value.trim();
   const opts=['A','B','C','D','E'].map(l=>$('sO'+l).value.trim()).filter(Boolean);
   const answer=$('sAns').value.trim().toUpperCase();
@@ -1238,7 +1447,7 @@ function saveSoal(){
   if(!question){toast('Pertanyaan wajib diisi!','error');return;}
   if(opts.length<2){toast('Minimal 2 pilihan jawaban!','error');return;}
   if(!answer){toast('Jawaban wajib diisi!','error');return;}
-  const q={id:Date.now().toString(),section,passage,question,options:opts,answer,explanation,difficulty:diff};
+  const q={id:Date.now().toString(),section,passage,passageImage,question,options:opts,answer,explanation,difficulty:diff};
   if(!DB.questions[section])DB.questions[section]=[];
   const idx=parseInt($('soalEditIdx').value);
   const origSec=$('soalEditSec').value;
@@ -1276,10 +1485,11 @@ function handleQF(file){
     try{
       let parsed=[];
       if(file.name.endsWith('.json')){parsed=JSON.parse(ev.target.result);if(!Array.isArray(parsed))parsed=[parsed];}
-      else if(file.name.endsWith('.csv')){const res=Papa.parse(ev.target.result,{header:true,skipEmptyLines:true});parsed=res.data.map(row=>({id:row.id||Date.now().toString(),section:row.section,passage:row.passage||'',question:row.question||'',options:[row.option_a||'',row.option_b||'',row.option_c||'',row.option_d||'',row.option_e||''].filter(Boolean),answer:row.answer||'A',explanation:row.explanation||'',difficulty:(row.difficulty||'medium').toLowerCase()}));}
+      else if(file.name.endsWith('.csv')){const res=Papa.parse(ev.target.result,{header:true,skipEmptyLines:true});parsed=res.data.map(row=>({id:row.id||Date.now().toString(),section:row.section,passage:row.passage||'',passageImage:row.passage_image||row.passageImage||row.image_url||row.imageUrl||'',question:row.question||'',options:[row.option_a||'',row.option_b||'',row.option_c||'',row.option_d||'',row.option_e||''].filter(Boolean),answer:row.answer||'A',explanation:row.explanation||'',difficulty:(row.difficulty||'medium').toLowerCase()}));}
       let added=0,skipped=0;
       parsed.forEach(q=>{
         if(!q.question){skipped++;return;}
+        q.passageImage=q.passageImage||q.imageUrl||q.image_url||'';
         let sec=target==='auto'?q.section:target;
         const match=SUBS.find(s=>s.name===sec||s.name.toLowerCase()===sec?.toLowerCase()||s.code===sec);
         if(!match){skipped++;return;}
@@ -1477,7 +1687,7 @@ function admShowDetail(){
   const user=DB.users.find(u=>u.id===uid);
   let html=`<div style="background:var(--sf);padding:12px;border-radius:var(--rs);margin-bottom:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px">
     <div><strong>${user.name}</strong> <span style="color:var(--tx2)">@${user.username}</span><br><span style="font-size:11px;color:var(--tx2)">${res.label} • ${res.date}</span></div>
-    <div style="text-align:right"><div style="font-size:24px;font-weight:800;color:var(--ac)">${res.finalScore}</div><div style="font-size:10px;color:var(--tx2)">Skor Total</div></div>
+    <div style="text-align:right"><div style="font-size:24px;font-weight:800;color:var(--ac)">${res.finalScore}</div><div style="font-size:10px;color:var(--tx2)">Skor IRT</div></div>
   </div>`;
   html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px;margin-bottom:14px">`;
   SUBS.forEach(s=>{
@@ -1503,8 +1713,9 @@ function admShowDetail(){
     html+=`<div class="ritem ${cls}" style="margin-bottom:8px">
       <div style="display:flex;gap:8px"><span style="font-size:16px">${ico}</span>
       <div style="flex:1">
-        <div style="font-size:11px;color:var(--tx2);margin-bottom:4px">${i+1}. ${q.section} • <span class="badge d${(q.difficulty||'m')[0]}">${(q.difficulty||'medium').toUpperCase()}</span></div>
+        <div style="font-size:11px;color:var(--tx2);margin-bottom:4px">${i+1}. ${q.section} • <span class="badge d${(q.difficulty||'m')[0]}">${(q.difficulty||'medium').toUpperCase()}</span> • Bobot ${IRT[q.difficulty||'medium']}</div>
         ${q.passage?`<div style="font-size:11px;font-style:italic;background:var(--sf);padding:6px;border-radius:6px;margin-bottom:6px">${q.passage}</div>`:''}
+        ${q.passageImage?renderStimulusImage(q.passageImage,`Gambar soal ${i+1}`):''}
         <div style="font-weight:500;margin-bottom:6px">${q.question}</div>
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">
           ${opts.map((o,oi)=>{
@@ -1536,12 +1747,13 @@ function importQFromPaste(){
       parsed=JSON.parse(txt);if(!Array.isArray(parsed))parsed=[parsed];
     }else{
       const res=Papa.parse(txt,{header:true,skipEmptyLines:true});
-      parsed=res.data.map(row=>({section:row.section,passage:row.passage||'',question:row.question,options:[row.option_a,row.option_b,row.option_c,row.option_d,row.option_e].filter(Boolean),answer:row.answer,difficulty:(row.difficulty||'medium').toLowerCase(),explanation:row.explanation||''}));
+      parsed=res.data.map(row=>({section:row.section,passage:row.passage||'',passageImage:row.passage_image||row.passageImage||row.image_url||row.imageUrl||'',question:row.question,options:[row.option_a,row.option_b,row.option_c,row.option_d,row.option_e].filter(Boolean),answer:row.answer,difficulty:(row.difficulty||'medium').toLowerCase(),explanation:row.explanation||''}));
     }
     const target=$('upSec').value;
     let added=0;
     parsed.forEach(q=>{
       if(!q.question)return;
+      q.passageImage=q.passageImage||q.imageUrl||q.image_url||'';
       let sec=target==='auto'?q.section:target;
       const match=SUBS.find(s=>s.name===sec||s.name.toLowerCase()===sec?.toLowerCase());
       if(!match)return;
@@ -1572,10 +1784,10 @@ function importPTNFromPaste(){
 }
 function downloadSample(type){
   if(type==='soal-json'){
-    const sample=[{section:"Penalaran Umum",passage:"",question:"Jika semua A adalah B, dan sebagian B adalah C, maka...",options:["Semua A adalah C","Sebagian A adalah C","Tidak ada A adalah C","Tidak dapat disimpulkan","Semua C adalah A"],answer:"D",explanation:"Tidak dapat dipastikan hubungan A dan C",difficulty:"medium"},{section:"Pengetahuan Kuantitatif",question:"2x + 5 = 15, maka x = ?",options:["3","4","5","6","7"],answer:"C",difficulty:"easy"}];
+    const sample=[{section:"Penalaran Umum",passage:"",passageImage:"images/contoh-soal-utbk.svg",question:"Jika semua A adalah B, dan sebagian B adalah C, maka...",options:["Semua A adalah C","Sebagian A adalah C","Tidak ada A adalah C","Tidak dapat disimpulkan","Semua C adalah A"],answer:"D",explanation:"Tidak dapat dipastikan hubungan A dan C",difficulty:"medium"},{section:"Pengetahuan Kuantitatif",question:"2x + 5 = 15, maka x = ?",options:["3","4","5","6","7"],answer:"C",difficulty:"easy"}];
     dl(JSON.stringify(sample,null,2),'contoh_soal.json','application/json');
   }else if(type==='soal-csv'){
-    const csv='section,passage,question,option_a,option_b,option_c,option_d,option_e,answer,explanation,difficulty\nPenalaran Umum,,Jika 2+2=?,3,4,5,6,7,B,Dasar matematika,easy';
+    const csv='section,passage,passage_image,question,option_a,option_b,option_c,option_d,option_e,answer,explanation,difficulty\nPenalaran Umum,,images/contoh-soal-utbk.svg,Jika 2+2=?,3,4,5,6,7,B,Dasar matematika,easy';
     dl(csv,'contoh_soal.csv','text/csv');
   }else if(type==='ptn-json'){
     const sample=[{ptn:"UNIVERSITAS INDONESIA",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:720,daya_tampung:60,peminat:1200,keketatan:0.05},{ptn:"UGM",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:750,daya_tampung:80,peminat:3500,keketatan:0.0229}];
@@ -1624,5 +1836,5 @@ function defPTN(){return[
 initTheme();load();
 window.getMyR=getMyR;
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0571350cbeb0557',t:'MTc4MDQwOTc4MQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a084be89c87bb5e2',t:'MTc4MDg4ODY1NA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a08f4520ee19659e',t:'MTc4MDk5OTAyNA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a05fd43bfb806d03',t:'MTc4MDUwMTU2OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
