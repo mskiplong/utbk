@@ -973,7 +973,7 @@
                 <span class="gradient-text">MSKI KPPN PEKALONGAN</span>
             </h1>
             <p>
-                Pusat kontrol untuk semua layanan. Akses PENGELOLAAN UP, 3D Viewer, 
+                Pusat kontrol untuk semua layanan. Akses PENGELOLAAN UP, DEVIASI HALAMAN III DIPA, 
                 dan Content Management System dalam satu dashboard terintegrasi.
             </p>
             <div class="hero-stats">
@@ -1018,23 +1018,15 @@
                     <div class="card-url">
                         🔗 up.mskiplong.workers.dev
                     </div>
-                    <div class="card-features">
-                        <span class="feature-tag">📁 File Upload</span>
-                        <span class="feature-tag">🔄 Drag & Drop</span>
-                        <span class="feature-tag">📊 Progress</span>
-                    </div>
                     <div class="card-action">
                         <span class="action-btn">
                             Buka Layanan <span class="arrow">→</span>
                         </span>
-                        <span class="action-shortcut">
-                            <span class="kbd">Alt</span>+<span class="kbd">1</span>
-                        </span>
                     </div>
                 </div>
 
-                <!-- Card 2: 3D IPA Viewer -->
-                <div class="service-card" onclick="openViewer('https://3dipa.mskiplong.workers.dev', '3D IPA Viewer', '🎮', 2)">
+                <!-- Card 2: DEVIASI HALAMAN III DIPA -->
+                <div class="service-card" onclick="openViewer('https://3dipa.mskiplong.workers.dev', 'DEVIASI HALAMAN III DIPA', '🎮', 2)">
                     <div class="card-glow" style="background: radial-gradient(circle, rgba(0,206,201,0.1) 0%, transparent 70%);"></div>
                     <div class="card-header">
                         <div class="card-icon">🎮</div>
@@ -1043,24 +1035,16 @@
                             Online
                         </div>
                     </div>
-                    <h3 class="card-title">3D IPA Viewer</h3>
+                    <h3 class="card-title">DEVIASI HALAMAN III DIPA</h3>
                     <p class="card-description">
-                        Visualisasi 3D interaktif untuk konten IPA. Pengalaman belajar yang immersive dengan model 3D yang detail.
+                        Memonitoring Deviasi Halaman III DIPA dengan Membandingkan target dan realisasi sampai periode berjalan
                     </p>
                     <div class="card-url">
                         🔗 3dipa.mskiplong.workers.dev
                     </div>
-                    <div class="card-features">
-                        <span class="feature-tag">🌐 3D Models</span>
-                        <span class="feature-tag">🔬 Science</span>
-                        <span class="feature-tag">🎯 Interactive</span>
-                    </div>
                     <div class="card-action">
                         <span class="action-btn">
                             Buka Layanan <span class="arrow">→</span>
-                        </span>
-                        <span class="action-shortcut">
-                            <span class="kbd">Alt</span>+<span class="kbd">2</span>
                         </span>
                     </div>
                 </div>
@@ -1077,22 +1061,14 @@
                     </div>
                     <h3 class="card-title">CMS Dashboard</h3>
                     <p class="card-description">
-                        Content Management System untuk mengelola konten website. Buat, edit, dan publikasikan konten dengan mudah.
+                        Content Management System untuk mengukur transaksi CMS satuan Kerja periode berjalan
                     </p>
                     <div class="card-url">
                         🔗 cms.mskiplong.workers.dev
                     </div>
-                    <div class="card-features">
-                        <span class="feature-tag">✏️ Editor</span>
-                        <span class="feature-tag">📊 Analytics</span>
-                        <span class="feature-tag">👥 Users</span>
-                    </div>
                     <div class="card-action">
                         <span class="action-btn">
                             Buka Layanan <span class="arrow">→</span>
-                        </span>
-                        <span class="action-shortcut">
-                            <span class="kbd">Alt</span>+<span class="kbd">3</span>
                         </span>
                     </div>
                 </div>
