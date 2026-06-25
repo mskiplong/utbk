@@ -3,1170 +3,1681 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monitoring Deviasi Halaman III DIPA Satker</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script>
-window.__SAMPLE__=[];
-</script>
+<title>SPMB Monitor - Deteksi Siswa Baru Jalur Prestasi SMPN 9</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
-:root{
-  --brand:#0d9488; --brand2:#0f766e; --brand-soft:#ccfbf1;
-  --green:#059669; --green-bg:#d1fae5; --green-ink:#065f46;
-  --amber:#d97706; --amber-bg:#fef3c7; --amber-ink:#92400e;
-  --red:#dc2626;   --red-bg:#fee2e2;   --red-ink:#991b1b;
-  --slate:#64748b;
-  --bg:#f0fdfa; --panel:#ffffff; --panel-2:#f6fbfa;
-  --ink:#0f172a; --ink-2:#475569; --muted:#94a3b8;
-  --line:#e3eeec;
-  --radius:18px; --radius-sm:12px;
-  --shadow-sm:0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
-  --shadow:0 12px 28px -8px rgba(15,23,42,.16), 0 4px 10px -4px rgba(15,23,42,.08);
-  --shadow-lg:0 28px 60px -16px rgba(13,148,136,.30);
-  --grad:linear-gradient(135deg,#0d9488 0%,#0891b2 55%,#0ea5e9 130%);
-  --t:.25s cubic-bezier(.4,0,.2,1);
-}
-html[data-theme="dark"]{
-  --bg:#04130f; --panel:#0c1a18; --panel-2:#0a1513;
-  --ink:#f1f5f9; --ink-2:#cbd5e1; --muted:#64748b;
-  --line:#16302b; --brand-soft:#053b34;
-  --green-bg:#052e22; --amber-bg:#3a2a06; --red-bg:#3a0d0d;
-  --green-ink:#6ee7b7; --amber-ink:#fcd34d; --red-ink:#fca5a5;
-  --shadow:0 12px 30px -10px rgba(0,0,0,.6); --shadow-sm:0 1px 3px rgba(0,0,0,.4);
-}
-*{box-sizing:border-box} html,body{margin:0;padding:0}
-body{font-family:'Inter','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
-  background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.5;
-  -webkit-font-smoothing:antialiased;transition:background var(--t),color var(--t);}
-::selection{background:rgba(13,148,136,.25)}
-*::-webkit-scrollbar{height:10px;width:10px}
-*::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
-*::-webkit-scrollbar-thumb:hover{background:var(--muted)}
-
-.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--panel) 82%,transparent);
-  backdrop-filter:saturate(180%) blur(14px);border-bottom:1px solid var(--line);}
-.topbar .inner{max-width:1500px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px}
-.logo{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.3px}
-.logo .mark{width:38px;height:38px;border-radius:11px;background:var(--grad);color:#fff;display:grid;place-items:center;font-size:19px;box-shadow:var(--shadow-lg);}
-.logo .txt small{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px}
-.logo .txt b{font-size:16px;display:block;line-height:1.1}
-.spacer{flex:1}
-.icon-btn{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:var(--panel);cursor:pointer;display:grid;place-items:center;font-size:17px;transition:var(--t);color:var(--ink);}
-.icon-btn:hover{background:var(--brand-soft);border-color:var(--brand);transform:translateY(-1px)}
-
-.wrap{max-width:1500px;margin:0 auto;padding:22px 18px 70px}
-.section{margin-bottom:22px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:22px;transition:var(--t);}
-.card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-.card-head h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:9px}
-.card-head .desc{font-size:13px;color:var(--muted);margin-top:3px;max-width:720px}
-.card-head .actions{display:flex;gap:9px;flex-wrap:wrap}
-.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.4px;color:var(--brand);text-transform:uppercase}
-
-.hero{position:relative;overflow:hidden;border-radius:var(--radius);background:var(--grad);color:#fff;padding:30px 34px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:26px;flex-wrap:wrap;}
-.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 90% -10%,rgba(255,255,255,.22),transparent 60%),radial-gradient(400px 300px at 0% 120%,rgba(14,165,233,.4),transparent 60%);pointer-events:none}
-.hero-main{position:relative;flex:1;min-width:280px}
-.hero h1{margin:0 0 8px;font-size:clamp(22px,4vw,30px);font-weight:900;letter-spacing:-.8px}
-.hero p{margin:0;max-width:620px;color:rgba(255,255,255,.9);font-size:14px}
-.hero .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.hero .chips span{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600;backdrop-filter:blur(4px)}
-.hero-upload{position:relative;flex:0 0 320px;max-width:360px;width:100%;border:2px dashed rgba(255,255,255,.6);border-radius:16px;background:rgba(255,255,255,.10);padding:24px 20px;text-align:center;cursor:pointer;transition:var(--t);color:#fff;}
-@media(max-width:760px){.hero-upload{flex:1 1 100%;max-width:none}}
-.hero-upload:hover,.hero-upload.drag{background:rgba(255,255,255,.22);border-color:#fff;transform:translateY(-2px)}
-.hero-upload.loaded{background:rgba(16,185,129,.25);border-color:rgba(167,243,208,.9);border-style:solid}
-.hero-upload .hu-ic{font-size:40px;line-height:1}
-.hero-upload .hu-t1{font-weight:800;margin-top:8px;font-size:15px}
-.hero-upload .hu-t2{font-size:12px;color:rgba(255,255,255,.85);margin-top:4px}
-.hero-upload u{font-weight:800;text-underline-offset:2px}
-.hero-upload .hu-actions{margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.mini-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:#fff;font-weight:700;font-size:11.5px;padding:6px 11px;border-radius:9px;cursor:pointer;transition:var(--t)}
-.mini-btn:hover{background:rgba(255,255,255,.35)}
-#fileInput{display:none}
-
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
-.stat{position:relative;overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px;box-shadow:var(--shadow-sm);transition:var(--t);animation:rise .5s both;}
-.stat:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.stat .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:17px}
-.stat .n{font-size:26px;font-weight:900;letter-spacing:-1px;margin-top:9px;line-height:1}
-.stat .l{font-size:12px;color:var(--muted);margin-top:3px;font-weight:600}
-.stat .strip{position:absolute;left:0;top:0;bottom:0;width:5px}
-.stat.s-total .ic{background:var(--brand-soft);color:var(--brand)}.stat.s-total .strip{background:var(--brand)}
-.stat.s-award .ic{background:var(--green-bg);color:var(--green)}.stat.s-award .strip{background:var(--green)}.stat.s-award .n{color:var(--green)}
-.stat.s-mid .ic{background:var(--amber-bg);color:var(--amber)}.stat.s-mid .strip{background:var(--amber)}.stat.s-mid .n{color:var(--amber)}
-.stat.s-warn .ic{background:var(--red-bg);color:var(--red)}.stat.s-warn .strip{background:var(--red)}.stat.s-warn .n{color:var(--red)}
-.stat.s-cyan .ic{background:#cffafe;color:#0891b2}.stat.s-cyan .strip{background:#0891b2}.stat.s-cyan .n{color:#0891b2}
-
-.rekap{position:relative;overflow:hidden;border-radius:var(--radius);color:#fff;background:linear-gradient(120deg,#134e4a 0%,#0d9488 55%,#0369a1 130%);box-shadow:var(--shadow-lg);padding:22px 24px;animation:rise .45s both}
-.rekap::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(520px 180px at 95% -20%,rgba(255,255,255,.22),transparent 60%),radial-gradient(420px 260px at -5% 130%,rgba(14,165,233,.4),transparent 60%)}
-.rekap-head{position:relative;margin-bottom:16px}
-.rekap-head h2{margin:2px 0 0;font-size:18px;font-weight:900;letter-spacing:-.4px}
-.rekap-grid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-@media(max-width:900px){.rekap-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:460px){.rekap-grid{grid-template-columns:1fr}}
-.rekap .rk{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:15px 17px;backdrop-filter:blur(6px);display:flex;flex-direction:column;gap:3px}
-.rekap .rk-l{font-size:12px;font-weight:700;color:rgba(255,255,255,.92)}
-.rekap .rk-v{font-size:clamp(16px,2.2vw,21px);font-weight:900;letter-spacing:-.6px;line-height:1.15;word-break:break-word}
-.rekap .rk-s{font-size:11px;color:rgba(255,255,255,.78);font-weight:600}
-
-.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
-.field label{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:6px}
-select,input[type=search]{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:11px;font-size:14px;background:var(--panel);color:var(--ink);transition:var(--t);font-family:inherit;}
-select:focus,input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px rgba(13,148,136,.14)}
-.search-box{position:relative}
-.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
-.search-box input{padding-left:38px}
-
-.btn{border:none;border-radius:11px;padding:11px 16px;font-size:13.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:var(--t);font-family:inherit;white-space:nowrap}
-.btn-primary{background:var(--grad);color:#fff;box-shadow:0 6px 16px -4px rgba(13,148,136,.5)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px -6px rgba(13,148,136,.6)}
-.btn-soft{background:var(--brand-soft);color:var(--brand)}
-.btn-soft:hover{background:var(--brand);color:#fff;transform:translateY(-2px)}
-.btn-ghost{background:var(--panel-2);color:var(--ink-2);border:1px solid var(--line)}
-.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
-
-.maintabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.maintabs button{border:1px solid var(--line);background:var(--panel);color:var(--ink-2);padding:11px 16px;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;transition:var(--t);display:inline-flex;align-items:center;gap:8px}
-.maintabs button:hover{border-color:var(--brand);color:var(--brand)}
-.maintabs button.active{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 6px 16px -6px rgba(13,148,136,.6)}
-.maintabs .cnt{background:rgba(0,0,0,.12);padding:1px 8px;border-radius:99px;font-size:11.5px}
-.maintabs button.active .cnt{background:rgba(255,255,255,.25)}
-
-.tablewrap{overflow-x:auto;border-radius:14px;border:1px solid var(--line)}
-table{border-collapse:separate;border-spacing:0;width:100%;font-size:12px;min-width:1500px}
-thead th{background:var(--panel-2);color:var(--ink-2);padding:10px 8px;text-align:left;font-weight:800;font-size:10px;letter-spacing:.2px;text-transform:uppercase;position:sticky;top:0;white-space:nowrap;border-bottom:2px solid var(--line);}
-thead th.grp{text-align:center;border-left:2px solid var(--line)}
-thead tr:nth-child(2) th{font-size:9.5px}
-tbody td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle}
-tbody td.gl{border-left:2px solid var(--line)}
-tbody tr{transition:background var(--t)} tbody tr:hover{background:var(--brand-soft)}
-tbody tr:last-child td{border-bottom:none}
-tfoot td{padding:10px 8px;font-weight:900;background:var(--panel-2);border-top:2px solid var(--line);font-size:12px}
-tfoot td.gl{border-left:2px solid var(--line)}
-.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.kode{font-family:ui-monospace,'JetBrains Mono','Courier New',monospace;font-weight:800;background:var(--panel-2);padding:3px 7px;border-radius:7px;font-size:11.5px;border:1px solid var(--line)}
-.satker-name{font-weight:600;min-width:180px}
-.rankpos{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-weight:900;font-size:12px;background:var(--brand-soft);color:var(--brand)}
-.rankpos.p1{background:#fef9c3;color:#a16207}.rankpos.p2{background:#e2e8f0;color:#475569}.rankpos.p3{background:#ffedd5;color:#9a3412}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:99px;font-size:11px;font-weight:800;white-space:nowrap}
-.b-green{background:var(--green-bg);color:var(--green-ink)}
-.b-amber{background:var(--amber-bg);color:var(--amber-ink)}
-.b-red{background:var(--red-bg);color:var(--red-ink)}
-.b-slate{background:var(--panel-2);color:var(--muted);border:1px solid var(--line)}
-.b-cyan{background:#cffafe;color:#0e7490}
-.dev-cell{font-weight:800;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.dev-green{color:var(--green)}.dev-amber{color:var(--amber)}.dev-red{color:var(--red)}
-.tgt{color:var(--ink-2)} .rls{color:var(--ink)}
-.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted);margin-top:16px;font-weight:600}
-.legend span{display:inline-flex;align-items:center;gap:7px}
-.dot{width:11px;height:11px;border-radius:4px}
-.note{font-size:11.5px;color:var(--muted);background:var(--panel-2);border:1px dashed var(--line);padding:10px 13px;border-radius:11px;margin-top:14px}
-.alert{padding:13px 15px;border-radius:12px;font-size:13.5px;margin-top:14px;display:flex;gap:10px;align-items:flex-start;font-weight:600}
-.alert.ok{background:var(--green-bg);color:var(--green-ink)}
-.alert.err{background:var(--red-bg);color:var(--red-ink)}
-.empty{text-align:center;padding:60px 20px;color:var(--muted)}
-.empty .e-ic{font-size:54px;opacity:.5}
-.empty h3{margin:14px 0 6px;color:var(--ink-2);font-size:18px}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:24px 10px;font-weight:600}
-.hidden{display:none!important}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.stat:nth-child(2){animation-delay:.05s}.stat:nth-child(3){animation-delay:.1s}.stat:nth-child(4){animation-delay:.15s}.stat:nth-child(5){animation-delay:.2s}
-.fade{animation:rise .4s both}
-.subtle{color:var(--muted);font-size:11px}
-@media(max-width:600px){.card{padding:16px}.hero{padding:24px}}
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f5f7fa 100%);
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 28px;
+  }
+  h1 {
+    color: #1a5490;
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    border-bottom: 3px solid #1a5490;
+    padding-bottom: 12px;
+  }
+  .subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .control-panel {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  button {
+    background: #1a5490;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  button:hover { background: #0e3d6f; transform: translateY(-1px); }
+  button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+  }
+  button.secondary { background: #64748b; }
+  button.secondary:hover { background: #475569; }
+  button.danger { background: #dc2626; }
+  button.danger:hover { background: #b91c1c; }
+  button.success { background: #16a34a; }
+  button.success:hover { background: #15803d; }
+  .stat {
+    background: white;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 13px;
+  }
+  .stat strong { color: #1a5490; font-size: 16px; }
+  .status-bar {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    font-size: 14px;
+    display: none;
+  }
+  .status-bar.info { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+  .status-bar.success { background: #dcfce7; color: #166534; border-left: 4px solid #16a34a; }
+  .status-bar.warning { background: #fef3c7; color: #854d0e; border-left: 4px solid #eab308; }
+  .status-bar.error { background: #fee2e2; color: #991b1b; border-left: 4px solid #dc2626; }
+  .status-bar.show { display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    font-size: 13px;
+  }
+  th {
+    background: #1a5490;
+    color: white;
+    padding: 10px 8px;
+    text-align: left;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+  }
+  td {
+    padding: 8px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #fef3c7; }
+  .new-row {
+    background: #fef9c3 !important;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .rejected-row {
+    background: #fee2e2 !important;
+    opacity: 0.85;
+  }
+  .changed-in-row {
+    background: #bbf7d0 !important;
+    border-left: 4px solid #16a34a !important;
+    animation: slideIn 1s ease-out;
+  }
+  .changed-out-row {
+    background: #fecaca !important;
+    border-left: 4px solid #dc2626 !important;
+    animation: slideOut 1s ease-out;
+  }
+  @keyframes pulse {
+    0%, 100% { background: #fef9c3; }
+    50% { background: #fde047; }
+  }
+  @keyframes slideIn {
+    from { background: #86efac; transform: translateX(-20px); }
+    to { background: #bbf7d0; transform: translateX(0); }
+  }
+  @keyframes slideOut {
+    from { background: #fca5a5; transform: translateX(20px); }
+    to { background: #fecaca; transform: translateX(0); }
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge.pil-1 { background: #dbeafe; color: #1e40af; }
+  .badge.pil-2 { background: #fce7f3; color: #9d174d; }
+  .badge.new { background: #16a34a; color: white; }
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: #94a3b8;
+    font-style: italic;
+  }
+  .config-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #cbd5e1;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+  }
+  input[type="text"], input[type="number"] {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 200px;
+  }
+  small {
+    color: #64748b;
+    font-size: 12px;
+  }
+  .footer {
+    margin-top: 24px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 12px;
+  }
+  .legend {
+    display: flex;
+    gap: 16px;
+    margin: 10px 0;
+    font-size: 12px;
+    color: #475569;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
 </style>
 </head>
 <body>
+<div class="container">
+  <h1>🔍 SPMB Monitor — Deteksi Siswa Baru</h1>
+  <p class="subtitle">
+    Pantau siswa baru Jalur Prestasi yang menjadikan <strong>SMPN 9</strong> sebagai Pilihan 1 atau Pilihan 2,
+    dengan Nilai Akhir &gt; 110. Data diambil langsung dari SPMB Kota Semarang.
+  </p>
 
-<div class="topbar"><div class="inner">
-  <div class="logo"><div class="mark">📊</div><div class="txt"><small>MONITORING RPD HALAMAN III DIPA</small><b>Deviasi Penyerapan Satker</b></div></div>
-  <div class="spacer"></div>
-  <button class="icon-btn" id="themeBtn" title="Ganti tema">🌙</button>
-</div></div>
-
-<div class="wrap">
-
-  <!-- HERO + UPLOAD -->
-  <section class="section">
-    <div class="hero">
-      <div class="hero-main">
-        <div class="eyebrow" style="color:rgba(255,255,255,.85)">Halaman III DIPA — Rencana Penarikan Dana</div>
-        <h1>Monitoring Deviasi Penyerapan Anggaran Satker</h1>
-        <p>Unggah file Excel/CSV monitoring RPD Halaman III DIPA. Sistem membandingkan <b>Target Rencana</b> vs <b>Realisasi Penyerapan</b> per jenis belanja (51, 52, 53, 57), menghitung deviasi, dan menyusun peringkat satker. Mengunggah file baru akan mengganti data sebelumnya.</p>
-        <div class="chips"><span>📅 Filter Jan–Des</span><span>🏆 Peringkat deviasi</span><span>🎯 Belanja 51 · 52 · 53 · 57</span><span>🧾 Cetak PDF portrait</span></div>
-      </div>
-      <label class="hero-upload" id="drop">
-        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
-        <div class="hu-ic">📥</div>
-        <div class="hu-t1" id="huTitle">Unggah file Excel / CSV</div>
-        <div class="hu-t2" id="huSub">Tarik ke sini atau <u>klik untuk memilih</u> · .xlsx · .xls · .csv</div>
-        <div class="hu-actions">
-          <button type="button" class="mini-btn hidden" id="btnClear">🗑️ Kosongkan</button>
-        </div>
-      </label>
+  <div class="control-panel">
+    <div class="row">
+      <button id="btnFetch" onclick="fetchAllData()">🔄 Fetch Data Terbaru</button>
+      <button id="btnVerify" onclick="verifyAllStudents()" class="success">🔍 Verifikasi & Deteksi Perubahan</button>
+      <button id="btnCheckNew" onclick="checkNewStudents()" class="success">✨ Cek Siswa Baru</button>
+      <button id="btnDiagnose" onclick="diagnose()" class="secondary">🔧 Diagnose</button>
+      <button id="btnExportPdf" onclick="exportPDF()" class="secondary">📄 Export PDF</button>
+      <button id="btnExportJson" onclick="exportJSON()" class="secondary">💾 Export JSON</button>
+      <button id="btnAutoRefresh" onclick="toggleAutoRefresh()" class="secondary">⏱️ Auto-Refresh: OFF</button>
+      <button id="btnReset" onclick="resetKnown()" class="danger">🗑️ Reset Data Tersimpan</button>
     </div>
-    <div id="uploadMsg"></div>
-  </section>
-
-  <!-- APP CONTENT -->
-  <div id="appContent">
-
-  <!-- FILTER -->
-  <section class="section card">
-    <div class="card-head"><div>
-      <div class="eyebrow">Filter</div><h2>🎛️ Pengaturan Tampilan</h2>
-      <div class="desc">Pilih bulan untuk melihat deviasi pada periode tersebut. Gunakan kategori untuk menyaring satker, lalu cari satker tertentu bila perlu.</div>
-    </div></div>
-    <div class="controls">
-      <div class="field"><label>Bulan</label><select id="fMonth"></select></div>
-      <div class="field"><label>Kategori Deviasi</label>
-        <select id="fCat">
-          <option value="all">Semua Kategori</option>
-          <option value="sangatbaik">Sangat Baik (rata² ≤5% &amp; semua ≤5%)</option>
-          <option value="baik">Baik (rata² ≤5%, ada belanja &gt;5%)</option>
-          <option value="kurang">Kurang (rata² &gt;5% – 20%)</option>
-          <option value="peringatan">Peringatan (rata² &gt; 20%)</option>
-        </select>
+    <div class="row">
+      <span class="stat">Total pool: <strong id="statTotal">0</strong></span>
+      <span class="stat" style="background:#dcfce7;">Diterima di SMPN 9: <strong id="statDiterima">0</strong></span>
+      <span class="stat" style="background:#fee2e2;">Di sekolah lain: <strong id="statLain">0</strong></span>
+      <span class="stat">Siswa baru: <strong id="statNew">0</strong></span>
+      <span class="stat">Tersimpan: <strong id="statKnown">0</strong></span>
+      <span class="stat">Last fetch: <strong id="statLastFetch">-</strong></span>
+      <span class="stat" id="statAuto" style="display:none;">Auto-refresh: <strong id="autoInterval">-</strong></span>
+    </div>
+    <div id="verifyProgress" style="display:none; margin-top:8px;">
+      <div style="background:#e0e7ff; border-radius:6px; height:8px; overflow:hidden;">
+        <div id="verifyBar" style="background:#4f46e5; height:100%; width:0%; transition:width 0.2s;"></div>
       </div>
-      <div class="field"><label>Urutan</label>
-        <select id="fSort">
-          <option value="asc">Deviasi Terkecil → Terbesar</option>
-          <option value="desc">Deviasi Terbesar → Terkecil</option>
-          <option value="nama">Nama Satker (A–Z)</option>
-        </select>
-      </div>
-      <div class="field" style="min-width:200px"><label>Cari Satker</label>
-        <div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input type="search" id="fSearch" placeholder="Nama atau kode satker…"></div></div>
+      <small id="verifyText" style="color:#4f46e5;">Memverifikasi...</small>
     </div>
     <div class="legend">
-      <span><i class="dot" style="background:var(--green)"></i> Rata² ≤5% &amp; semua belanja ≤5% → <b>SANGAT BAIK</b></span>
-      <span><i class="dot" style="background:#0891b2"></i> Rata² ≤5% tapi ada belanja &gt;5% → <b>BAIK</b></span>
-      <span><i class="dot" style="background:var(--amber)"></i> Rata² &gt;5%–20% → <b>KURANG</b></span>
-      <span><i class="dot" style="background:var(--red)"></i> Rata² &gt;20% → <b>PERINGATAN</b></span>
+      <div class="legend-item"><span class="badge pil-1">Pil 1</span> = Pilihan Pertama</div>
+      <div class="legend-item"><span class="badge pil-2">Pil 2</span> = Pilihan Kedua</div>
+      <div class="legend-item"><span class="badge new">NEW</span> = Siswa baru terdeteksi</div>
     </div>
-  </section>
 
-  <!-- STATS -->
-  <section class="section">
-    <div class="stats" id="statsBox"></div>
-  </section>
-
-  <!-- REKAP TOTAL -->
-  <section class="section">
-    <div class="rekap">
-      <div class="rekap-head"><div class="eyebrow" style="color:rgba(255,255,255,.85)">Rekapitulasi Total — <span id="rekapBulan"></span></div><h2>Total Target Rencana vs Penyerapan Anggaran</h2></div>
-      <div class="rekap-grid">
-        <div class="rk"><span class="rk-l">🎯 Total Target Rencana</span><span class="rk-v" id="rkTarget">0</span><span class="rk-s">seluruh jenis belanja</span></div>
-        <div class="rk"><span class="rk-l">💰 Total Penyerapan</span><span class="rk-v" id="rkSerap">0</span><span class="rk-s">realisasi bulan ini</span></div>
-        <div class="rk"><span class="rk-l">📉 Total Deviasi (Nilai)</span><span class="rk-v" id="rkDevNom">0</span><span class="rk-s">selisih target − serap</span></div>
-        <div class="rk"><span class="rk-l">📊 Deviasi Agregat</span><span class="rk-v" id="rkDevPct">0%</span><span class="rk-s" id="rkDevKet">—</span></div>
+    <div class="config-section">
+      <div class="row">
+        <div>
+          <label>Ambang batas nilai:</label>
+          <input type="number" id="threshold" value="110" step="0.01">
+        </div>
+        <div>
+          <label>Sekolah tujuan:</label>
+          <input type="text" id="sekolahId" value="309" style="width:80px">
+          <small>309 = SMPN 9 Semarang</small>
+        </div>
+        <div>
+          <label>Kuota diterima (DITERIMA):</label>
+          <input type="number" id="kuota" value="71" min="1" max="500">
+          <small>Top-N siswa dengan nilai tertinggi akan ditandai DITERIMA</small>
+        </div>
+        <div>
+          <button id="btnRefreshKuota" onclick="applyKuota()" class="secondary" style="margin-top:18px;">✓ Terapkan Kuota</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <div style="flex:1; min-width:300px;">
+          <label>🌐 Proxy URL (kosongkan jika tidak pakai):</label>
+          <input type="text" id="proxyUrl" placeholder="https://your-worker.workers.dev" style="width:100%; max-width:500px;">
+          <small>URL proxy Anda (misal Cloudflare Workers). Akan disimpan di browser.</small>
+        </div>
+        <div>
+          <button id="btnSaveProxy" onclick="saveProxyUrl()" class="secondary" style="margin-top:18px;">💾 Simpan Proxy</button>
+          <button id="btnTestProxy" onclick="testProxy()" class="secondary" style="margin-top:18px;">🔧 Test Proxy</button>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- TABEL -->
-  <section class="section card">
-    <div class="card-head">
-      <div>
-        <div class="eyebrow">Peringkat</div><h2>🏆 Peringkat Deviasi Satker</h2>
-        <div class="desc">Tiap jenis belanja menampilkan Target & Realisasi (Rp) beserta % deviasinya. Diurutkan dari deviasi rata-rata terkecil (kinerja terbaik) ke terbesar.</div>
-      </div>
-      <div class="actions">
-        <button class="btn btn-soft" id="btnPdf">🧾 Cetak PDF (Portrait)</button>
-      </div>
+  <div id="status" class="status-bar"></div>
+
+  <div id="resultArea">
+    <div class="empty">Klik "Fetch Data Terbaru" untuk memulai. Data akan otomatis dibandingkan dengan siswa yang sudah tersimpan di browser.</div>
+  </div>
+
+  <div id="quotaSummary" style="display:none; margin-top:16px;">
+    <div style="background:#fef3c7; border:1px solid #fcd34d; border-radius:8px; padding:14px;">
+      <strong>📊 Simulasi Penerimaan (berdasarkan nilai akhir):</strong>
+      <div id="quotaSummaryContent" style="margin-top:8px;"></div>
     </div>
+  </div>
 
-    <div class="maintabs" id="catTabs">
-      <button data-cat="all" class="active">Semua <span class="cnt" id="cAll">0</span></button>
-      <button data-cat="sangatbaik">Sangat Baik <span class="cnt" id="cSangatBaik">0</span></button>
-      <button data-cat="baik">Baik <span class="cnt" id="cBaik">0</span></button>
-      <button data-cat="kurang">Kurang <span class="cnt" id="cKurang">0</span></button>
-      <button data-cat="peringatan">Peringatan <span class="cnt" id="cPeringatan">0</span></button>
+  <div id="changesPanel" style="display:none; margin-top:16px;">
+    <div style="background:linear-gradient(135deg,#fef9c3 0%,#fef3c7 100%); border:2px solid #eab308; border-radius:8px; padding:14px;">
+      <strong style="font-size:15px;">🔔 PERUBAHAN TERDETEKSI sejak fetch terakhir</strong>
+      <div id="changesContent" style="margin-top:8px;"></div>
     </div>
+  </div>
 
-    <div class="tablewrap">
-      <table id="mainTable">
-        <thead>
-          <tr>
-            <th rowspan="2">#</th>
-            <th rowspan="2">Kode</th>
-            <th rowspan="2">Nama Satker</th>
-            <th colspan="3" class="grp">Belanja 51 (Pegawai)</th>
-            <th colspan="3" class="grp">Belanja 52 (Barang)</th>
-            <th colspan="3" class="grp">Belanja 53 (Modal)</th>
-            <th colspan="3" class="grp">Belanja 57 (Bansos)</th>
-            <th rowspan="2" class="num grp">Dev. Rata²</th>
-            <th rowspan="2">Status</th>
-          </tr>
-          <tr>
-            <th class="grp num">Target</th><th class="num">Realisasi</th><th class="num">Dev%</th>
-            <th class="grp num">Target</th><th class="num">Realisasi</th><th class="num">Dev%</th>
-            <th class="grp num">Target</th><th class="num">Realisasi</th><th class="num">Dev%</th>
-            <th class="grp num">Target</th><th class="num">Realisasi</th><th class="num">Dev%</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-        <tfoot id="tfoot"></tfoot>
-      </table>
-    </div>
-    <div class="note" id="emptyNote" style="display:none">Tidak ada satker yang sesuai filter saat ini.</div>
-    <div class="note">Deviasi per jenis belanja = |Target − Realisasi| ÷ Target × 100%. Deviasi rata-rata = rata-rata deviasi seluruh jenis belanja yang memiliki pagu. Status: <b>Sangat Baik</b> = rata² ≤5% <u>dan</u> semua belanja ber-pagu ≤5%; <b>Baik</b> = rata² ≤5% tetapi ada belanja &gt;5%; <b>Kurang</b> = rata² &gt;5% s.d. 20%; <b>Peringatan</b> = rata² &gt;20%.</div>
-  </section>
-
-  <!-- TABEL PERINGKAT KUMULATIF -->
-  <section class="section card">
-    <div class="card-head">
-      <div>
-        <div class="eyebrow">Peringkat Kumulatif</div><h2>📈 Peringkat Deviasi Kumulatif (s.d. Bulan Terpilih)</h2>
-        <div class="desc">Rata-rata deviasi dijumlahkan dari bulan <b>Januari</b> sampai bulan terpilih, lalu dibagi <b>nomor bulan periode</b>. Contoh: sampai bulan 5 = (rata² deviasi Jan + Feb + Mar + Apr + Mei) ÷ 5. Diurutkan dari deviasi kumulatif terkecil ke terbesar.</div>
-      </div>
-      <div class="actions">
-        <button class="btn btn-soft" id="btnPdfKum">🧾 Cetak PDF Kumulatif</button>
-      </div>
-    </div>
-    <div class="tablewrap">
-      <table id="kumTable">
-        <thead id="kumHead"></thead>
-        <tbody id="kumBody"></tbody>
-        <tfoot id="kumFoot"></tfoot>
-      </table>
-    </div>
-    <div class="note" id="kumEmptyNote" style="display:none"></div>
-    <div class="note">Setiap kolom bulan menampilkan rata-rata deviasi satker pada bulan tersebut (— bila tidak ada data). <b>Pembagi</b> = nomor bulan periode (mis. periode bulan 5 → dibagi 5). <b>Dev. Kumulatif</b> = total rata-rata deviasi bulan Jan s.d. bulan terpilih ÷ nomor bulan periode. Status berdasarkan nilai kumulatif: Sangat Baik ≤5%, Kurang &gt;5%–20%, Peringatan &gt;20%.</div>
-  </section>
-
-  <!-- PIAGAM PENGHARGAAN -->
-  <section class="section card">
-    <div class="card-head">
-      <div>
-        <div class="eyebrow">Piagam Penghargaan</div><h2>🏅 Pembuatan Piagam Satker</h2>
-        <div class="desc">Buat piagam penghargaan formal berkop Kementerian Keuangan. Cari kode satker untuk mengisi otomatis (nama &amp; kategori sesuai data), atau isi/rekam manual. Konsep langsung tampil dan <b>semua isian dapat diedit</b> sebelum dicetak PDF atau diunduh sebagai Word.</div>
-      </div>
-    </div>
-
-    <div class="controls" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
-      <div class="field"><label>Cari / Pilih Kode Satker</label>
-        <input list="satkerList" id="pgCari" placeholder="Ketik kode atau nama satker…">
-        <datalist id="satkerList"></datalist>
-      </div>
-      <div class="field"><label>Periode Penghargaan</label>
-        <select id="pgPeriodeJenis">
-          <option value="bulanan">Bulanan</option>
-          <option value="triwulan">Triwulanan</option>
-          <option value="semester">Semesteran</option>
-          <option value="tahunan">Tahunan</option>
-        </select>
-      </div>
-      <div class="field" id="pgPeriodeDetailWrap"><label>Detail Periode</label>
-        <select id="pgPeriodeDetail"></select>
-      </div>
-      <div class="field"><label>Tahun</label>
-        <input type="text" id="pgTahun" value="2026">
-      </div>
-    </div>
-
-    <div style="height:14px"></div>
-    <div class="controls" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
-      <div class="field"><label>Kode Satker (di piagam)</label><input type="text" id="pgKode" placeholder="mis. 005325"></div>
-      <div class="field" style="grid-column:span 2;min-width:240px"><label>Nama Satker (di piagam)</label><input type="text" id="pgNama" placeholder="NAMA SATUAN KERJA"></div>
-      <div class="field"><label>Kategori / Predikat</label>
-        <select id="pgKategori">
-          <option value="sangatbaik">Sangat Baik</option>
-          <option value="baik">Baik</option>
-          <option value="kurang">Kurang</option>
-          <option value="peringatan">Peringatan</option>
-        </select>
-      </div>
-    </div>
-
-    <div style="height:14px"></div>
-    <div class="controls" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
-      <div class="field" style="grid-column:span 2;min-width:240px"><label>Nomor Piagam</label><input type="text" id="pgNomor" value="@NomorND"></div>
-      <div class="field"><label>Kota Penerbitan</label><input type="text" id="pgKota" value="Pekalongan"></div>
-      <div class="field"><label>Tanggal Penerbitan</label><input type="text" id="pgTanggal" value="@TanggalND"></div>
-    </div>
-
-    <div style="height:14px"></div>
-    <div class="controls" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
-      <div class="field"><label>Nomor Nota Dinas (ND)</label><input type="text" id="pgNomorND" placeholder="@NomorND"></div>
-      <div class="field"><label>Tanggal Nota Dinas (ND)</label><input type="text" id="pgTanggalND" placeholder="@TanggalND"></div>
-      <div class="field" style="grid-column:span 2;min-width:240px"><label>Jabatan Penandatangan</label><input type="text" id="pgJabatan" value="Kepala Kantor Pelayanan Perbendaharaan Negara Pekalongan"></div>
-    </div>
-
-    <div style="height:14px"></div>
-    <div class="controls" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
-      <div class="field"><label>Nama Penandatangan</label><input type="text" id="pgNamaTtd" value="Darmawan"></div>
-      <div class="field"><label>NIP Penandatangan</label><input type="text" id="pgNip" placeholder="NIP. ……………………"></div>
-      <div class="field" style="grid-column:span 2;min-width:300px"><label>Narasi Penghargaan (boleh diedit)</label>
-        <input type="text" id="pgNarasi" placeholder="(otomatis sesuai kategori, dapat diubah)">
-      </div>
-    </div>
-
-    <div class="card-head" style="margin:20px 0 12px;border-top:1px solid var(--line);padding-top:16px">
-      <div><div class="eyebrow">Pratinjau</div><h2 style="font-size:15px">📄 Konsep Piagam</h2></div>
-      <div class="actions">
-        <button class="btn btn-primary" id="btnPiagamPdf">🧾 Cetak PDF Piagam</button>
-        <button class="btn btn-soft" id="btnPiagamWord">📝 Unduh Word (.doc)</button>
-      </div>
-    </div>
-
-    <div id="piagamPreviewWrap" style="overflow-x:auto;background:#e2e8f0;padding:18px;border-radius:14px;border:1px solid var(--line)">
-      <div id="piagamPreview"></div>
-    </div>
-    <div class="note">Logo Kementerian Keuangan tertanam langsung di file (tampil tanpa koneksi internet, termasuk saat diunduh Word/PDF). Teks abu-abu "Ditandatangani secara elektronik" beserta Nomor/Tanggal Nota Dinas otomatis muncul di atas nama penandatangan. Seluruh isian konsep dapat diedit langsung pada kolom di atas sebelum dicetak.</div>
-  </section>
-
-  </div><!-- /appContent -->
-
-  <footer>Monitoring Deviasi Halaman III DIPA · Pemantauan RPD Satker</footer>
+  <div class="footer">
+    Sumber: <a href="https://spmb.semarangkota.go.id/smp" target="_blank">spmb.semarangkota.go.id/smp</a>
+    • Data publik, tanpa login • Hasil Seleksi Akhir rilis 1 Juli 2026
+  </div>
 </div>
+
 <script>
-(function(){
-"use strict";
-var LOGO_URI="https://upload.wikimedia.org/wikipedia/commons/7/73/Logo_kementerian_keuangan_republik_indonesia.png";
-var IDX={kode:0,nama:1,kppn:2,es1:3,bulan:4,r51:5,r52:6,r53:7,r57:8,p51:9,p52:10,p53:11,p57:12};
-var JENIS=[51,52,53,57];
-var MONNAME=['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-var RAW=[]; // active dataset
+// ============================================================
+// EMBEDDED SEED DATA (no external files needed)
+// ============================================================
+const EMBEDDED_DATA = {"seedRegnos": ["300042", "300279", "300446", "300454", "300554", "301204", "301511", "301732", "301936", "302123", "302872", "302994", "303031", "303408", "303528", "303535", "303688", "303868", "303875", "304193", "304768", "304826", "304831", "304843", "305040", "305544", "305944", "306773", "306895", "307699", "307895", "308996", "309159", "309450", "309567", "309973", "310258", "310388", "310485", "310534", "310698", "310727", "310914", "310993", "311082", "311108", "311557", "311677", "311738", "311788", "311864", "311925", "311931", "312009", "312068", "312335", "312455", "312539", "312554", "312766", "312854", "312855", "312936", "313143", "313212", "313240", "313420", "313567", "313733", "313827", "314380", "314850", "314947", "314995", "315021", "315102", "315126", "315277", "315304", "315311", "315331", "315410", "315431", "315660", "315765", "315838", "315959"], "verifiedCache": {"315277": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 2, "kuota": 83, "is_smpn9": true, "verified": true}, "314947": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 3, "kuota": 83, "is_smpn9": true, "verified": true}, "313240": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 4, "kuota": 83, "is_smpn9": true, "verified": true}, "310993": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 5, "kuota": 83, "is_smpn9": true, "verified": true}, "304768": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 6, "kuota": 83, "is_smpn9": true, "verified": true}, "311788": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 7, "kuota": 83, "is_smpn9": true, "verified": true}, "312766": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 8, "kuota": 83, "is_smpn9": true, "verified": true}, "303408": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 9, "kuota": 83, "is_smpn9": true, "verified": true}, "314380": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 10, "kuota": 83, "is_smpn9": true, "verified": true}, "312335": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 11, "kuota": 83, "is_smpn9": true, "verified": true}, "303688": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 12, "kuota": 83, "is_smpn9": true, "verified": true}, "315102": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 13, "kuota": 83, "is_smpn9": true, "verified": true}, "312068": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 14, "kuota": 83, "is_smpn9": true, "verified": true}, "315959": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 15, "kuota": 83, "is_smpn9": true, "verified": true}, "301204": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 16, "kuota": 83, "is_smpn9": true, "verified": true}, "303868": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 19, "kuota": 83, "is_smpn9": true, "verified": true}, "313733": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 22, "kuota": 83, "is_smpn9": true, "verified": true}, "312854": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 23, "kuota": 83, "is_smpn9": true, "verified": true}, "315126": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 24, "kuota": 83, "is_smpn9": true, "verified": true}, "311931": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 25, "kuota": 83, "is_smpn9": true, "verified": true}, "315304": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 27, "kuota": 83, "is_smpn9": true, "verified": true}, "313420": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 26, "kuota": 83, "is_smpn9": true, "verified": true}, "312855": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 29, "kuota": 83, "is_smpn9": true, "verified": true}, "302994": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 30, "kuota": 83, "is_smpn9": true, "verified": true}, "305544": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 31, "kuota": 83, "is_smpn9": true, "verified": true}, "315021": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 32, "kuota": 83, "is_smpn9": true, "verified": true}, "307699": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 34, "kuota": 83, "is_smpn9": true, "verified": true}, "301936": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 35, "kuota": 83, "is_smpn9": true, "verified": true}, "315311": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 36, "kuota": 83, "is_smpn9": true, "verified": true}, "315660": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 37, "kuota": 83, "is_smpn9": true, "verified": true}, "313567": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 38, "kuota": 83, "is_smpn9": true, "verified": true}, "314995": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 39, "kuota": 83, "is_smpn9": true, "verified": true}, "302123": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 40, "kuota": 83, "is_smpn9": true, "verified": true}, "300446": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 41, "kuota": 83, "is_smpn9": true, "verified": true}, "300042": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 42, "kuota": 83, "is_smpn9": true, "verified": true}, "304826": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 44, "kuota": 83, "is_smpn9": true, "verified": true}, "312455": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 45, "kuota": 83, "is_smpn9": true, "verified": true}, "306773": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 46, "kuota": 83, "is_smpn9": true, "verified": true}, "300279": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 47, "kuota": 83, "is_smpn9": true, "verified": true}, "311925": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 48, "kuota": 83, "is_smpn9": true, "verified": true}, "307895": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 50, "kuota": 83, "is_smpn9": true, "verified": true}, "300454": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 51, "kuota": 83, "is_smpn9": true, "verified": true}, "304831": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 52, "kuota": 83, "is_smpn9": true, "verified": true}, "308996": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 53, "kuota": 83, "is_smpn9": true, "verified": true}, "310914": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 54, "kuota": 83, "is_smpn9": true, "verified": true}, "315331": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 55, "kuota": 83, "is_smpn9": true, "verified": true}, "311677": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 1, "peringkat": 56, "kuota": 83, "is_smpn9": true, "verified": true}, "304843": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 4, "kuota": 71, "is_smpn9": false, "verified": true}, "311108": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 5, "kuota": 71, "is_smpn9": false, "verified": true}, "310727": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 7, "kuota": 71, "is_smpn9": false, "verified": true}, "310258": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 8, "kuota": 71, "is_smpn9": false, "verified": true}, "305040": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 9, "kuota": 71, "is_smpn9": false, "verified": true}, "311082": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 10, "kuota": 71, "is_smpn9": false, "verified": true}, "301732": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 13, "kuota": 71, "is_smpn9": false, "verified": true}, "312009": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 14, "kuota": 71, "is_smpn9": false, "verified": true}, "309973": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 19, "kuota": 71, "is_smpn9": false, "verified": true}, "309159": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 22, "kuota": 71, "is_smpn9": false, "verified": true}, "303875": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 21, "kuota": 71, "is_smpn9": false, "verified": true}, "309450": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 26, "kuota": 71, "is_smpn9": false, "verified": true}, "313143": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 27, "kuota": 71, "is_smpn9": false, "verified": true}, "311738": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 28, "kuota": 71, "is_smpn9": false, "verified": true}, "313212": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 32, "kuota": 71, "is_smpn9": false, "verified": true}, "301511": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 34, "kuota": 71, "is_smpn9": false, "verified": true}, "310485": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 35, "kuota": 71, "is_smpn9": false, "verified": true}, "311557": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 38, "kuota": 71, "is_smpn9": false, "verified": true}, "303535": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 39, "kuota": 71, "is_smpn9": false, "verified": true}, "313827": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 42, "kuota": 71, "is_smpn9": false, "verified": true}, "310698": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 46, "kuota": 71, "is_smpn9": false, "verified": true}, "304193": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 50, "kuota": 71, "is_smpn9": false, "verified": true}, "303031": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 52, "kuota": 71, "is_smpn9": false, "verified": true}, "302872": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 54, "kuota": 71, "is_smpn9": false, "verified": true}, "312936": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 55, "kuota": 71, "is_smpn9": false, "verified": true}, "306895": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 63, "kuota": 71, "is_smpn9": false, "verified": true}, "315838": {"pilihan_diterima": "SMP NEGERI 3", "pd_pilihan": 1, "peringkat": 3, "kuota": 64, "is_smpn9": false, "verified": true}, "300554": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 65, "kuota": 71, "is_smpn9": false, "verified": true}, "315431": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 68, "kuota": 71, "is_smpn9": false, "verified": true}, "311864": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 69, "kuota": 71, "is_smpn9": false, "verified": true}, "310534": {"pilihan_diterima": "SMP NEGERI 2", "pd_pilihan": 1, "peringkat": 71, "kuota": 71, "is_smpn9": false, "verified": true}, "312554": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 17, "kuota": 83, "is_smpn9": true, "verified": true}, "315765": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 18, "kuota": 83, "is_smpn9": true, "verified": true}, "315410": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 20, "kuota": 83, "is_smpn9": true, "verified": true}, "303528": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 21, "kuota": 83, "is_smpn9": true, "verified": true}, "305944": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 28, "kuota": 83, "is_smpn9": true, "verified": true}, "310388": {"pilihan_diterima": "SMP NEGERI 3", "pd_pilihan": 1, "peringkat": 9, "kuota": 64, "is_smpn9": false, "verified": true}, "314850": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 33, "kuota": 83, "is_smpn9": true, "verified": true}, "309567": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 43, "kuota": 83, "is_smpn9": true, "verified": true}, "312539": {"pilihan_diterima": "SMP NEGERI 9", "pd_pilihan": 2, "peringkat": 49, "kuota": 83, "is_smpn9": true, "verified": true}}};
+// ============================================================
 
-function fmtRp(n){n=Math.round(n||0);var neg=n<0;n=Math.abs(n);return (neg?'-':'')+'Rp '+n.toLocaleString('id-ID');}
-function fmtShort(n){var neg=n<0;n=Math.abs(n||0);var s;if(n>=1e12)s=(n/1e12).toFixed(2)+' T';else if(n>=1e9)s=(n/1e9).toFixed(2)+' M';else if(n>=1e6)s=(n/1e6).toFixed(1)+' Jt';else s=n.toLocaleString('id-ID');return (neg?'-':'')+'Rp '+s;}
-function pad6(k){k=String(k).replace(/\D/g,'');while(k.length<6)k='0'+k;return k;}
+const CONFIG = {
+  baseUrl: 'https://spmb.semarangkota.go.id/smp',
+  // User's custom proxy URL (saved in localStorage)
+  proxyUrlKey: 'spmb_monitor_proxy_url',
+  // Public CORS proxies as fallback (in priority order)
+  corsProxies: [
+    'https://cors.eu.org/',
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://api.codetabs.com/v1/proxy/?url=',
+  ],
+  storageKey: 'spmb_monitor_known_students',
+  lastFetchKey: 'spmb_monitor_last_fetch',
+  verifyCacheKey: 'spmb_monitor_verified_cache',
+  // Track previous state for delta detection
+  previousStateKey: 'spmb_monitor_previous_state',
+  changesKey: 'spmb_monitor_changes_log',
+};
 
-function devJenis(t,s){t=t||0;s=s||0;if(t===0&&s===0)return{has:false,dev:null,t:0,s:0};if(t===0)return{has:true,dev:100,t:0,s:s};return{has:true,dev:Math.abs(t-s)/t*100,t:t,s:s};}
+// ============================================================
+// STATE
+// ============================================================
+let allStudents = []; // currently fetched
+let knownRegnos = new Set(); // from localStorage
 
-// compute per-satker metrics for a given month
-function satkerMonth(r){
-  var per={},tT=0,tS=0,devs=[],any=false;
-  JENIS.forEach(function(j){
-    var t=r[IDX['r'+j]]||0,s=r[IDX['p'+j]]||0;var d=devJenis(t,s);per[j]=d;
-    if(d.has){tT+=t;tS+=s;devs.push(d.dev);any=true;}
-  });
-  if(!any) return null;
-  var avg=devs.reduce(function(a,b){return a+b;},0)/devs.length;
-  var maxd=Math.max.apply(null,devs);
-  // Status berdasar rata-rata deviasi (avg) & deviasi tertinggi (maxd):
-  // avg<=5 & semua belanja<=5 -> sangat baik; avg<=5 tapi ada >5 -> baik;
-  // avg >5 s.d. 20 -> kurang; avg >20 -> peringatan
-  var cat;
-  if(avg<=5){ cat = maxd<=5 ? 'sangatbaik' : 'baik'; }
-  else if(avg<=20){ cat='kurang'; }
-  else { cat='peringatan'; }
-  return {per:per,totT:tT,totS:tS,totDev:tT-tS,avg:avg,max:maxd,cat:cat};
-}
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  loadKnownStudents();
+  loadEmbeddedVerifiedCache();
+  updateProxyStatus();
+  updateStats();
+  showStatus('info', '👋 Siap. Data awal sudah dimuat. Klik "Fetch Data Terbaru" atau set "Proxy URL" untuk pakai Cloudflare Workers Anda.');
+});
 
-// index RAW by satker key -> {bulan: rowMetrics}
-function buildIndex(){
-  var map={};
-  RAW.forEach(function(r){
-    var kode=pad6(r[IDX.kode]);
-    var key=kode+'|'+r[IDX.es1];
-    if(!map[key]) map[key]={kode:kode,nama:r[IDX.nama],kppn:r[IDX.kppn],es1:r[IDX.es1],months:{}};
-    var m=satkerMonth(r);
-    if(m) map[key].months[r[IDX.bulan]]=m;
-  });
-  return map;
-}
-
-var CAT_LABEL={sangatbaik:'Sangat Baik',baik:'Baik',kurang:'Kurang',peringatan:'Peringatan'};
-var CAT_BADGE={sangatbaik:'b-green',baik:'b-cyan',kurang:'b-amber',peringatan:'b-red'};
-var CAT_ICON={sangatbaik:'✅',baik:'👍',kurang:'⚠️',peringatan:'🚨'};
-function devClass(d){if(d==null)return '';return d<=5?'dev-green':(d<=20?'dev-amber':'dev-red');}
-
-var state={bulan:1,cat:'all',sort:'asc',q:''};
-
-// rows for current month
-function rowsForMonth(){
-  var map=buildIndex();
-  var rows=[];
-  Object.keys(map).forEach(function(k){
-    var sk=map[k];var m=sk.months[state.bulan];
-    if(!m) return;
-    rows.push({kode:sk.kode,nama:sk.nama,kppn:sk.kppn,es1:sk.es1,m:m});
-  });
-  return rows;
-}
-
-function applyFilter(rows){
-  var q=state.q.trim().toLowerCase();
-  var out=rows.filter(function(r){
-    if(state.cat!=='all' && r.m.cat!==state.cat) return false;
-    if(q && r.nama.toLowerCase().indexOf(q)<0 && r.kode.indexOf(q)<0) return false;
-    return true;
-  });
-  out.sort(function(a,b){
-    if(state.sort==='nama') return a.nama.localeCompare(b.nama);
-    return state.sort==='desc'? b.m.avg-a.m.avg : a.m.avg-b.m.avg;
-  });
-  return out;
-}
-
-// kategori dari nilai deviasi tunggal (untuk tabel kumulatif)
-function catFromAvg(v){
-  if(v<=5) return 'sangatbaik';
-  if(v<=20) return 'kurang';
-  return 'peringatan';
-}
-
-// baris kumulatif: jumlah rata-rata deviasi bulan 1..state.bulan ÷ nomor bulan periode
-function rowsKumulatif(){
-  var map=buildIndex();
-  var rows=[];
-  Object.keys(map).forEach(function(k){
-    var sk=map[k];
-    var monthly={}, vals=[];
-    for(var b=1;b<=state.bulan;b++){
-      if(sk.months[b]){ monthly[b]=sk.months[b].avg; vals.push(sk.months[b].avg); }
+// ============================================================
+// STORAGE
+// ============================================================
+function loadKnownStudents() {
+  try {
+    const data = localStorage.getItem(CONFIG.storageKey);
+    if (data) {
+      const arr = JSON.parse(data);
+      knownRegnos = new Set(arr);
+    } else if (EMBEDDED_DATA && EMBEDDED_DATA.seedRegnos) {
+      // Auto-load from embedded data on first run
+      knownRegnos = new Set(EMBEDDED_DATA.seedRegnos);
+      localStorage.setItem(CONFIG.storageKey, JSON.stringify([...knownRegnos]));
     }
-    if(!vals.length) return; // tidak ada data sampai periode ini
-    var sum=vals.reduce(function(a,c){return a+c;},0);
-    var kum=sum/state.bulan; // pembagi = nomor bulan periode (mis. bln 5 -> /5)
-    rows.push({kode:sk.kode,nama:sk.nama,kppn:sk.kppn,es1:sk.es1,
-      monthly:monthly, nbulan:state.bulan, ndata:vals.length, kum:kum, cat:catFromAvg(kum)});
-  });
-  // filter pencarian & kategori mengikuti kontrol yang sama
-  var q=state.q.trim().toLowerCase();
-  rows=rows.filter(function(r){
-    if(state.cat!=='all' && r.cat!==state.cat) return false;
-    if(q && r.nama.toLowerCase().indexOf(q)<0 && r.kode.indexOf(q)<0) return false;
-    return true;
-  });
-  rows.sort(function(a,b){
-    if(state.sort==='nama') return a.nama.localeCompare(b.nama);
-    return state.sort==='desc'? b.kum-a.kum : a.kum-b.kum;
-  });
-  return rows;
+  } catch (e) {
+    console.error('Failed to load known students:', e);
+  }
+  document.getElementById('statKnown').textContent = knownRegnos.size;
 }
 
-function stat(cls,ic,n,l){return '<div class="stat '+cls+'"><span class="strip"></span><div class="ic">'+ic+'</div><div class="n">'+n+'</div><div class="l">'+l+'</div></div>';}
+// Auto-load verification cache from embedded data on first run
+function loadEmbeddedVerifiedCache() {
+  try {
+    const existing = localStorage.getItem(CONFIG.verifyCacheKey);
+    if (!existing && EMBEDDED_DATA && EMBEDDED_DATA.verifiedCache) {
+      localStorage.setItem(CONFIG.verifyCacheKey, JSON.stringify(EMBEDDED_DATA.verifiedCache));
+      console.log('[SPMB Monitor] Loaded ' + Object.keys(EMBEDDED_DATA.verifiedCache).length + ' verified students from embedded data');
+    }
+  } catch (e) {
+    console.error('Failed to load verified cache:', e);
+  }
+}
 
-function render(){
-  var all=rowsForMonth();
-  var cSangat=all.filter(function(r){return r.m.cat==='sangatbaik';}).length;
-  var cBaik=all.filter(function(r){return r.m.cat==='baik';}).length;
-  var cKurang=all.filter(function(r){return r.m.cat==='kurang';}).length;
-  var cPer=all.filter(function(r){return r.m.cat==='peringatan';}).length;
-  document.getElementById('cAll').textContent=all.length;
-  document.getElementById('cSangatBaik').textContent=cSangat;
-  document.getElementById('cBaik').textContent=cBaik;
-  document.getElementById('cKurang').textContent=cKurang;
-  document.getElementById('cPeringatan').textContent=cPer;
+function saveKnownStudents() {
+  localStorage.setItem(CONFIG.storageKey, JSON.stringify([...knownRegnos]));
+  document.getElementById('statKnown').textContent = knownRegnos.size;
+}
 
-  var sb=document.getElementById('statsBox');
-  sb.innerHTML=stat('s-total','🏢',all.length,'Total Satker (Bln '+state.bulan+')')+
-    stat('s-award','✅',cSangat,'Sangat Baik')+
-    stat('s-cyan','👍',cBaik,'Baik')+
-    stat('s-mid','⚠️',cKurang,'Kurang (5–20%)')+
-    stat('s-warn','🚨',cPer,'Peringatan (>20%)');
+function resetKnown() {
+  if (confirm('Reset data siswa tersimpan? Ini akan membuat SEMUA siswa terdeteksi sebagai "baru" pada fetch berikutnya.')) {
+    knownRegnos = new Set();
+    localStorage.removeItem(CONFIG.storageKey);
+    localStorage.removeItem(CONFIG.lastFetchKey);
+    updateStats();
+    showStatus('warning', '🗑️ Data tersimpan direset. Siswa akan terdeteksi baru pada fetch berikutnya.');
+    renderResults();
+  }
+}
 
-  var tT=0,tS=0;
-  all.forEach(function(r){tT+=r.m.totT;tS+=r.m.totS;});
-  var tDev=tT-tS;var pct=tT>0?Math.abs(tDev)/tT*100:0;
-  document.getElementById('rekapBulan').textContent='Bulan '+state.bulan+' ('+MONNAME[state.bulan]+')';
-  setTxt('rkTarget',fmtShort(tT),fmtRp(tT));
-  setTxt('rkSerap',fmtShort(tS),fmtRp(tS));
-  setTxt('rkDevNom',fmtShort(tDev),fmtRp(tDev));
-  document.getElementById('rkDevPct').textContent=pct.toFixed(2)+'%';
-  document.getElementById('rkDevKet').textContent=(pct<=5?'Sangat Baik':(pct<=20?'Kurang':'Peringatan'));
+// ============================================================
+// FETCH with multi-proxy fallback
+// ============================================================
+function getProxyEndpoints() {
+  const targetPath = `/listjurnalpendaftaran2`;
+  const endpoints = [];
+  
+  // 1. User's custom proxy URL (highest priority!)
+  // Proxy URL is passed via X-Proxy-URL header.
+  // The proxy server reads this header and uses it as the target URL.
+  const customProxy = localStorage.getItem(CONFIG.proxyUrlKey);
+  if (customProxy && customProxy.trim()) {
+    const cleanProxy = customProxy.trim().replace(/\/+$/, ''); // remove trailing slash
+    endpoints.push({
+      name: `Custom Proxy: ${cleanProxy}`,
+      url: cleanProxy + '/proxy', // proxy endpoint path
+      method: 'POST',
+      body: '', // body will be passed in headers
+      isCustom: true,
+    });
+  }
+  
+  // 2. Public CORS proxies as fallback
+  for (const proxy of CONFIG.corsProxies) {
+    if (proxy.includes('?url=') || proxy.endsWith('?')) {
+      const fullUrl = `${CONFIG.baseUrl}${targetPath}`;
+      endpoints.push({
+        name: `CORS Proxy: ${proxy}`,
+        url: `${proxy}${encodeURIComponent(fullUrl)}`,
+        method: 'POST_BODY_IN_QUERY', // special: POST data becomes URL params
+      });
+    } else {
+      endpoints.push({
+        name: `CORS Proxy: ${proxy}`,
+        url: `${proxy}${CONFIG.baseUrl}${targetPath}`,
+        method: 'POST',
+      });
+    }
+  }
+  
+  return endpoints;
+}
 
-  var rows=applyFilter(all);
-  var en=document.getElementById('emptyNote');
-  en.style.display=rows.length?'none':'block';
-  en.textContent = RAW.length? 'Tidak ada satker yang sesuai filter saat ini.' : '📥 Belum ada data. Unggah file Excel/CSV monitoring RPD Halaman III DIPA pada kotak unggah di atas untuk menampilkan deviasi satker.';
-  var html='';
-  rows.forEach(function(r,i){
-    var pos=i+1;var pcls=pos<=3?'p'+pos:'';
-    var cells='';
-    JENIS.forEach(function(j){
-      var d=r.m.per[j];
-      if(d.has){
-        cells+='<td class="num gl tgt" title="'+fmtRp(d.t)+'">'+fmtShort(d.t)+'</td>'+
-          '<td class="num rls" title="'+fmtRp(d.s)+'">'+fmtShort(d.s)+'</td>'+
-          '<td class="dev-cell '+devClass(d.dev)+'">'+d.dev.toFixed(1)+'%</td>';
-      } else {
-        cells+='<td class="num gl subtle">—</td><td class="num subtle">—</td><td class="num subtle">—</td>';
+async function fetchSpmbData(fsekolah, rjalur, rstatus, perPage = 500) {
+  const targetPath = `/listjurnalpendaftaran2`;
+  const body = `per_page=${perPage}&cari=&fsekolah=${fsekolah}&rjalur=${rjalur}&rstatus=${rstatus}`;
+  
+  const endpoints = getProxyEndpoints();
+  const errors = [];
+  
+  for (const endpoint of endpoints) {
+    try {
+      console.log(`[SPMB Monitor] Trying: ${endpoint.name}`);
+      
+      let response;
+      let headers = { 'Accept': 'text/html' };
+      let requestBody = null;
+      
+      if (endpoint.isCustom) {
+        // Custom proxy: send everything via headers so proxy forwards correctly
+        headers['X-Proxy-Method'] = 'POST';
+        headers['X-Proxy-URL'] = CONFIG.baseUrl + targetPath;
+        headers['X-Proxy-Body'] = body;
+        headers['Content-Type'] = 'text/plain'; // arbitrary, body sent as header
+        requestBody = '';
+      } else if (endpoint.method === 'POST') {
+        headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        requestBody = body;
+      } else if (endpoint.method === 'POST_BODY_IN_QUERY') {
+        // For GET-style proxies that don't support POST body
+        const url = `${CONFIG.baseUrl}${targetPath}?${body}`;
+        response = await fetch(`${endpoint.url.split('?')[0]}${encodeURIComponent(url)}`, {
+          method: 'GET',
+          headers,
+        });
+        // Skip to validation below
+        if (!response) continue;
+        
+        if (!response.ok) {
+          errors.push(`${endpoint.name}: HTTP ${response.status}`);
+          continue;
+        }
+        const text = await response.text();
+        if (!text || text.length < 100 || !text.includes('stdtable')) {
+          errors.push(`${endpoint.name}: response tidak berisi tabel`);
+          continue;
+        }
+        console.log(`[SPMB Monitor] ✓ Success via: ${endpoint.name} (${text.length} chars)`);
+        return { text, source: endpoint.name };
       }
-    });
-    html+='<tr>'+
-      '<td><span class="rankpos '+pcls+'">'+pos+'</span></td>'+
-      '<td><span class="kode">'+r.kode+'</span></td>'+
-      '<td class="satker-name">'+r.nama+'</td>'+
-      cells+
-      '<td class="dev-cell gl '+devClass(r.m.avg)+'">'+r.m.avg.toFixed(2)+'%</td>'+
-      '<td><span class="badge '+CAT_BADGE[r.m.cat]+'">'+CAT_ICON[r.m.cat]+' '+CAT_LABEL[r.m.cat]+'</span></td>'+
-    '</tr>';
-  });
-  document.getElementById('tbody').innerHTML=html;
-
-  // footer totals per belanja
-  var sums={};JENIS.forEach(function(j){sums[j]={t:0,s:0};});
-  var fT=0,fS=0;
-  rows.forEach(function(r){
-    JENIS.forEach(function(j){var d=r.m.per[j];if(d.has){sums[j].t+=d.t;sums[j].s+=d.s;}});
-    fT+=r.m.totT;fS+=r.m.totS;
-  });
-  var fpct=fT>0?Math.abs(fT-fS)/fT*100:0;
-  var fcells='';
-  JENIS.forEach(function(j){
-    var t=sums[j].t,s=sums[j].s;var dd=t>0?Math.abs(t-s)/t*100:0;
-    fcells+='<td class="num gl" title="'+fmtRp(t)+'">'+fmtShort(t)+'</td>'+
-      '<td class="num" title="'+fmtRp(s)+'">'+fmtShort(s)+'</td>'+
-      '<td class="dev-cell '+devClass(t>0?dd:null)+'">'+(t>0?dd.toFixed(1)+'%':'—')+'</td>';
-  });
-  document.getElementById('tfoot').innerHTML=rows.length?(
-    '<tr><td colspan="3">TOTAL ('+rows.length+' satker)</td>'+fcells+
-    '<td class="dev-cell gl '+devClass(fpct)+'">'+fpct.toFixed(2)+'%</td>'+
-    '<td></td></tr>'
-  ):'';
-
-  renderKum();
-}
-function setTxt(id,t,title){var e=document.getElementById(id);e.textContent=t;if(title)e.title=title;}
-
-// ====== TABEL PERINGKAT KUMULATIF ======
-function renderKum(){
-  var nb=state.bulan;
-  // header dinamis: hanya bulan 1..nb
-  var th='<tr><th>#</th><th>Kode</th><th>Nama Satker</th>';
-  for(var b=1;b<=nb;b++){ th+='<th class="num'+(b===1?' grp':'')+'">Dev. '+MONNAME[b].slice(0,3)+'</th>'; }
-  th+='<th class="num grp">Pembagi</th><th class="num grp">Dev. Kumulatif</th><th>Status</th></tr>';
-  document.getElementById('kumHead').innerHTML=th;
-
-  var rows=rowsKumulatif();
-  var en=document.getElementById('kumEmptyNote');
-  en.style.display=rows.length?'none':'block';
-  en.textContent = RAW.length? 'Tidak ada satker yang sesuai filter saat ini.' : '📥 Belum ada data. Unggah file terlebih dahulu.';
-
-  var html='';
-  rows.forEach(function(r,i){
-    var pos=i+1;var pcls=pos<=3?'p'+pos:'';
-    var mcells='';
-    for(var b=1;b<=nb;b++){
-      var v=r.monthly[b];
-      if(v==null) mcells+='<td class="num subtle'+(b===1?' gl':'')+'">—</td>';
-      else mcells+='<td class="dev-cell'+(b===1?' gl':'')+' '+devClass(v)+'">'+v.toFixed(1)+'%</td>';
+      
+      response = await fetch(endpoint.url, {
+        method: endpoint.method === 'POST' ? 'POST' : 'GET',
+        headers,
+        body: requestBody,
+      });
+      
+      if (!response.ok) {
+        errors.push(`${endpoint.name}: HTTP ${response.status}`);
+        continue;
+      }
+      
+      const text = await response.text();
+      
+      if (!text || text.length < 100) {
+        errors.push(`${endpoint.name}: response kosong (${text?.length || 0} chars)`);
+        continue;
+      }
+      
+      if (!text.includes('stdtable')) {
+        errors.push(`${endpoint.name}: response tidak berisi tabel`);
+        continue;
+      }
+      
+      // SUCCESS!
+      console.log(`[SPMB Monitor] ✓ Success via: ${endpoint.name} (${text.length} chars)`);
+      return { text, source: endpoint.name };
+    } catch (e) {
+      errors.push(`${endpoint.name}: ${e.message}`);
     }
-    html+='<tr>'+
-      '<td><span class="rankpos '+pcls+'">'+pos+'</span></td>'+
-      '<td><span class="kode">'+r.kode+'</span></td>'+
-      '<td class="satker-name">'+r.nama+'</td>'+
-      mcells+
-      '<td class="num gl" title="'+r.ndata+' bulan berdata">'+r.nbulan+'</td>'+
-      '<td class="dev-cell gl '+devClass(r.kum)+'">'+r.kum.toFixed(2)+'%</td>'+
-      '<td><span class="badge '+CAT_BADGE[r.cat]+'">'+CAT_ICON[r.cat]+' '+CAT_LABEL[r.cat]+'</span></td>'+
-    '</tr>';
-  });
-  document.getElementById('kumBody').innerHTML=html;
-
-  // footer rata-rata kumulatif seluruh satker tampil
-  if(rows.length){
-    var avgAll=rows.reduce(function(a,c){return a+c.kum;},0)/rows.length;
-    document.getElementById('kumFoot').innerHTML=
-      '<tr><td colspan="'+(3+nb)+'">RATA-RATA KUMULATIF ('+rows.length+' satker)</td>'+
-      '<td class="num gl"></td>'+
-      '<td class="dev-cell gl '+devClass(avgAll)+'">'+avgAll.toFixed(2)+'%</td>'+
-      '<td></td></tr>';
-  } else { document.getElementById('kumFoot').innerHTML=''; }
-}
-
-// ============ PDF ============
-// format ringkas untuk cetakan (mis. 1.000.000 -> "1 Jt", tanpa prefix Rp)
-function pdfNum(n){
-  var neg=n<0;n=Math.abs(n||0);var s;
-  if(n===0) s='0';
-  else if(n>=1e12) s=(n/1e12).toFixed(2)+' T';
-  else if(n>=1e9) s=(n/1e9).toFixed(2)+' M';
-  else if(n>=1e6) s=(n/1e6).toFixed(1)+' Jt';
-  else if(n>=1e3) s=(n/1e3).toFixed(0)+' Rb';
-  else s=Math.round(n).toString();
-  return (neg?'-':'')+s;
-}
-// warna deviasi & status mengikuti dashboard
-function pdfDevCls(d){if(d==null)return '';return d<=5?'dg':(d<=20?'da':'dr');}
-var PDF_BADGE={sangatbaik:'bg',baik:'bc',kurang:'ba',peringatan:'br'};
-function buildPrint(){
-  var all=rowsForMonth();var rows=applyFilter(all);
-  var catName=state.cat==='all'?'Semua Kategori':CAT_LABEL[state.cat];
-  function pRp(n){return Math.round(n||0).toLocaleString('id-ID');}
-  var tT=0,tS=0;
-  rows.forEach(function(r){tT+=r.m.totT;tS+=r.m.totS;});
-  var fpct=tT>0?Math.abs(tT-tS)/tT*100:0;
-  var now=new Date();var tgl=now.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
-  var body='';
-  rows.forEach(function(r,i){
-    var cells='';
-    JENIS.forEach(function(j){
-      var d=r.m.per[j];
-      if(d.has) cells+='<td class="n">'+pdfNum(d.t)+'</td><td class="n">'+pdfNum(d.s)+'</td><td class="n '+pdfDevCls(d.dev)+'">'+d.dev.toFixed(1)+'%</td>';
-      else cells+='<td class="n mut">—</td><td class="n mut">—</td><td class="n mut">—</td>';
-    });
-    body+='<tr><td class="c">'+(i+1)+'</td><td class="c k">'+r.kode+'</td><td>'+r.nama+'</td>'+cells+
-      '<td class="n b '+pdfDevCls(r.m.avg)+'">'+r.m.avg.toFixed(1)+'%</td>'+
-      '<td class="c"><span class="bdg '+PDF_BADGE[r.m.cat]+'">'+CAT_LABEL[r.m.cat]+'</span></td></tr>';
-  });
-  var fcells='';var sums={};JENIS.forEach(function(j){sums[j]={t:0,s:0};});
-  rows.forEach(function(r){JENIS.forEach(function(j){var d=r.m.per[j];if(d.has){sums[j].t+=d.t;sums[j].s+=d.s;}});});
-  JENIS.forEach(function(j){var t=sums[j].t,s=sums[j].s;var dd=t>0?Math.abs(t-s)/t*100:0;fcells+='<td class="n">'+pdfNum(t)+'</td><td class="n">'+pdfNum(s)+'</td><td class="n '+pdfDevCls(t>0?dd:null)+'">'+(t>0?dd.toFixed(1)+'%':'—')+'</td>';});
-  var foot='<tr class="ft"><td colspan="3">TOTAL ('+rows.length+' satker)</td>'+fcells+
-    '<td class="n '+pdfDevCls(fpct)+'">'+fpct.toFixed(1)+'%</td><td></td></tr>';
-  var doc='<html><head><meta charset="utf-8"><title>Monitoring Deviasi Hal III DIPA - Bln '+state.bulan+'</title><style>'+
-    '@page{size:A4 portrait;margin:9mm}'+
-    '*{font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
-    'body{margin:0;color:#0f172a;font-size:8px}'+
-    'h1{font-size:14px;margin:0 0 2px;color:#0f766e}.sub{font-size:9.5px;color:#475569;margin:0 0 2px}'+
-    '.meta{font-size:8.5px;color:#64748b;margin-bottom:7px}'+
-    '.rk{display:flex;gap:6px;margin:7px 0;flex-wrap:wrap}'+
-    '.rk div{flex:1;border:1px solid #cbd5e1;border-radius:5px;padding:5px 7px;min-width:75px;background:#f0fdfa}'+
-    '.rk b{display:block;font-size:10px;color:#0f766e}.rk small{color:#64748b;font-size:7px}'+
-    'table{border-collapse:collapse;width:100%;font-size:6.6px;margin-top:5px;table-layout:fixed}'+
-    'th,td{border:1px solid #cbd5e1;padding:2px 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
-    'th{background:#0d9488;color:#fff;font-size:6px;text-transform:uppercase}'+
-    'th.g{background:#0f766e}'+
-    'td.n{text-align:right}td.c{text-align:center}td.b{font-weight:bold}td.mut{color:#94a3b8}'+
-    'td.k{font-family:monospace;font-weight:bold}'+
-    'td.dg{color:#059669;font-weight:bold}td.da{color:#d97706;font-weight:bold}td.dr{color:#dc2626;font-weight:bold}'+
-    '.bdg{display:inline-block;padding:1px 4px;border-radius:6px;font-weight:bold;font-size:6px}'+
-    '.bdg.bg{background:#d1fae5;color:#065f46}.bdg.bc{background:#cffafe;color:#0e7490}'+
-    '.bdg.ba{background:#fef3c7;color:#92400e}.bdg.br{background:#fee2e2;color:#991b1b}'+
-    'tr.ft td{background:#ccfbf1;font-weight:bold}'+
-    'tbody tr:nth-child(even){background:#f6fbfa}'+
-    '.lg{font-size:7px;color:#475569;margin-top:7px}'+
-    '</style></head><body>'+
-    '<h1>Monitoring Deviasi Halaman III DIPA Satker</h1>'+
-    '<p class="sub">Target Rencana (RPD) vs Realisasi Penyerapan — Bulan '+state.bulan+' ('+MONNAME[state.bulan]+')</p>'+
-    '<p class="meta">Kategori: <b>'+catName+'</b> &nbsp;·&nbsp; Jumlah satker: <b>'+rows.length+'</b> &nbsp;·&nbsp; Dicetak: '+tgl+'</p>'+
-    '<div class="rk"><div><small>Total Target</small><b>Rp '+pRp(tT)+'</b></div>'+
-      '<div><small>Total Penyerapan</small><b>Rp '+pRp(tS)+'</b></div>'+
-      '<div><small>Total Deviasi</small><b>Rp '+pRp(tT-tS)+'</b></div>'+
-      '<div><small>Deviasi Agregat</small><b>'+fpct.toFixed(2)+'%</b></div></div>'+
-    '<table><colgroup><col style="width:2.6%"><col style="width:5.5%"><col style="width:17%">'+
-      '<col span="12" style="width:5.4%"><col style="width:5%"><col style="width:9%"></colgroup>'+
-    '<thead><tr><th rowspan="2">#</th><th rowspan="2">Kode</th><th rowspan="2">Nama Satker</th>'+
-      '<th colspan="3" class="g">Belanja 51</th><th colspan="3" class="g">Belanja 52</th>'+
-      '<th colspan="3" class="g">Belanja 53</th><th colspan="3" class="g">Belanja 57</th>'+
-      '<th rowspan="2">Dev Rt²</th><th rowspan="2">Status</th></tr>'+
-    '<tr><th>Target</th><th>Real</th><th>Dev</th><th>Target</th><th>Real</th><th>Dev</th>'+
-      '<th>Target</th><th>Real</th><th>Dev</th><th>Target</th><th>Real</th><th>Dev</th></tr></thead>'+
-    '<tbody>'+body+'</tbody><tfoot>'+foot+'</tfoot></table>'+
-    '<p class="lg">Nominal disingkat: Rb=ribu, Jt=juta, M=miliar, T=triliun (mis. 1.000.000 = 1 Jt). Deviasi = |Target − Realisasi| ÷ Target × 100%. '+
-    'Sangat Baik = rata² ≤5% &amp; semua belanja ≤5% · Baik = rata² ≤5% (ada belanja &gt;5%) · Kurang = rata² &gt;5%–20% · Peringatan = rata² &gt;20%. '+
-    'Peringkat diurutkan dari deviasi rata-rata terkecil ke terbesar.</p>'+
-    '</body></html>';
-  return doc;
-}
-function doPrint(){
-  var w=window.open('','_blank');
-  if(!w){alert('Mohon izinkan pop-up untuk mencetak PDF.');return;}
-  w.document.open();w.document.write(buildPrint());w.document.close();w.focus();
-  setTimeout(function(){w.print();},450);
-}
-
-// ============ PDF KUMULATIF ============
-function buildPrintKum(){
-  var nb=state.bulan;
-  var rows=rowsKumulatif();
-  var catName=state.cat==='all'?'Semua Kategori':CAT_LABEL[state.cat];
-  var now=new Date();var tgl=now.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
-  // header
-  var thMon='';for(var b=1;b<=nb;b++){thMon+='<th>'+MONNAME[b].slice(0,3)+'</th>';}
-  var body='';
-  rows.forEach(function(r,i){
-    var mc='';
-    for(var b=1;b<=nb;b++){var v=r.monthly[b];mc+=(v==null)?'<td class="n mut">—</td>':'<td class="n '+pdfDevCls(v)+'">'+v.toFixed(1)+'%</td>';}
-    body+='<tr><td class="c">'+(i+1)+'</td><td class="c k">'+r.kode+'</td><td>'+r.nama+'</td>'+mc+
-      '<td class="c">'+r.nbulan+'</td>'+
-      '<td class="n b '+pdfDevCls(r.kum)+'">'+r.kum.toFixed(2)+'%</td>'+
-      '<td class="c"><span class="bdg '+PDF_BADGE[r.cat]+'">'+CAT_LABEL[r.cat]+'</span></td></tr>';
-  });
-  var avgAll=rows.length?rows.reduce(function(a,c){return a+c.kum;},0)/rows.length:0;
-  var foot='<tr class="ft"><td colspan="'+(3+nb)+'">RATA-RATA KUMULATIF ('+rows.length+' satker)</td>'+
-    '<td></td><td class="n '+pdfDevCls(avgAll)+'">'+avgAll.toFixed(2)+'%</td><td></td></tr>';
-  // lebar kolom dinamis
-  var monW=(nb>0)?(38/nb).toFixed(2):5;
-  var doc='<html><head><meta charset="utf-8"><title>Peringkat Deviasi Kumulatif - s.d. Bln '+nb+'</title><style>'+
-    '@page{size:A4 portrait;margin:9mm}'+
-    '*{font-family:Arial,Helvetica,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
-    'body{margin:0;color:#0f172a;font-size:8px}'+
-    'h1{font-size:14px;margin:0 0 2px;color:#0f766e}.sub{font-size:9.5px;color:#475569;margin:0 0 2px}'+
-    '.meta{font-size:8.5px;color:#64748b;margin-bottom:7px}'+
-    'table{border-collapse:collapse;width:100%;font-size:6.6px;margin-top:5px;table-layout:fixed}'+
-    'th,td{border:1px solid #cbd5e1;padding:2px 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'+
-    'th{background:#0d9488;color:#fff;font-size:6px;text-transform:uppercase}'+
-    'td.n{text-align:right}td.c{text-align:center}td.b{font-weight:bold}td.mut{color:#94a3b8}'+
-    'td.k{font-family:monospace;font-weight:bold}'+
-    'td.dg{color:#059669;font-weight:bold}td.da{color:#d97706;font-weight:bold}td.dr{color:#dc2626;font-weight:bold}'+
-    '.bdg{display:inline-block;padding:1px 4px;border-radius:6px;font-weight:bold;font-size:6px}'+
-    '.bdg.bg{background:#d1fae5;color:#065f46}.bdg.bc{background:#cffafe;color:#0e7490}'+
-    '.bdg.ba{background:#fef3c7;color:#92400e}.bdg.br{background:#fee2e2;color:#991b1b}'+
-    'tr.ft td{background:#ccfbf1;font-weight:bold}'+
-    'tbody tr:nth-child(even){background:#f6fbfa}'+
-    '.lg{font-size:7px;color:#475569;margin-top:7px}'+
-    '</style></head><body>'+
-    '<h1>Peringkat Deviasi Kumulatif Satker</h1>'+
-    '<p class="sub">Rata-rata deviasi kumulatif Januari s.d. '+MONNAME[nb]+' (÷ '+nb+' bulan)</p>'+
-    '<p class="meta">Kategori: <b>'+catName+'</b> &nbsp;·&nbsp; Jumlah satker: <b>'+rows.length+'</b> &nbsp;·&nbsp; Rata-rata kumulatif: <b>'+avgAll.toFixed(2)+'%</b> &nbsp;·&nbsp; Dicetak: '+tgl+'</p>'+
-    '<table><colgroup><col style="width:3%"><col style="width:6%"><col style="width:20%">'+
-      '<col span="'+nb+'" style="width:'+monW+'%"><col style="width:5%"><col style="width:9%"><col style="width:9%"></colgroup>'+
-    '<thead><tr><th>#</th><th>Kode</th><th>Nama Satker</th>'+thMon+'<th>Pembagi</th><th>Dev. Kum</th><th>Status</th></tr></thead>'+
-    '<tbody>'+body+'</tbody><tfoot>'+foot+'</tfoot></table>'+
-    '<p class="lg">Dev. Kumulatif = (Σ rata-rata deviasi bulanan Jan s.d. '+MONNAME[nb]+') ÷ '+nb+' (nomor bulan periode). '+
-    'Sangat Baik = kum ≤5% · Kurang = kum &gt;5%–20% · Peringatan = kum &gt;20%. Diurutkan dari deviasi kumulatif terkecil ke terbesar.</p>'+
-    '</body></html>';
-  return doc;
-}
-function doPrintKum(){
-  var w=window.open('','_blank');
-  if(!w){alert('Mohon izinkan pop-up untuk mencetak PDF.');return;}
-  w.document.open();w.document.write(buildPrintKum());w.document.close();w.focus();
-  setTimeout(function(){w.print();},450);
-}
-
-// ============ PIAGAM PENGHARGAAN ============
-var KOP={
-  l1:'KEMENTERIAN KEUANGAN REPUBLIK INDONESIA',
-  l2:'DIREKTORAT JENDERAL PERBENDAHARAAN',
-  l3:'KANTOR WILAYAH DIREKTORAT JENDERAL PERBENDAHARAAN PROVINSI JAWA TENGAH',
-  l4:'KANTOR PELAYANAN PERBENDAHARAAN NEGARA TIPE A1 PEKALONGAN',
-  a1:'JALAN BAHAGIA NO. 44, PEKALONGAN 51117; TELEPON (0285) 421476; FAKSIMILE (0285) 421479;',
-  a2:'LAMAN www.djpb.kemenkeu.go.id/kppn/pekalongan'
-};
-var PG_PREDIKAT={sangatbaik:'SANGAT BAIK',baik:'BAIK',kurang:'KURANG',peringatan:'PERLU PERHATIAN'};
-var PG_NARASI={
-  sangatbaik:'atas capaian kinerja yang SANGAT BAIK dalam pengelolaan deviasi penyerapan anggaran terhadap rencana penarikan dana (Halaman III DIPA), dengan tingkat deviasi yang sangat terkendali.',
-  baik:'atas capaian kinerja yang BAIK dalam pengelolaan deviasi penyerapan anggaran terhadap rencana penarikan dana (Halaman III DIPA).',
-  kurang:'sebagai bentuk pembinaan atas capaian pengelolaan deviasi penyerapan anggaran terhadap rencana penarikan dana (Halaman III DIPA) yang masih perlu ditingkatkan.',
-  peringatan:'sebagai PERINGATAN dan dorongan untuk memperbaiki pengelolaan deviasi penyerapan anggaran terhadap rencana penarikan dana (Halaman III DIPA).'
-};
-var ROMAWI=['','I','II','III','IV'];
-
-function pgPeriodeOptions(){
-  var jenis=document.getElementById('pgPeriodeJenis').value;
-  var sel=document.getElementById('pgPeriodeDetail');
-  var opt='';
-  if(jenis==='bulanan'){ for(var m=1;m<=12;m++) opt+='<option value="'+m+'">'+MONNAME[m]+'</option>'; }
-  else if(jenis==='triwulan'){ for(var t=1;t<=4;t++) opt+='<option value="'+t+'">Triwulan '+ROMAWI[t]+'</option>'; }
-  else if(jenis==='semester'){ opt='<option value="1">Semester 1</option><option value="2">Semester 2</option>'; }
-  else { opt='<option value="0">Tahun Penuh</option>'; }
-  sel.innerHTML=opt;
-  // default ke bulan state.bulan jika bulanan
-  if(jenis==='bulanan') sel.value=String(state.bulan);
-}
-function pgPeriodeText(){
-  var jenis=document.getElementById('pgPeriodeJenis').value;
-  var d=document.getElementById('pgPeriodeDetail').value;
-  var th=document.getElementById('pgTahun').value||'';
-  if(jenis==='bulanan') return 'Bulan '+MONNAME[+d]+' '+th;
-  if(jenis==='triwulan') return 'Triwulan '+ROMAWI[+d]+' Tahun '+th;
-  if(jenis==='semester') return 'Semester '+d+' Tahun '+th;
-  return 'Tahun '+th;
-}
-function pgFillFromSatker(val){
-  // val bisa "kode - nama" dari datalist
-  if(!RAW.length) return;
-  var key=val.split(' - ')[0].trim();
-  var map=buildIndex();
-  var found=null;
-  Object.keys(map).forEach(function(k){var sk=map[k];if(found)return;if(sk.kode===pad6(key)||sk.nama.toLowerCase()===val.toLowerCase()||sk.nama.toLowerCase()===key.toLowerCase())found=sk;});
-  if(!found){
-    // coba cari sebagian nama
-    Object.keys(map).forEach(function(k){var sk=map[k];if(found)return;if(sk.nama.toLowerCase().indexOf(key.toLowerCase())>=0)found=sk;});
   }
-  if(!found) return;
-  document.getElementById('pgKode').value=found.kode;
-  document.getElementById('pgNama').value=found.nama;
-  // kategori dari kumulatif s.d. bulan terpilih
-  var rows=rowsKumulatif();
-  var row=rows.find(function(r){return r.kode===found.kode && r.nama===found.nama;});
-  if(row){ document.getElementById('pgKategori').value=row.cat; }
-  pgSyncNarasi();
-  renderPiagam();
-}
-function pgSyncNarasi(){
-  var k=document.getElementById('pgKategori').value;
-  var el=document.getElementById('pgNarasi');
-  if(!el.dataset.touched){ el.value=PG_NARASI[k]||''; }
-}
-function buildPiagamHTML(forExport){
-  var kode=document.getElementById('pgKode').value||'……';
-  var nama=document.getElementById('pgNama').value||'……………………………';
-  var kat=document.getElementById('pgKategori').value;
-  var predikat=PG_PREDIKAT[kat]||'';
-  var narasi=document.getElementById('pgNarasi').value||PG_NARASI[kat]||'';
-  var periode=pgPeriodeText();
-  var nomor=document.getElementById('pgNomor').value||'@NomorND';
-  var kota=document.getElementById('pgKota').value||'';
-  var tgl=document.getElementById('pgTanggal').value||'@TanggalND';
-  var jabatan=document.getElementById('pgJabatan').value||'';
-  var namaTtd=document.getElementById('pgNamaTtd').value||'';
-  var nip=document.getElementById('pgNip').value||'';
-  var nomorND=document.getElementById('pgNomorND').value||'@NomorND';
-  var tanggalND=document.getElementById('pgTanggalND').value||'@TanggalND';
-  var katColor={sangatbaik:'#047857',baik:'#0e7490',kurang:'#b45309',peringatan:'#b91c1c'}[kat]||'#0f766e';
-
-  var css=''+
-   '.pg{width:210mm;min-height:297mm;margin:0 auto;background:#fff;color:#1a1a1a;box-sizing:border-box;'+
-     'padding:18mm 20mm;font-family:"Times New Roman",Georgia,serif;position:relative;'+
-     'border:3px double #b8860b;outline:1px solid #b8860b;outline-offset:6px;}'+
-   '.pg-inner{border:2px solid #d4af37;padding:14mm 14mm 12mm;min-height:calc(297mm - 36mm);box-sizing:border-box;position:relative}'+
-   '.pg-kop{display:flex;align-items:center;gap:12px;border-bottom:3px solid #1a1a1a;padding-bottom:7px;margin-bottom:4px}'+
-   '.pg-kop .lg{width:88px;flex:none;display:flex;justify-content:center}'+
-   '.pg-kop .lg img{width:84px;height:auto}'+
-   '.pg-kop .kt{flex:1;text-align:center;line-height:1.2}'+
-   '.pg-kop .kt .a{font-size:13.5px;font-weight:bold;letter-spacing:.2px}'+
-   '.pg-kop .kt .b{font-size:13.5px;font-weight:bold;letter-spacing:.2px}'+
-   '.pg-kop .kt .c{font-size:11px;font-weight:bold;letter-spacing:0}'+
-   '.pg-kop .kt .d{font-size:15px;font-weight:bold;letter-spacing:.2px;margin-top:1px}'+
-   '.pg-kop .kt .e{font-size:8.5px;font-weight:normal;margin-top:3px;line-height:1.35}'+
-   '.pg-title{text-align:center;margin:26px 0 4px}'+
-   '.pg-title h1{font-size:34px;letter-spacing:10px;margin:0;font-weight:bold;color:#0f172a;text-transform:uppercase}'+
-   '.pg-title .nm{font-size:14px;letter-spacing:1px;margin-top:6px;color:#444}'+
-   '.pg-deco{width:160px;height:3px;background:#d4af37;margin:10px auto 0;position:relative}'+
-   '.pg-deco:before,.pg-deco:after{content:"";position:absolute;top:-3px;width:9px;height:9px;background:#d4af37;transform:rotate(45deg)}'+
-   '.pg-deco:before{left:-6px}.pg-deco:after{right:-6px}'+
-   '.pg-body{text-align:center;margin-top:30px;font-size:15px;line-height:1.9}'+
-   '.pg-body .lead{font-size:15px}'+
-   '.pg-sat{margin:14px 0 6px}'+
-   '.pg-sat .nama{font-size:26px;font-weight:bold;color:#0f172a;text-transform:uppercase;line-height:1.25}'+
-   '.pg-sat .kode{font-size:13px;color:#555;margin-top:2px}'+
-   '.pg-pred{display:inline-block;margin:14px 0 6px;padding:8px 26px;border:2px solid '+katColor+';color:'+katColor+';'+
-     'font-size:22px;font-weight:bold;letter-spacing:3px;border-radius:8px;text-transform:uppercase}'+
-   '.pg-narasi{max-width:150mm;margin:14px auto 0;font-size:14px;line-height:1.8;text-align:center}'+
-   '.pg-periode{margin-top:10px;font-size:14px;font-weight:bold}'+
-   '.pg-ttd{margin-top:30px;display:flex;justify-content:flex-end}'+
-   '.pg-ttd .box{width:80mm;text-align:center;font-size:12.5px;line-height:1.55}'+
-   '.pg-ttd .place{margin-bottom:2px}'+
-   '.pg-ttd .jab{margin-top:2px}'+
-   '.pg-ttd .el{color:#8a8a8a;font-style:italic;font-size:10.5px;line-height:1.4;margin:8px 0 6px}'+
-   '.pg-ttd .nm{font-weight:bold;text-decoration:underline;margin-top:0}'+
-   '.pg-ttd .nip{margin-top:1px}'+
-   '.pg-nomor{position:absolute;left:14mm;bottom:8mm;font-size:11px;color:#666}';
-
-  var html=''+
-   '<div class="pg"><div class="pg-inner">'+
-     '<div class="pg-kop">'+
-       '<div class="lg"><img src="'+LOGO_URI+'" alt="Logo Kemenkeu" crossorigin="anonymous"></div>'+
-       '<div class="kt">'+
-         '<div class="a">'+KOP.l1+'</div>'+
-         '<div class="b">'+KOP.l2+'</div>'+
-         '<div class="c">'+KOP.l3+'</div>'+
-         '<div class="d">'+KOP.l4+'</div>'+
-         '<div class="e">'+KOP.a1+'<br>'+KOP.a2+'</div>'+
-       '</div>'+
-       '<div class="lg"></div>'+
-     '</div>'+
-     '<div class="pg-title"><h1>PIAGAM</h1><div class="nm">PENGHARGAAN</div><div class="pg-deco"></div></div>'+
-     '<div class="pg-body">'+
-       '<div style="font-size:13px;color:#555">Nomor: '+nomor+'</div>'+
-       '<div class="lead" style="margin-top:18px">Diberikan kepada:</div>'+
-       '<div class="pg-sat"><div class="nama">'+nama+'</div><div class="kode">Kode Satker: '+kode+'</div></div>'+
-       '<div class="lead">dengan predikat</div>'+
-       '<div class="pg-pred">'+predikat+'</div>'+
-       '<div class="pg-narasi">'+narasi+'</div>'+
-       '<div class="pg-periode">Periode: '+periode+'</div>'+
-     '</div>'+
-     '<div class="pg-ttd"><div class="box">'+
-       '<div class="place">'+(kota?kota+', ':'')+tgl+'</div>'+
-       '<div class="jab">'+jabatan+'</div>'+
-       '<div class="el">Ditandatangani secara elektronik.<br>Nomor: '+nomorND+'&nbsp;&nbsp;Tanggal: '+tanggalND+'</div>'+
-       '<div class="nm">'+namaTtd+'</div>'+
-       '<div class="nip">'+nip+'</div>'+
-     '</div></div>'+
-   '</div></div>';
-  return {css:css,html:html};
-}
-function renderPiagam(){
-  var p=buildPiagamHTML(false);
-  var wrap=document.getElementById('piagamPreviewWrap');
-  var PW=793.7, PH=1122.5; // 210mm x 297mm dalam px @96dpi
-  var avail=(wrap?wrap.clientWidth:800)-36;
-  var scale=Math.min(1, avail/PW); if(scale<0.2) scale=0.2;
-  var ow=Math.round(PW*scale), oh=Math.round(PH*scale);
-  document.getElementById('piagamPreview').innerHTML='<style>'+p.css+'</style>'+
-    '<div style="width:'+ow+'px;height:'+oh+'px;margin:0 auto;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.18)">'+
-    '<div style="transform:scale('+scale.toFixed(4)+');transform-origin:top left;width:'+PW+'px">'+p.html+'</div></div>';
-}
-function buildPiagamDoc(){
-  var p=buildPiagamHTML(true);
-  return '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Piagam Penghargaan</title>'+
-    '<style>@page{size:A4 portrait;margin:0}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
-    'body{margin:0}'+p.css+'</style></head><body>'+p.html+'</body></html>';
-}
-function doPiagamPdf(){
-  var w=window.open('','_blank');
-  if(!w){alert('Mohon izinkan pop-up untuk mencetak PDF.');return;}
-  w.document.open();w.document.write(buildPiagamDoc());w.document.close();w.focus();
-  setTimeout(function(){w.print();},700);
-}
-function doPiagamWord(){
-  // .doc HTML — dibuka MS Word; gunakan ukuran A4 via section
-  var p=buildPiagamHTML(true);
-  var head='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'+
-    '<head><meta charset="utf-8"><title>Piagam Penghargaan</title>'+
-    '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->'+
-    '<style>@page WordSection1{size:210mm 297mm;margin:8mm}div.WordSection1{page:WordSection1}'+p.css+'</style></head>';
-  var doc=head+'<body><div class="WordSection1">'+p.html+'</div></body></html>';
-  var blob=new Blob(['\ufeff'+doc],{type:'application/msword'});
-  var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');
-  var nm=(document.getElementById('pgNama').value||'piagam').replace(/[^a-z0-9]+/gi,'_').slice(0,40);
-  a.href=url;a.download='Piagam_'+nm+'.doc';document.body.appendChild(a);a.click();
-  setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},500);
-}
-function refreshSatkerList(){
-  var dl=document.getElementById('satkerList');
-  if(!dl) return;
-  var map=buildIndex();var seen={};var opt='';
-  Object.keys(map).forEach(function(k){var sk=map[k];var key=sk.kode+sk.nama;if(seen[key])return;seen[key]=1;opt+='<option value="'+sk.kode+' - '+sk.nama+'">';});
-  dl.innerHTML=opt;
+  
+  // All failed
+  throw new Error('Semua proxy gagal:\n' + errors.slice(0, 3).map(e => '• ' + e).join('\n') + 
+                  (errors.length > 3 ? `\n... dan ${errors.length - 3} lainnya` : '') +
+                  '\n\nRekomendasi: Set "Proxy URL" di konfigurasi (misal Cloudflare Workers Anda).');
 }
 
-// ============ DATA LOADING ============
-function rowsToData(aoa){
-  // find header rows: locate row containing 'Kode Satker' then data after the two-row header
-  // Standard layout: NO, Kode Satker, Nama, Kode KPPN, Kode Eselon1, Periode, then 4x(51,52,53,57) Rencana/Penyerapan/Deviasi/%Deviasi
-  // We map by position relative to the row whose first numeric is data. Robust approach: find header.
-  var headerRow=-1;
-  for(var i=0;i<Math.min(aoa.length,15);i++){
-    var joined=(aoa[i]||[]).join('|').toLowerCase();
-    if(joined.indexOf('kode satker')>=0){headerRow=i;break;}
+function saveProxyUrl() {
+  const url = document.getElementById('proxyUrl').value.trim();
+  if (url) {
+    localStorage.setItem(CONFIG.proxyUrlKey, url);
+    showStatus('success', `✅ Proxy URL disimpan: ${url}`);
+  } else {
+    localStorage.removeItem(CONFIG.proxyUrlKey);
+    showStatus('info', 'ℹ️ Proxy URL dihapus. Akan pakai CORS proxy publik.');
   }
-  var start = headerRow>=0? headerRow+2 : 0;
-  var out=[];
-  for(var r=start;r<aoa.length;r++){
-    var row=aoa[r]||[];
-    var no=row[0];
-    if(no===undefined||no===null||String(no).trim()==='') continue;
-    if(!/^\d+$/.test(String(no).trim())) continue;
-    var kode=pad6(String(row[1]||'').replace(/\D/g,''));
-    if(!kode||kode==='000000') continue;
-    var nama=String(row[2]||'').trim();
-    var kppn=String(row[3]||'').trim();
-    var es1=String(row[4]||'').trim();
-    var bulan=parseInt(String(row[5]||'').replace(/\D/g,''),10);
-    if(!bulan||bulan<1||bulan>12) continue;
-    out.push([kode,nama,kppn,es1,bulan,
-      num(row[6]),num(row[7]),num(row[8]),num(row[9]),
-      num(row[10]),num(row[11]),num(row[12]),num(row[13])]);
-  }
-  return out;
-}
-function num(x){
-  if(x===undefined||x===null) return 0;
-  if(typeof x==='number') return isNaN(x)?0:Math.round(x);
-  var s=String(x).trim().replace(/"/g,'');
-  if(s===''||s==='-') return 0;
-  // handle indonesian decimal/scientific like "8,36E+08"; strip stray chars
-  var v=parseFloat(s.replace(',', '.').replace(/[^0-9.eE+\-]/g,''));
-  return isNaN(v)?0:Math.round(v);
+  updateProxyStatus();
 }
 
-function loadData(data,label){
-  if(!data||!data.length){
-    showMsg('err','❌ Tidak ada baris data valid ditemukan dalam file.');
+function updateProxyStatus() {
+  const url = localStorage.getItem(CONFIG.proxyUrlKey);
+  const el = document.getElementById('proxyUrl');
+  if (el && url) el.value = url;
+}
+
+async function testProxy() {
+  const url = document.getElementById('proxyUrl').value.trim();
+  if (!url) {
+    alert('Masukkan Proxy URL dulu lalu klik Test.');
     return;
   }
-  RAW=data;
-  // months present
-  initMonth();
-  document.getElementById('drop').classList.add('loaded');
-  document.getElementById('huTitle').textContent='Data dimuat';
-  document.getElementById('huSub').innerHTML=label+' · <u>klik untuk ganti file</u>';
-  document.getElementById('btnClear').classList.remove('hidden');
-  showMsg('ok','✅ Berhasil memuat '+data.length+' baris dari '+ new Set(data.map(function(d){return d[0]+d[3];})).size +' satker.');
-  render();
-  refreshSatkerList();
-}
-function clearData(){
-  RAW=[];
-  initMonth();
-  document.getElementById('drop').classList.remove('loaded');
-  document.getElementById('huTitle').textContent='Unggah file Excel / CSV';
-  document.getElementById('huSub').innerHTML='Tarik ke sini atau <u>klik untuk memilih</u> · .xlsx · .xls · .csv';
-  document.getElementById('btnClear').classList.add('hidden');
-  document.getElementById('fileInput').value='';
-  showMsg('','');
-  render();
-  refreshSatkerList();
-}
-function showMsg(type,txt){
-  var box=document.getElementById('uploadMsg');
-  if(!txt){box.innerHTML='';return;}
-  box.innerHTML='<div class="alert '+(type==='err'?'err':'ok')+'">'+txt+'</div>';
-}
-
-function handleFile(file){
-  var name=file.name;var ext=name.split('.').pop().toLowerCase();
-  var reader=new FileReader();
-  reader.onload=function(e){
-    try{
-      var wb=XLSX.read(e.target.result,{type:'array'});
-      var ws=wb.Sheets[wb.SheetNames[0]];
-      var aoa=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''});
-      var data=rowsToData(aoa);
-      loadData(data, name);
-    }catch(err){
-      showMsg('err','❌ Gagal membaca file: '+err.message);
+  
+  showStatus('info', `🔧 Testing proxy ${url}...`);
+  
+  try {
+    const cleanUrl = url.replace(/\/+$/, '');
+    // Test endpoint: GET /proxy/listjurnalpendaftaran2 (path-based)
+    const testUrl = `${cleanUrl}/proxy/listjurnalpendaftaran2`;
+    const response = await fetch(testUrl, { method: 'GET' });
+    const text = await response.text();
+    
+    if (response.ok && text.includes('stdtable')) {
+      showStatus('success', `✅ Proxy BERHASIL! Response ${text.length} chars, ada tabel data.`);
+      alert(`✅ Proxy OK!\n\nURL: ${cleanUrl}\nResponse: ${text.length} chars\nTabel ditemukan: Ya\n\nSekarang klik "Fetch Data Terbaru".`);
+    } else if (response.ok) {
+      showStatus('warning', `⚠️ Proxy responding tapi tanpa tabel. Mungkin URL salah.`);
+      alert(`⚠️ Proxy responding tapi tidak mengembalikan tabel.\n\nResponse: ${text.length} chars\nTabel ditemukan: Tidak\n\nCek apakah URL Worker benar dan endpoint /proxy/listjurnalpendaftaran2 berfungsi.`);
+    } else {
+      showStatus('error', `❌ Proxy returned HTTP ${response.status}`);
+      alert(`❌ Error: HTTP ${response.status}\n\nURL Worker mungkin salah atau belum di-deploy.`);
     }
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function initMonth(){
-  var sel=document.getElementById('fMonth');
-  var present=[...new Set(RAW.map(function(r){return r[IDX.bulan];}))];
-  var html='';
-  for(var m=1;m<=12;m++){
-    var has=present.indexOf(m)>=0;
-    html+='<option value="'+m+'"'+(has?'':' disabled')+'>Bulan '+m+' — '+MONNAME[m]+(has?'':' (tidak ada data)')+'</option>';
+  } catch (e) {
+    showStatus('error', `❌ Test gagal: ${e.message}`);
+    alert(`❌ Test gagal: ${e.message}\n\nPastikan:\n1. Worker sudah di-deploy ke Cloudflare\n2. URL benar (contoh: https://my-worker.workers.dev)\n3. Internet Anda stabil`);
   }
-  sel.innerHTML=html;
-  var last=present.length?Math.max.apply(null,present):1;
-  state.bulan=last;sel.value=last;
-}
-function syncTabs(){
-  document.querySelectorAll('#catTabs button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-cat')===state.cat);});
-  document.getElementById('fCat').value=state.cat;
 }
 
-document.addEventListener('DOMContentLoaded',function(){
-  var fi=document.getElementById('fileInput');var drop=document.getElementById('drop');
-  fi.addEventListener('change',function(e){if(e.target.files[0])handleFile(e.target.files[0]);});
-  ['dragover','dragenter'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('drag');});});
-  ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('drag');});});
-  drop.addEventListener('drop',function(e){if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+// ============================================================
+// DIAGNOSE function
+// ============================================================
+async function diagnose() {
+  showStatus('info', '🔧 Menjalankan diagnose...');
+  console.log('=== SPMB Monitor Diagnose ===');
+  
+  const results = [];
+  
+  // Test 1: Local Python proxy
+  try {
+    const response = await fetch(CONFIG.localProxy + '/listjurnalpendaftaran2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'per_page=5&cari=&fsekolah=309&rjalur=3&rstatus=2',
+    });
+    const text = await response.text();
+    const hasTable = text.includes('stdtable');
+    results.push(hasTable 
+      ? `✅ Local Python Proxy BERJALAN (${CONFIG.localProxy}): ${text.length} chars, ada tabel` 
+      : `⚠️ Local Proxy responded tapi tanpa tabel: ${text.length} chars`);
+    console.log(`[Diagnose] Local proxy: ${hasTable ? 'OK' : 'NO TABLE'}`);
+  } catch (e) {
+    results.push(`❌ Local Python Proxy TIDAK berjalan. Jalankan "python3 spmb-proxy.py" di terminal.`);
+    console.warn(`[Diagnose] Local proxy not running:`, e.message);
+  }
+  
+  // Test 2: Public CORS proxies
+  for (const proxy of CONFIG.corsProxies) {
+    try {
+      const response = await fetch(proxy, { method: 'GET' });
+      results.push(`✅ CORS Proxy ${proxy}: HTTP ${response.status}`);
+    } catch (e) {
+      results.push(`❌ CORS Proxy ${proxy}: ${e.message.substring(0, 80)}`);
+    }
+  }
+  
+  // Test 3: Try SPMB fetch via available proxy
+  try {
+    const { text, source } = await fetchSpmbData(309, 3, 1, 10);
+    const rowsMatch = (text.match(/<tr[^>]*>/g) || []).length - 1;
+    results.push(`✅ SPMB fetch OK via: ${source} (${rowsMatch} rows)`);
+  } catch (e) {
+    results.push(`❌ SPMB fetch gagal: ${e.message.substring(0, 150)}`);
+  }
+  
+  // Test 4: localStorage status
+  const known = localStorage.getItem(CONFIG.storageKey);
+  const cache = localStorage.getItem(CONFIG.verifyCacheKey);
+  const prev = localStorage.getItem(CONFIG.previousStateKey);
+  results.push(`ℹ️ localStorage: known=${known ? JSON.parse(known).length : 0}, cache=${cache ? Object.keys(JSON.parse(cache)).length : 0}, prev=${prev ? Object.keys(JSON.parse(prev)).length : 0}`);
+  
+  // Test 5: AllStudents state
+  results.push(`ℹ️ allStudents saat ini: ${allStudents.length} siswa`);
+  
+  // Show results
+  const summary = results.join('\n');
+  console.log('=== Diagnose Results ===\n' + summary);
+  
+  alert('🔧 Hasil Diagnose:\n\n' + summary + '\n\nLihat Console (F12) untuk detail.');
+  showStatus('info', '🔧 Diagnose selesai. Lihat Console atau alert di atas.');
+}
 
-  document.getElementById('btnClear').addEventListener('click',function(e){e.preventDefault();e.stopPropagation();clearData();});
+// ============================================================
+// FETCH & PROCESS
+// ============================================================
+async function fetchAllData(silent = false) {
+  const btn = document.getElementById('btnFetch');
+  if (!silent) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Fetching...';
+    showStatus('info', '🔄 Mengambil data dari SPMB (data terbaru akan menimpa data sebelumnya)...');
+  }
+  
+  try {
+    const fsekolah = document.getElementById('sekolahId').value;
+    const threshold = parseFloat(document.getElementById('threshold').value);
+    
+    // ============================================================
+    // FETCH LATEST DATA
+    // ============================================================
+    const allResults = [];
+    const fetchErrors = [];
+    
+    for (const rstatus of [1, 2]) {
+      try {
+        const { text } = await fetchSpmbData(fsekolah, 3, rstatus);
+        const records = parseTable(text);
+        console.log(`[SPMB Monitor] Fetched rstatus=${rstatus}: ${records.length} rows`);
+        allResults.push(...records.map(r => ({ ...r, pilihan_ke: rstatus })));
+      } catch (e) {
+        console.warn(`Failed to fetch rstatus=${rstatus}:`, e);
+        fetchErrors.push(`rstatus=${rstatus}: ${e.message}`);
+      }
+    }
+    
+    // ============================================================
+    // BUG FIX: Jangan timpa jika fetch gagal total
+    // ============================================================
+    if (allResults.length === 0) {
+      const errMsg = fetchErrors.length > 0 
+        ? `Gagal fetch data: ${fetchErrors.join('; ')}. Data lama TIDAK ditimpa.` 
+        : 'Fetch berhasil tapi data kosong. Cek filter threshold atau CORS proxy.';
+      console.error('[SPMB Monitor]', errMsg);
+      if (!silent) {
+        showStatus('error', '❌ ' + errMsg);
+        // Show diagnostic info
+        setTimeout(() => {
+          if (confirm('Fetch gagal. Ingin melihat cara troubleshooting?')) {
+            alert('Langkah troubleshooting:\n\n' +
+                  '1. Buka Console (F12) untuk lihat error detail\n' +
+                  '2. Cek koneksi internet\n' +
+                  '3. CORS proxy (cors.eu.org) mungkin sedang down\n' +
+                  '4. Coba klik tombol ini lagi beberapa saat kemudian\n' +
+                  '5. Data lama Anda AMAN, tidak terhapus');
+          }
+        }, 500);
+      } else {
+        console.warn('[Auto-Refresh] Fetch failed:', errMsg);
+      }
+      return; // CRITICAL: Don't overwrite allStudents!
+    }
+    
+    // Filter by threshold
+    const newAllStudents = allResults.filter(r => {
+      const nilai = parseFloat(r.nilai_akhir);
+      return !isNaN(nilai) && nilai > threshold;
+    });
+    
+    if (newAllStudents.length === 0 && allResults.length > 0) {
+      const warnMsg = `Ada ${allResults.length} baris dari SPMB tapi SEMUA tersaring oleh threshold (${threshold}). Coba turunkan threshold.`;
+      console.warn('[SPMB Monitor]', warnMsg);
+      if (!silent) showStatus('warning', '⚠️ ' + warnMsg);
+      // Still overwrite so user sees the change
+    }
+    
+    // ============================================================
+    // CLEANUP: Hapus cache entry untuk REGNO yang tidak ada lagi
+    // (Hanya jika data baru tidak kosong)
+    // ============================================================
+    const currentRegnos = new Set(newAllStudents.map(r => r.regno));
+    const removedCount = allStudents.length - newAllStudents.length;
+    
+    // Update knownRegnos: hapus yang tidak ada di data baru
+    if (newAllStudents.length > 0) {
+      const removedKnown = [];
+      for (const regno of knownRegnos) {
+        if (!currentRegnos.has(regno)) {
+          knownRegnos.delete(regno);
+          removedKnown.push(regno);
+        }
+      }
+      saveKnownStudents();
+      if (removedKnown.length > 0) {
+        console.log(`[SPMB Monitor] Cleaned ${removedKnown.length} REGNO from knownRegnos`);
+      }
+      
+      // Update verifiedCache: hapus entry untuk REGNO yang tidak ada
+      try {
+        const cacheData = localStorage.getItem(CONFIG.verifyCacheKey);
+        if (cacheData) {
+          const cache = JSON.parse(cacheData);
+          let cacheRemoved = 0;
+          Object.keys(cache).forEach(regno => {
+            if (!currentRegnos.has(regno)) {
+              delete cache[regno];
+              cacheRemoved++;
+            }
+          });
+          if (cacheRemoved > 0) {
+            localStorage.setItem(CONFIG.verifyCacheKey, JSON.stringify(cache));
+            console.log(`[SPMB Monitor] Cleaned ${cacheRemoved} stale entries from verifiedCache`);
+          }
+        }
+      } catch (e) {}
+      
+      // Update previousState: hapus entry untuk REGNO yang tidak ada
+      try {
+        const prevData = localStorage.getItem(CONFIG.previousStateKey);
+        if (prevData) {
+          const prev = JSON.parse(prevData);
+          let prevRemoved = 0;
+          Object.keys(prev).forEach(regno => {
+            if (!currentRegnos.has(regno)) {
+              delete prev[regno];
+              prevRemoved++;
+            }
+          });
+          if (prevRemoved > 0) {
+            localStorage.setItem(CONFIG.previousStateKey, JSON.stringify(prev));
+            console.log(`[SPMB Monitor] Cleaned ${prevRemoved} stale entries from previousState`);
+          }
+        }
+      } catch (e) {}
+    }
+    
+    // ============================================================
+    // OVERWRITE: Replace allStudents with latest data
+    // ============================================================
+    allStudents = newAllStudents;
+    
+    // Save current fetch timestamp
+    localStorage.setItem(CONFIG.lastFetchKey, new Date().toISOString());
+    document.getElementById('statLastFetch').textContent = new Date().toLocaleString('id-ID');
+    
+    // Detect new (vs known)
+    const newStudents = allStudents.filter(r => !knownRegnos.has(r.regno));
+    
+    updateStats();
+    renderResults(newStudents.map(s => s.regno));
+    
+    if (newStudents.length > 0) {
+      if (!silent) {
+        showStatus('success', `✨ Data terbaru: ${allStudents.length} siswa (${removedCount} dihapus dari data lama). ${newStudents.length} siswa BARU.`);
+      }
+      // Optional: alert + sound for auto mode
+      if (silent && newStudents.length > 0) {
+        try { new Notification('SPMB Monitor', { body: `${newStudents.length} siswa baru terdeteksi!` }); } catch (e) {}
+      }
+    } else if (!silent) {
+      showStatus('success', `✅ Data terbaru dimuat: ${allStudents.length} siswa. ${removedCount} siswa hilang dari data lama.`);
+    }
+    
+  } catch (e) {
+    console.error(e);
+    if (!silent) showStatus('error', '❌ Gagal fetch: ' + e.message);
+    else console.warn('[Auto-Refresh] Fetch error:', e.message);
+  } finally {
+    if (!silent) {
+      btn.disabled = false;
+      btn.textContent = '🔄 Fetch Data Terbaru';
+    }
+  }
+}
 
-  document.getElementById('fMonth').addEventListener('change',function(e){state.bulan=parseInt(e.target.value,10);render();});
-  document.getElementById('fCat').addEventListener('change',function(e){state.cat=e.target.value;syncTabs();render();});
-  document.getElementById('fSort').addEventListener('change',function(e){state.sort=e.target.value;render();});
-  document.getElementById('fSearch').addEventListener('input',function(e){state.q=e.target.value;render();});
-  document.querySelectorAll('#catTabs button').forEach(function(b){b.addEventListener('click',function(){state.cat=b.getAttribute('data-cat');syncTabs();render();});});
-  document.getElementById('btnPdf').addEventListener('click',doPrint);
-  document.getElementById('btnPdfKum').addEventListener('click',doPrintKum);
-  document.getElementById('themeBtn').addEventListener('click',function(){var h=document.documentElement;var d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');this.textContent=d?'🌙':'☀️';});
+// ============================================================
+// PARSE HTML TABLE
+// ============================================================
+function parseTable(html) {
+  const records = [];
+  
+  if (!html || typeof html !== 'string') {
+    console.warn('[parseTable] Empty or non-string html');
+    return records;
+  }
+  
+  // Find table - try multiple patterns
+  let tableMatch = html.match(/<table[^>]*class="stdtable[^"]*"[^>]*>([\s\S]*?)<\/table>/);
+  
+  if (!tableMatch) {
+    // Try alternative: any table with REGNO class
+    tableMatch = html.match(/<table[^>]*>([\s\S]*?)<\/table>/);
+    if (tableMatch) {
+      console.warn('[parseTable] stdtable class not found, using generic table match');
+    }
+  }
+  
+  if (!tableMatch) {
+    console.warn('[parseTable] No table found in HTML');
+    return records;
+  }
+  
+  const rows = tableMatch[1].match(/<tr[^>]*>([\s\S]*?)<\/tr>/g) || [];
+  console.log(`[parseTable] Found ${rows.length} rows (including header)`);
+  
+  for (let i = 0; i < rows.length; i++) {
+    if (i === 0) continue; // skip header
+    const row = rows[i];
+    const cells = [];
+    const cellMatches = row.match(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g) || [];
+    for (const cell of cellMatches) {
+      const text = cell.replace(/<[^>]+>/g, '').trim();
+      cells.push(text);
+    }
+    if (cells.length === 0 || !cells.some(c => c)) continue;
+    
+    const opt1Match = row.match(/class="opt1"[^>]*>([^<]+)</);
+    const regnoMatch = row.match(/class="REGNO"[^>]*>([^<]+)</);
+    
+    // Validate essential fields
+    const regno = regnoMatch ? regnoMatch[1] : null;
+    if (!regno) continue; // Skip rows without REGNO
+    
+    records.push({
+      no: cells[0] || '',
+      regno: regno,
+      nama: cells[2] || '',
+      asal_sekolah: cells[3] || '',
+      nilai_akhir: cells[4] || '',
+      pil: cells[5] || '',
+      opt1: opt1Match ? opt1Match[1] : 'N/A',
+    });
+  }
+  
+  console.log(`[parseTable] Extracted ${records.length} valid records`);
+  return records;
+}
 
-  // ---- Piagam ----
-  pgPeriodeOptions();
-  pgSyncNarasi();
-  document.getElementById('pgPeriodeJenis').addEventListener('change',function(){pgPeriodeOptions();renderPiagam();});
-  document.getElementById('pgPeriodeDetail').addEventListener('change',renderPiagam);
-  document.getElementById('pgTahun').addEventListener('input',renderPiagam);
-  document.getElementById('pgCari').addEventListener('change',function(e){pgFillFromSatker(e.target.value);});
-  document.getElementById('pgKategori').addEventListener('change',function(){var el=document.getElementById('pgNarasi');el.dataset.touched='';pgSyncNarasi();renderPiagam();});
-  document.getElementById('pgNarasi').addEventListener('input',function(e){e.target.dataset.touched='1';renderPiagam();});
-  ['pgKode','pgNama','pgNomor','pgKota','pgTanggal','pgNomorND','pgTanggalND','pgJabatan','pgNamaTtd','pgNip'].forEach(function(id){
-    document.getElementById(id).addEventListener('input',renderPiagam);
+// ============================================================
+// CHECK NEW (compare without re-fetching)
+// ============================================================
+function checkNewStudents() {
+  if (allStudents.length === 0) {
+    showStatus('warning', '⚠️ Belum ada data. Klik "Fetch Data Terbaru" terlebih dahulu.');
+    return;
+  }
+  const newRegnos = allStudents.filter(r => !knownRegnos.has(r.regno)).map(r => r.regno);
+  renderResults(newRegnos);
+  if (newRegnos.length > 0) {
+    showStatus('success', `✨ ${newRegnos.length} siswa BARU terdeteksi dari data terakhir!`);
+  } else {
+    showStatus('info', `ℹ️ Tidak ada siswa baru dari data terakhir.`);
+  }
+}
+
+// ============================================================
+// MARK AS KNOWN (after viewing/handling)
+// ============================================================
+function markAsKnown() {
+  const before = knownRegnos.size;
+  allStudents.forEach(r => knownRegnos.add(r.regno));
+  saveKnownStudents();
+  const added = knownRegnos.size - before;
+  showStatus('success', `✅ ${added} siswa ditandai sebagai "sudah diketahui". Total tersimpan: ${knownRegnos.size}`);
+  renderResults([]);
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderResults(newRegnos = [], changes = null) {
+  const newSet = new Set(newRegnos);
+  const area = document.getElementById('resultArea');
+  const quotaSummary = document.getElementById('quotaSummary');
+  
+  if (allStudents.length === 0) {
+    area.innerHTML = '<div class="empty">Tidak ada data siswa yang cocok dengan filter. Klik "Fetch Data Terbaru" untuk memulai.</div>';
+    quotaSummary.style.display = 'none';
+    return;
+  }
+  
+  // Separate verified from unverified
+  const verified = allStudents.filter(r => r.verified);
+  const unverified = allStudents.filter(r => !r.verified);
+  const smpn9_accepted = verified.filter(r => r.is_smpn9);
+  const smpn9_rejected = verified.filter(r => !r.is_smpn9);
+  
+  // Build sets for change detection
+  const newInRegnos = new Set((changes?.newIn || []).map(r => r.regno));
+  const newOutRegnos = new Set((changes?.newOut || []).map(r => r.regno));
+  
+  // Sort by peringkat (system's official ranking) if available, else by nilai
+  // Tie-breaker: by nilai (descending), then by REGNO (ascending) for deterministic order
+  const sortByRank = (a, b) => {
+    if (a.peringkat && b.peringkat) {
+      if (a.peringkat !== b.peringkat) return a.peringkat - b.peringkat;
+      // Same peringkat: tie-break by nilai then REGNO
+      const na = parseFloat(a.nilai_akhir) || 0;
+      const nb = parseFloat(b.nilai_akhir) || 0;
+      if (nb !== na) return nb - na;
+      return String(a.regno).localeCompare(String(b.regno));
+    }
+    if (a.peringkat) return -1;
+    if (b.peringkat) return 1;
+    return (parseFloat(b.nilai_akhir) || 0) - (parseFloat(a.nilai_akhir) || 0);
+  };
+  
+  // Sort unverified by nilai descending
+  unverified.sort((a, b) => (parseFloat(b.nilai_akhir) || 0) - (parseFloat(a.nilai_akhir) || 0));
+  
+  // Update summary stats
+  const newSmpn9Accepted = smpn9_accepted.filter(r => newSet.has(r.regno));
+  const newSmpn9Rejected = smpn9_rejected.filter(r => newSet.has(r.regno));
+  
+  if (quotaSummary) {
+    quotaSummary.style.display = 'block';
+    const lastAccepted = smpn9_accepted.length > 0 ? smpn9_accepted[smpn9_accepted.length - 1] : null;
+    const lastRejected = smpn9_rejected.length > 0 ? smpn9_rejected[0] : null;
+    
+    document.getElementById('quotaSummaryContent').innerHTML = `
+      <div style="display:flex; flex-wrap:wrap; gap:14px;">
+        <div><strong>${smpn9_accepted.length}</strong> siswa <span style="color:#16a34a;font-weight:600;">DITERIMA di SMPN 9</span> ${newSmpn9Accepted.length > 0 ? `<small style="background:#16a34a;color:white;padding:2px 6px;border-radius:8px;">+${newSmpn9Accepted.length} baru</small>` : ''}</div>
+        <div><strong>${smpn9_rejected.length}</strong> siswa <span style="color:#dc2626;font-weight:600;">Diterima di sekolah lain</span> ${newSmpn9Rejected.length > 0 ? `<small style="background:#dc2626;color:white;padding:2px 6px;border-radius:8px;">+${newSmpn9Rejected.length} baru</small>` : ''}</div>
+        <div>Belum diverifikasi: <strong>${unverified.length}</strong></div>
+        ${lastAccepted ? `<div>Peringkat terakhir diterima: <strong>#${lastAccepted.peringkat || '?'}</strong> (nilai ${lastAccepted.nilai_akhir})</div>` : ''}
+        ${lastRejected ? `<div>Peringkat tertinggi TIDAK: <strong>#${lastRejected.peringkat || '?'}</strong> (nilai ${lastRejected.nilai_akhir})</div>` : ''}
+      </div>
+    `;
+  }
+  
+  // Build table
+  // Show 3 sections: SMPN 9 DITERIMA, DITERIMA DI LAIN, BELUM DIVERIFIKASI
+  let html = '';
+  
+  const renderTableSection = (title, records, showStatus, bgColor, emptyMsg) => {
+    if (records.length === 0) {
+      return `<div style="margin-top:14px;"><h3 style="background:${bgColor};padding:8px 12px;border-radius:6px;margin:0;font-size:14px;">${title} (0)</h3><div class="empty" style="padding:14px;">${emptyMsg}</div></div>`;
+    }
+    const sorted = [...records].sort(sortByRank);
+    let sectionHtml = `<h3 style="background:${bgColor};padding:8px 12px;border-radius:6px;margin:14px 0 0 0;font-size:14px;">${title} (${sorted.length})</h3>`;
+    sectionHtml += '<div style="overflow-x:auto;"><table><thead><tr>';
+    sectionHtml += '<th style="width:60px;">Peringkat</th>';
+    sectionHtml += '<th style="width:100px;">REGNO</th>';
+    sectionHtml += '<th style="width:60px;">Pil</th>';
+    sectionHtml += '<th style="width:180px;">Pilihan Diterima</th>';
+    sectionHtml += '<th>Nama</th>';
+    sectionHtml += '<th>Asal Sekolah</th>';
+    sectionHtml += '<th style="width:90px;">Nilai</th>';
+    sectionHtml += '<th style="width:140px;">Status</th>';
+    sectionHtml += '</tr></thead><tbody>';
+    
+    sorted.forEach(r => {
+      const isNew = newSet.has(r.regno);
+      const isKnown = knownRegnos.has(r.regno);
+      const isChangedIn = newInRegnos.has(r.regno);
+      const isChangedOut = newOutRegnos.has(r.regno);
+      const pilBadge = r.pilihan_ke === 1
+        ? '<span class="badge pil-1">Pil 1</span>'
+        : '<span class="badge pil-2">Pil 2</span>';
+      
+      let statusParts = [];
+      if (showStatus === 'DITERIMA') {
+        statusParts.push('<span style="background:#16a34a;color:white;padding:3px 8px;border-radius:10px;font-weight:600;font-size:11px;">✓ DITERIMA</span>');
+      } else if (showStatus === 'DITOLAK') {
+        statusParts.push('<span style="background:#dc2626;color:white;padding:3px 8px;border-radius:10px;font-weight:600;font-size:11px;">✗ DI SEKOLAH LAIN</span>');
+      } else {
+        statusParts.push('<span style="background:#94a3b8;color:white;padding:3px 8px;border-radius:10px;font-weight:600;font-size:11px;">⏳ BELUM</span>');
+      }
+      if (isChangedIn) statusParts.push('<span style="background:#16a34a;color:white;padding:3px 8px;border-radius:10px;font-weight:600;font-size:11px;margin-left:4px;">⬆️ MASUK</span>');
+      if (isChangedOut) statusParts.push('<span style="background:#dc2626;color:white;padding:3px 8px;border-radius:10px;font-weight:600;font-size:11px;margin-left:4px;">⬇️ KELUAR</span>');
+      if (isNew) statusParts.push('<span class="badge new" style="margin-left:4px;">NEW</span>');
+      else if (isKnown && !isChangedIn && !isChangedOut) statusParts.push('<span style="color:#16a34a;font-size:11px;margin-left:4px;">✓</span>');
+      
+      let rowClass = '';
+      if (isChangedIn) rowClass = 'changed-in-row';
+      else if (isChangedOut) rowClass = 'changed-out-row';
+      else if (isNew) rowClass = 'new-row';
+      else if (showStatus === 'DITOLAK') rowClass = 'rejected-row';
+      
+      const pdText = showStatus === 'DITERIMA'
+        ? `<strong style="color:#16a34a;">${r.pilihan_diterima}</strong><br><small style="color:#64748b;">pada PILIHAN ${r.pd_pilihan}</small>`
+        : showStatus === 'DITOLAK'
+          ? `<strong style="color:#64748b;">${r.pilihan_diterima}</strong><br><small style="color:#64748b;">pada PILIHAN ${r.pd_pilihan}</small>`
+          : `<span style="color:#94a3b8;">—</span>`;
+      
+      const rankText = r.peringkat ? `#${r.peringkat}` : '—';
+      
+      sectionHtml += `
+        <tr class="${rowClass}">
+          <td><strong>${rankText}</strong></td>
+          <td>${r.regno}</td>
+          <td>${pilBadge}</td>
+          <td>${pdText}</td>
+          <td>${escapeHtml(r.nama)}</td>
+          <td>${escapeHtml(r.asal_sekolah)}</td>
+          <td><strong>${r.nilai_akhir}</strong></td>
+          <td>${statusParts.join(' ')}</td>
+        </tr>
+      `;
+    });
+    
+    sectionHtml += '</tbody></table></div>';
+    return sectionHtml;
+  };
+  
+  // Sort by peringkat
+  const sortedAccepted = [...smpn9_accepted].sort(sortByRank);
+  const sortedRejected = [...smpn9_rejected].sort(sortByRank);
+  
+  html += renderTableSection('✅ DITERIMA DI SMPN 9', sortedAccepted, 'DITERIMA', '#dcfce7', 'Klik "Verifikasi & Update Hasil" untuk verifikasi popDetil');
+  html += renderTableSection('❌ DITERIMA DI SEKOLAH LAIN', sortedRejected, 'DITOLAK', '#fee2e2', '—');
+  html += renderTableSection('⏳ BELUM DIVERIFIKASI', unverified, 'PENDING', '#f1f5f9', 'Semua siswa sudah diverifikasi.');
+  
+  area.innerHTML = html;
+}
+
+// ============================================================
+// VERIFY via popDetil + DELTA DETECTION
+// ============================================================
+async function verifyAllStudents(silent = false) {
+  if (allStudents.length === 0) {
+    if (!silent) showStatus('warning', '⚠️ Belum ada data. Fetch terlebih dahulu.');
+    return;
+  }
+  
+  const btn = document.getElementById('btnVerify');
+  if (!silent) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Verifying...';
+    showStatus('info', '🔍 Memverifikasi via popDetil SPMB (1 API call per siswa)...');
+  }
+  
+  const progress = document.getElementById('verifyProgress');
+  const bar = document.getElementById('verifyBar');
+  const text = document.getElementById('verifyText');
+  if (!silent) progress.style.display = 'block';
+  
+  // Load previously verified from localStorage
+  let verifiedCache = {};
+  try {
+    const data = localStorage.getItem(CONFIG.verifyCacheKey);
+    if (data) verifiedCache = JSON.parse(data);
+  } catch (e) {}
+  
+  let verified = 0;
+  let smpn9Count = 0;
+  let otherCount = 0;
+  
+  for (let i = 0; i < allStudents.length; i++) {
+    const r = allStudents[i];
+    
+    // Check cache first
+    if (verifiedCache[r.regno]) {
+      Object.assign(r, verifiedCache[r.regno]);
+      verified++;
+      if (r.is_smpn9) smpn9Count++; else otherCount++;
+      continue;
+    }
+    
+    text.textContent = `Memverifikasi ${i+1}/${allStudents.length}: ${r.nama} (REGNO ${r.regno})...`;
+    if (!silent) bar.style.width = `${(i/allStudents.length)*100}%`;
+    
+    try {
+      // Try custom proxy first, then public CORS proxies
+      const endpoints = [];
+      
+      const customProxy = localStorage.getItem(CONFIG.proxyUrlKey);
+      if (customProxy && customProxy.trim()) {
+        const cleanProxy = customProxy.trim().replace(/\/+$/, '');
+        endpoints.push({
+          name: 'Custom Proxy',
+          url: cleanProxy + '/proxy',
+          method: 'POST',
+          isCustom: true,
+        });
+      }
+      for (const proxy of CONFIG.corsProxies) {
+        endpoints.push({
+          name: proxy,
+          url: `${proxy}https://spmb.semarangkota.go.id/smp/popDetil`,
+          method: 'POST',
+        });
+      }
+      
+      let response = null;
+      let lastError = null;
+      for (const ep of endpoints) {
+        try {
+          let opts = {};
+          if (ep.isCustom) {
+            opts = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'text/plain',
+                'X-Proxy-Method': 'POST',
+                'X-Proxy-URL': 'https://spmb.semarangkota.go.id/smp/popDetil',
+                'X-Proxy-Body': `regno=${r.regno}&opt=${r.opt1}`,
+              },
+              body: '',
+            };
+          } else {
+            opts = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: `regno=${r.regno}&opt=${r.opt1}`,
+            };
+          }
+          response = await fetch(ep.url, opts);
+          if (response.ok) break;
+          response = null;
+        } catch (e) {
+          lastError = e;
+        }
+      }
+      
+      if (!response) throw lastError || new Error('Semua proxy gagal');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      const html = await response.text();
+      
+      // Parse "Pilihan Diterima" and "Peringkat"
+      const pdMatch = html.match(/Pilihan Diterima\s*<\/td>[\s\S]*?<td[^>]*><b>\s*([^<]+?)\s*<\/b>\s*\(\s*pada\s+PILIHAN\s+(\d+)\s*\)/i);
+      const prMatch = html.match(/Peringkat\s*<\/td>[\s\S]*?<td[^>]*>\s*(\d+)\s+dari\s+(\d+)/i);
+      
+      if (pdMatch && prMatch) {
+        r.pilihan_diterima = pdMatch[1].trim();
+        r.pd_pilihan = parseInt(pdMatch[2]);
+        r.peringkat = parseInt(prMatch[1]);
+        r.kuota = parseInt(prMatch[2]);
+        r.is_smpn9 = /SMP NEGERI 9/i.test(r.pilihan_diterima);
+        r.verified = true;
+        verified++;
+        if (r.is_smpn9) smpn9Count++; else otherCount++;
+        
+        // Cache it
+        verifiedCache[r.regno] = {
+          pilihan_diterima: r.pilihan_diterima,
+          pd_pilihan: r.pd_pilihan,
+          peringkat: r.peringkat,
+          kuota: r.kuota,
+          is_smpn9: r.is_smpn9,
+          verified: true,
+        };
+        localStorage.setItem(CONFIG.verifyCacheKey, JSON.stringify(verifiedCache));
+      } else {
+        r.verified = false;
+        r.pilihan_diterima = 'BELUM TERSEDIA';
+        r.is_smpn9 = false;
+      }
+    } catch (e) {
+      console.warn(`Verify failed for ${r.regno}:`, e);
+      r.verified = false;
+      r.pilihan_diterima = 'GAGAL';
+      r.is_smpn9 = false;
+    }
+    
+    // Update stats every 5
+    if ((i+1) % 5 === 0 || i === allStudents.length - 1) {
+      updateStats();
+      if (!silent) {
+        bar.style.width = `${((i+1)/allStudents.length)*100}%`;
+        text.textContent = `${verified}/${allStudents.length} diverifikasi | DITERIMA SMPN 9: ${smpn9Count} | DI LAIN: ${otherCount}`;
+      } else {
+        console.log(`[Auto-Refresh] Verified ${i+1}/${allStudents.length} | SMPN 9: ${smpn9Count} | DI LAIN: ${otherCount}`);
+      }
+    }
+  }
+  
+  bar.style.width = '100%';
+  text.textContent = `✓ Selesai! ${verified}/${allStudents.length} diverifikasi | DITERIMA SMPN 9: ${smpn9Count} | DI LAIN: ${otherCount}`;
+  
+  // ============================================================
+  // DELTA DETECTION: compare with previous state
+  // ============================================================
+  const changes = detectChanges();
+  
+  // Save current state as previous for next time
+  saveCurrentState();
+  
+  // Render with new highlighting
+  const newRegnos = allStudents.filter(r => !knownRegnos.has(r.regno)).map(r => r.regno);
+  renderResults(newRegnos, changes);
+  renderChangesPanel(changes);
+  
+  // Save changes log
+  saveChangesLog(changes);
+  
+  if (changes.hasChanges) {
+    if (!silent) {
+      showStatus('success', `✅ Verifikasi selesai! 🔔 ${changes.newIn.length} siswa BARU masuk, ${changes.newOut.length} siswa KELUAR dari SMPN 9.`);
+    } else {
+      // Silent mode for auto-refresh: still show notification but keep it brief
+      showStatus('success', `🔔 Auto-refresh: ${changes.newIn.length} masuk, ${changes.newOut.length} keluar, ${changes.newRegistrants.length} pendaftar baru.`);
+      // Browser notification
+      try {
+        if (Notification.permission === 'granted') {
+          new Notification('SPMB Monitor — Perubahan Terdeteksi', {
+            body: `${changes.newIn.length} masuk, ${changes.newOut.length} keluar, ${changes.newRegistrants.length} baru`,
+          });
+        }
+      } catch (e) {}
+    }
+  } else if (!silent) {
+    showStatus('success', `✅ Verifikasi selesai! Tidak ada perubahan status sejak fetch terakhir.`);
+  }
+  
+  if (!silent) {
+    btn.disabled = false;
+    btn.textContent = '🔍 Verifikasi & Deteksi Perubahan';
+    setTimeout(() => { progress.style.display = 'none'; }, 5000);
+  }
+}
+
+// ============================================================
+// DELTA DETECTION
+// ============================================================
+function detectChanges() {
+  const changes = {
+    newIn: [],      // Baru diterima di SMPN 9 (sebelumnya di sekolah lain atau belum ada)
+    newOut: [],     // Baru keluar dari SMPN 9 (sekarang di sekolah lain atau tidak)
+    newRegistrants: [], // Siswa yang muncul pertama kali
+    hasChanges: false,
+  };
+  
+  // Load previous state
+  let prevState = {};
+  try {
+    const data = localStorage.getItem(CONFIG.previousStateKey);
+    if (data) prevState = JSON.parse(data);
+  } catch (e) {}
+  
+  const currentRegnos = new Set(allStudents.map(r => r.regno));
+  const prevRegnos = new Set(Object.keys(prevState));
+  
+  // Find new registrants (not in previous)
+  allStudents.forEach(r => {
+    if (!prevRegnos.has(r.regno)) {
+      changes.newRegistrants.push(r);
+    }
   });
-  document.getElementById('btnPiagamPdf').addEventListener('click',doPiagamPdf);
-  document.getElementById('btnPiagamWord').addEventListener('click',doPiagamWord);
-  window.addEventListener('resize',function(){clearTimeout(window.__pgRz);window.__pgRz=setTimeout(renderPiagam,200);});
+  
+  // Find new IN (current is SMPN 9, previously was not SMPN 9)
+  // and new OUT (current is NOT SMPN 9, previously was SMPN 9)
+  Object.entries(prevState).forEach(([regno, prev]) => {
+    if (!currentRegnos.has(regno)) {
+      // Student left the pool (perhaps cancelled registration)
+      return;
+    }
+    const curr = allStudents.find(r => r.regno === regno);
+    if (!curr || !curr.verified) return;
+    
+    const wasSmpn9 = prev.is_smpn9;
+    const isSmpn9 = curr.is_smpn9;
+    
+    if (!wasSmpn9 && isSmpn9) {
+      // NEW IN
+      changes.newIn.push({
+        ...curr,
+        previous_school: prev.pilihan_diterima || 'Belum tahu',
+      });
+    } else if (wasSmpn9 && !isSmpn9) {
+      // NEW OUT
+      changes.newOut.push({
+        ...curr,
+        previous_school: 'SMP NEGERI 9',
+        now_school: curr.pilihan_diterima,
+      });
+    } else if (wasSmpn9 && isSmpn9 && prev.pilihan_diterima !== curr.pilihan_diterima) {
+      // Status changed (unlikely but possible)
+      changes.newOut.push({
+        ...curr,
+        previous_school: prev.pilihan_diterima,
+        now_school: curr.pilihan_diterima,
+      });
+    }
+  });
+  
+  changes.hasChanges = changes.newIn.length > 0 || changes.newOut.length > 0 || changes.newRegistrants.length > 0;
+  return changes;
+}
 
-  // tampilkan dashboard kosong sejak awal
-  initMonth();
-  render();
-  renderPiagam();
-});
-})();
+function saveCurrentState() {
+  const state = {};
+  allStudents.forEach(r => {
+    if (r.verified) {
+      state[r.regno] = {
+        pilihan_diterima: r.pilihan_diterima,
+        pd_pilihan: r.pd_pilihan,
+        peringkat: r.peringkat,
+        kuota: r.kuota,
+        is_smpn9: r.is_smpn9,
+      };
+    }
+  });
+  localStorage.setItem(CONFIG.previousStateKey, JSON.stringify(state));
+}
+
+function saveChangesLog(changes) {
+  try {
+    let log = [];
+    const data = localStorage.getItem(CONFIG.changesKey);
+    if (data) log = JSON.parse(data);
+    
+    if (changes.hasChanges) {
+      log.push({
+        timestamp: new Date().toISOString(),
+        newIn: changes.newIn.map(r => ({ regno: r.regno, nama: r.nama, from: r.previous_school })),
+        newOut: changes.newOut.map(r => ({ regno: r.regno, nama: r.nama, from: r.previous_school, to: r.now_school })),
+        newRegistrants: changes.newRegistrants.map(r => ({ regno: r.regno, nama: r.nama })),
+      });
+      // Keep only last 50 entries
+      if (log.length > 50) log = log.slice(-50);
+      localStorage.setItem(CONFIG.changesKey, JSON.stringify(log));
+    }
+  } catch (e) {}
+}
+
+// ============================================================
+// RENDER CHANGES PANEL
+// ============================================================
+function renderChangesPanel(changes) {
+  const panel = document.getElementById('changesPanel');
+  const content = document.getElementById('changesContent');
+  
+  if (!changes || !changes.hasChanges) {
+    panel.style.display = 'none';
+    return;
+  }
+  
+  let html = '';
+  
+  if (changes.newIn.length > 0) {
+    html += `<div style="margin-bottom:10px;"><strong style="color:#16a34a;">⬆️ BARU MASUK SMPN 9 (${changes.newIn.length} siswa):</strong> Mereka sebelumnya diterima di sekolah lain, sekarang FALL THROUGH ke SMPN 9.</div>`;
+    html += '<table style="font-size:12px; margin-top:4px;"><thead><tr>';
+    html += '<th>REGNO</th><th>Nama</th><th>Asal SD</th><th>Nilai</th><th>Sebelumnya di</th><th>Sekarang di</th>';
+    html += '</tr></thead><tbody>';
+    changes.newIn.forEach(r => {
+      html += `<tr style="background:#dcfce7;">
+        <td><strong>${r.regno}</strong></td>
+        <td>${escapeHtml(r.nama)}</td>
+        <td>${escapeHtml(r.asal_sekolah)}</td>
+        <td><strong>${r.nilai_akhir}</strong></td>
+        <td><span style="color:#64748b;">${escapeHtml(r.previous_school)}</span></td>
+        <td><strong style="color:#16a34a;">SMP NEGERI 9</strong></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+  
+  if (changes.newOut.length > 0) {
+    html += `<div style="margin-top:14px;margin-bottom:10px;"><strong style="color:#dc2626;">⬇️ BARU KELUAR DARI SMPN 9 (${changes.newOut.length} siswa):</strong> Mereka di-geser keluar dari SMPN 9.</div>`;
+    html += '<table style="font-size:12px; margin-top:4px;"><thead><tr>';
+    html += '<th>REGNO</th><th>Nama</th><th>Asal SD</th><th>Nilai</th><th>Sebelumnya di</th><th>Sekarang di</th>';
+    html += '</tr></thead><tbody>';
+    changes.newOut.forEach(r => {
+      html += `<tr style="background:#fee2e2;">
+        <td><strong>${r.regno}</strong></td>
+        <td>${escapeHtml(r.nama)}</td>
+        <td>${escapeHtml(r.asal_sekolah)}</td>
+        <td><strong>${r.nilai_akhir}</strong></td>
+        <td><strong style="color:#16a34a;">SMP NEGERI 9</strong></td>
+        <td><span style="color:#64748b;">${escapeHtml(r.now_school)}</span></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+  }
+  
+  if (changes.newRegistrants.length > 0) {
+    html += `<div style="margin-top:14px;"><strong style="color:#4f46e5;">🆕 PENDAFTAR BARU (${changes.newRegistrants.length} siswa):</strong> Siswa yang muncul pertama kali.</div>`;
+    html += '<div style="font-size:11px; color:#64748b; margin-top:4px;">';
+    changes.newRegistrants.slice(0, 10).forEach(r => {
+      html += `<span style="display:inline-block;margin-right:10px;">${r.regno} - ${escapeHtml(r.nama)}</span>`;
+    });
+    if (changes.newRegistrants.length > 10) html += `<em>...dan ${changes.newRegistrants.length - 10} lainnya</em>`;
+    html += '</div>';
+  }
+  
+  content.innerHTML = html;
+  panel.style.display = 'block';
+}
+
+function showOnlyDiterima() {
+  // Hide rows where data-status="TIDAK"
+  document.querySelectorAll('#resultArea tbody tr').forEach(tr => {
+    if (tr.dataset.status === 'TIDAK') {
+      tr.style.display = 'none';
+    }
+  });
+  showStatus('info', '👁️ Hanya menampilkan siswa DITERIMA. Klik "Tampilkan Semua" untuk melihat semua.');
+}
+
+function showAll() {
+  document.querySelectorAll('#resultArea tbody tr').forEach(tr => {
+    tr.style.display = '';
+  });
+  showStatus('info', '📋 Menampilkan semua siswa.');
+}
+
+function applyKuota() {
+  // Re-render with current data using new quota
+  if (allStudents.length > 0) {
+    const newRegnos = allStudents.filter(r => !knownRegnos.has(r.regno)).map(r => r.regno);
+    renderResults(newRegnos);
+    showStatus('info', `✓ Kuota diperbarui menjadi ${document.getElementById('kuota').value}.`);
+  } else {
+    showStatus('warning', '⚠️ Belum ada data. Fetch terlebih dahulu.');
+  }
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+// ============================================================
+// EXPORT PDF
+// ============================================================
+function exportPDF() {
+  if (allStudents.length === 0) {
+    showStatus('warning', '⚠️ Tidak ada data untuk di-export. Fetch dulu.');
+    return;
+  }
+  
+  showStatus('info', '📄 Generating PDF...');
+  
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  
+  const sorted = [...allStudents].sort((a, b) => {
+    const na = parseFloat(a.nilai_akhir) || 0;
+    const nb = parseFloat(b.nilai_akhir) || 0;
+    return nb - na;
+  });
+  
+  const kuota = parseInt(document.getElementById('kuota').value) || 71;
+  sorted.forEach((r, idx) => {
+    r.rank = idx + 1;
+    r.pilihan_diterima = (r.opt1 === '309') ? 'SMP NEGERI 9' : '-';
+    r.status_terima = (idx < kuota) ? 'DITERIMA' : 'TIDAK';
+  });
+  const diterimaCount = sorted.filter(r => r.status_terima === 'DITERIMA').length;
+  const lastDiterima = sorted[Math.min(kuota - 1, sorted.length - 1)];
+  
+  // Title
+  doc.setFontSize(14);
+  doc.setTextColor(26, 84, 144);
+  doc.text('Data SPMB - Jalur Prestasi SMPN 9 (Hasil Sementara)', 14, 14);
+  
+  doc.setFontSize(10);
+  doc.setTextColor(60, 60, 60);
+  doc.text(`Pil 1 + Pil 2 jalur prestasi | Nilai > ${document.getElementById('threshold').value} | Kuota: ${kuota} | ${new Date().toLocaleString('id-ID')}`, 14, 20);
+  
+  // Summary
+  const total = sorted.length;
+  const pil1Count = sorted.filter(r => r.pilihan_ke === 1).length;
+  const pil2Count = sorted.filter(r => r.pilihan_ke === 2).length;
+  const diterimaPil1 = sorted.filter(r => r.status_terima === 'DITERIMA' && r.opt1 === '309').length;
+  const diterimaPil2 = sorted.filter(r => r.status_terima === 'DITERIMA' && r.opt1 !== '309').length;
+  doc.setFontSize(9);
+  doc.setTextColor(22, 163, 74);
+  doc.text(`DITERIMA di SMPN 9: ${diterimaCount} (Pil 1: ${diterimaPil1}, Pil 2: ${diterimaPil2}) | Batas nilai: ${lastDiterima ? lastDiterima.nilai_akhir : '-'}`, 14, 26);
+  doc.setTextColor(60, 60, 60);
+  doc.text(`TIDAK: ${sorted.length - diterimaCount} | Total pool: ${total}`, 110, 26);
+  
+  // Table
+  doc.autoTable({
+    startY: 30,
+    head: [['#', 'REGNO', 'Pil', 'Pilihan Diterima', 'Nama', 'Asal Sekolah', 'Nilai', 'Status']],
+    body: sorted.map((r) => {
+      const diterima = r.status_terima === 'DITERIMA';
+      const pilDiterima = diterima
+        ? `SMP NEGERI 9 (Pil ${r.pilihan_penerimaan})`
+        : r.pilihan_diterima;
+      return [
+        r.rank,
+        r.regno,
+        r.pilihan_ke === 1 ? 'Pil 1' : 'Pil 2',
+        pilDiterima,
+        r.nama,
+        r.asal_sekolah,
+        r.nilai_akhir,
+        r.status_terima,
+      ];
+    }),
+    theme: 'striped',
+    headStyles: { fillColor: [26, 84, 144], textColor: 255, fontStyle: 'bold' },
+    styles: { fontSize: 7, cellPadding: 1.5 },
+    columnStyles: {
+      0: { cellWidth: 10, halign: 'center' },
+      1: { cellWidth: 22, halign: 'center' },
+      2: { cellWidth: 13, halign: 'center' },
+      3: { cellWidth: 38, halign: 'center' },
+      4: { cellWidth: 50 },
+      5: { cellWidth: 70 },
+      6: { cellWidth: 18, halign: 'center' },
+      7: { cellWidth: 22, halign: 'center' },
+    },
+    didParseCell: function(data) {
+      if (data.section === 'body' && data.column.index === 7) {
+        if (data.cell.raw === 'DITERIMA') {
+          data.cell.styles.fillColor = [220, 252, 231];
+          data.cell.styles.textColor = [22, 101, 52];
+          data.cell.styles.fontStyle = 'bold';
+        } else if (data.cell.raw === 'TIDAK') {
+          data.cell.styles.fillColor = [254, 226, 226];
+          data.cell.styles.textColor = [153, 27, 27];
+          data.cell.styles.fontStyle = 'bold';
+        }
+      }
+      if (data.section === 'body' && data.column.index === 0) {
+        data.cell.styles.fontStyle = 'bold';
+      }
+      if (data.section === 'body' && data.column.index === 3) {
+        if (data.cell.raw && data.cell.raw.includes('SMP NEGERI 9')) {
+          data.cell.styles.textColor = [22, 101, 52];
+          data.cell.styles.fontStyle = 'bold';
+        }
+      }
+    },
+  });
+  
+  // Footer
+  const pageCount = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    doc.setFontSize(7);
+    doc.setTextColor(150);
+    doc.text(`Halaman ${i} dari ${pageCount} | Sumber: spmb.semarangkota.go.id/smp | Top ${kuota} = DITERIMA`, 14, doc.internal.pageSize.height - 8);
+  }
+  
+  doc.save(`spmb-prestasi-smpn9-kuota-${kuota}-${Date.now()}.pdf`);
+  showStatus('success', `✅ PDF berhasil didownload! (${total} siswa, kuota ${kuota}, diterima ${diterimaCount})`);
+}
+
+// ============================================================
+// EXPORT JSON
+// ============================================================
+function exportJSON() {
+  const data = {
+    timestamp: new Date().toISOString(),
+    threshold: parseFloat(document.getElementById('threshold').value),
+    sekolah_id: document.getElementById('sekolahId').value,
+    total: allStudents.length,
+    known_count: knownRegnos.size,
+    students: allStudents,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `spmb-prestasi-smpn9-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showStatus('success', '✅ JSON berhasil didownload!');
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function showStatus(type, msg) {
+  const el = document.getElementById('status');
+  el.className = `status-bar ${type} show`;
+  el.textContent = msg;
+}
+
+// ============================================================
+// AUTO-REFRESH (monitor mode)
+// ============================================================
+let autoRefreshTimer = null;
+let autoRefreshInterval = 60; // seconds
+let autoRefreshBusy = false; // Prevent overlapping runs
+
+function toggleAutoRefresh() {
+  const btn = document.getElementById('btnAutoRefresh');
+  const statAuto = document.getElementById('statAuto');
+  const autoIntervalEl = document.getElementById('autoInterval');
+  
+  if (autoRefreshTimer) {
+    // Stop
+    clearInterval(autoRefreshTimer);
+    autoRefreshTimer = null;
+    btn.textContent = '⏱️ Auto-Refresh: OFF';
+    btn.classList.remove('success');
+    btn.classList.add('secondary');
+    statAuto.style.display = 'none';
+    showStatus('info', '⏱️ Auto-refresh dimatikan.');
+  } else {
+    // Ask for interval
+    const input = prompt('Interval auto-refresh (dalam detik, min 10):', '60');
+    if (!input) return;
+    const seconds = parseInt(input);
+    if (!seconds || seconds < 10) {
+      alert('Minimal 10 detik.');
+      return;
+    }
+    autoRefreshInterval = seconds;
+    
+    // Define the auto-refresh cycle: fetch + verify + delta detect
+    const autoRefreshCycle = async () => {
+      if (autoRefreshBusy) {
+        console.log('[Auto-Refresh] Skip cycle (previous still running)');
+        return;
+      }
+      autoRefreshBusy = true;
+      try {
+        console.log(`[Auto-Refresh] Cycle start at ${new Date().toLocaleString('id-ID')}`);
+        // Step 1: Fetch latest data (overwrites previous)
+        await fetchAllData(true);
+        // Step 2: Verify + detect changes
+        await verifyAllStudents(true); // silent mode
+        console.log(`[Auto-Refresh] Cycle complete`);
+      } catch (e) {
+        console.error('[Auto-Refresh] Error:', e);
+      } finally {
+        autoRefreshBusy = false;
+      }
+    };
+    
+    // Run immediately, then on interval
+    autoRefreshCycle();
+    autoRefreshTimer = setInterval(autoRefreshCycle, seconds * 1000);
+    
+    btn.textContent = `⏱️ Auto-Refresh: ON (${seconds}s)`;
+    btn.classList.remove('secondary');
+    btn.classList.add('success');
+    statAuto.style.display = 'inline-block';
+    autoIntervalEl.textContent = `setiap ${seconds} detik`;
+    showStatus('success', `⏱️ Auto-refresh aktif setiap ${seconds} detik. Akan otomatis: fetch → verifikasi → deteksi perubahan. Tab harus tetap terbuka.`);
+  }
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = allStudents.length;
+  
+  // Use verification data if available
+  const verified = allStudents.filter(r => r.verified);
+  const smpn9 = verified.filter(r => r.is_smpn9).length;
+  const lain = verified.filter(r => !r.is_smpn9).length;
+  document.getElementById('statDiterima').textContent = smpn9;
+  document.getElementById('statLain').textContent = lain;
+  
+  const newCount = allStudents.filter(r => !knownRegnos.has(r.regno)).length;
+  document.getElementById('statNew').textContent = newCount;
+  const lf = localStorage.getItem(CONFIG.lastFetchKey);
+  if (lf) {
+    document.getElementById('statLastFetch').textContent = new Date(lf).toLocaleString('id-ID');
+  }
+}
 </script>
 </body>
 </html>
