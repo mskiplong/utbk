@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SNBTPro — Simulasi SNBT 4LANDIA 2027</title>
-<script src="assets/chart.umd.min.js"></script>
-<script src="assets/papaparse.min.js"></script>
-<script src="assets/chartjs-plugin-annotation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <script>
 try {
   if (window.Chart && window['chartjs-plugin-annotation']) {
@@ -841,6 +841,9 @@ const TOTAL_Q=160, EXAM_SEC=195*60;   // 3j15m sesuai SNPMB 2026 (30+15+25+20+45
 const SCORE_MIN=200, SCORE_MAX=800;   // Rentang skor resmi per subtes & skor akhir UTBK-SNBT
 const SCORE_RANGE=SCORE_MAX-SCORE_MIN;
 const IRT={easy:1.0,medium:1.5,hard:2.0};
+const DEFAULT_STIMULUS_IMG='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDAwIiB2aWV3Qm94PSIwIDAgODAwIDQwMCI+PHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiIGZpbGw9IiMxNjFiMjIiLz48cmVjdCB4PSI0MCIgeT0iNDAiIHdpZHRoPSI3MjAiIGhlaWdodD0iMzIwIiByeD0iMTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzU4YTZmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHRleHQgeD0iNDAwIiB5PSIxODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNlNmVkZjMiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjI4IiBmb250LXdlaWdodD0iYm9sZCI+U1RJTVVMVVMgVVRCSzwvdGV4dD48dGV4dCB4PSI0MDAiIHk9IjIyMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzhiOTQ5ZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTYiPlNOQlRQcm8gNExBTkRJQTwvdGV4dD48ZyBmaWxsPSIjNThhNmZmIj48cmVjdCB4PSIxNTAiIHk9IjI1MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjYwIi8+PHJlY3QgeD0iMjQwIiB5PSIyMzAiIHdpZHRoPSI1MCIgaGVpZ2h0PSI4MCIvPjxyZWN0IHg9IjMzMCIgeT0iMjYwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiLz48cmVjdCB4PSI0MjAiIHk9IjIxMCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y4NTE0OSIvPjxyZWN0IHg9IjUxMCIgeT0iMjQwIiB3aWR0aD0iNTAiIGhlaWdodD0iNzAiIGZpbGw9IiMzZmI5NTAiLz48cmVjdCB4PSI2MDAiIHk9IjI3MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjYmM4Y2ZmIi8+PC9nPjwvc3ZnPg==';
+function getQuestionImage(q){return q&&(q.passageImage||q.passage_image||q.imageUrl||q.image_url||q.image||q.img)||'';}
+
 
 /* ══ IRT ENGINE ══ */
 function calcIRT(qs,ans){
@@ -884,28 +887,43 @@ function isCorr(u,c){return String(c).split(',').map(x=>x.trim().toUpperCase()).
 function normOpts(q){if(Array.isArray(q.options))return q.options.map(o=>String(o).replace(/^[A-Ea-e][.)]\s*/,'').trim());return['A','B','C','D','E'];}
 function clamp(v,mn,mx){return Math.max(mn,Math.min(mx,v));}
 function escAttr(v){return String(v??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
 function getDriveId(url){
   const s=String(url||'').trim();
   if(!s)return'';
   let m=s.match(/\/file\/d\/([a-zA-Z0-9_-]+)/); if(m)return m[1];
   m=s.match(/[?&]id=([a-zA-Z0-9_-]+)/); if(m)return m[1];
+  m=s.match(/\/open\?id=([a-zA-Z0-9_-]+)/); if(m)return m[1];
   m=s.match(/\/d\/([a-zA-Z0-9_-]+)/); if(m)return m[1];
+  if(/^[a-zA-Z0-9_-]{25,}$/.test(s)) return s;
   return'';
 }
 function resolveImg(url,mode='main'){
   const s=String(url||'').trim();
-  if(!s)return'';
+  if(!s) return '';
+  if(s.startsWith('data:image')) return s;
+  if(s.includes('contoh-soal-utbk')) return DEFAULT_STIMULUS_IMG;
   const id=getDriveId(s);
-  if(!id)return s;
-  return mode==='fallback' ? `https://drive.google.com/thumbnail?id=${id}&sz=w1600` : `https://drive.google.com/uc?export=view&id=${id}`;
+  if(id){
+    if(mode==='fallback') return 'https://drive.google.com/thumbnail?id='+id+'&sz=w1600';
+    // lh3 is most reliable 2024+
+    return 'https://lh3.googleusercontent.com/d/'+id+'=w1600';
+  }
+  // direct http(s) or relative
+  return s;
 }
+
+
 function renderStimulusImage(url,label='Gambar stimulus'){
   const raw=String(url||'').trim();
-  if(!raw)return'';
+  if(!raw) return '';
   const src=resolveImg(raw,'main');
-  const fallback=resolveImg(raw,'fallback');
-  return `<div class="ibox"><img src="${escAttr(src)}" data-fallback="${escAttr(fallback)}" alt="${escAttr(label)}" loading="lazy" referrerpolicy="no-referrer" onerror="if(this.dataset.fallback&&this.src!==this.dataset.fallback){this.src=this.dataset.fallback;return;}this.insertAdjacentHTML('afterend','<div class=&quot;ihelp&quot;>Gambar gagal dimuat. Pastikan link Google Drive publik, path lokal benar, atau file memang berupa gambar.</div>');this.remove();"><div class="ihelp">Jika gambar tidak muncul, pastikan link Google Drive dibagikan ke siapa saja yang memiliki link, atau gunakan upload gambar lokal.</div></div>`;
+  const fb=resolveImg(raw,'fallback');
+  function esc(a){return String(a).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  return '<div class="ibox"><img src="'+esc(src)+'" data-fallback="'+esc(fb)+'" data-default="'+esc(DEFAULT_STIMULUS_IMG)+'" alt="'+esc(label)+'" loading="lazy" referrerpolicy="no-referrer" style="display:block;width:100%;max-height:420px;object-fit:contain;border-radius:8px;background:var(--bg3)" onerror="(function(el){try{var fb=el.dataset.fallback; if(fb && el.src!==fb){el.src=fb;el.dataset.fallback="";return;} var def=el.dataset.default; if(def && el.src!==def){el.src=def;return;} el.style.opacity="0.7"; el.style.border="1px dashed var(--yw)";}catch(e){}}) (this)" /><div class="ihelp">🖼️ Stimulus visual</div></div>';
 }
+
+
 function isDataImg(v){return /^data:image\//i.test(String(v||''));}
 function getSoalImageValue(){return $('sImg')?.value.trim()||$('sImgData')?.value.trim()||'';}
 function clearSoalImage(){
@@ -965,7 +983,7 @@ function ensureSampleQuestions(){
     id:'sample-img-pk-1',
     section:'Pengetahuan Kuantitatif',
     passage:'Perhatikan diagram batang berikut.',
-    passageImage:'images/contoh-soal-utbk.svg',
+    passageImage:DEFAULT_STIMULUS_IMG,
     question:'Berdasarkan diagram, pada hari apakah penjualan buku paling tinggi?',
     options:['Senin','Selasa','Rabu','Kamis','Semua sama'],
     answer:'D',
@@ -1132,9 +1150,10 @@ function renderQ(){
   $('eDiff').innerHTML=`<span class="dbadge d${diff[0]}">${diff.toUpperCase()} • IRT ×${IRT[diff]||1.5}</span>`;
   const pa=$('ePas');if(q.passage){pa.classList.remove('hidden');pa.textContent=q.passage;}else{pa.classList.add('hidden');}
   const pi=$('eImg');
-  if(q.passageImage||q.imageUrl||q.image_url){
+  const imgSrc = getQuestionImage(q);
+  if(imgSrc){
     pi.classList.remove('hidden');
-    pi.innerHTML=renderStimulusImage(q.passageImage||q.imageUrl||q.image_url,`Stimulus gambar soal ${exam.idx+1}`);
+    pi.innerHTML=renderStimulusImage(imgSrc,`Stimulus gambar soal ${exam.idx+1}`);
   }else{
     pi.classList.add('hidden');
     pi.innerHTML='';
@@ -1171,7 +1190,7 @@ function finishExam(){
   closeM('confModal');if(exam.timer)clearInterval(exam.timer);exam.active=false;
   const irt=calcIRT(exam.qs,exam.ans);
   const myR=getMyR();
-  const result={id:Date.now().toString(),date:new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),dateTime:new Date().toISOString(),label:`Tryout ${myR.length+1}`,finalScore:irt.finalScore,totalScore:irt.finalScore,groups:irt.groups,sections:irt.sections,answers:{...exam.ans},flags:[...exam.flags],questions:exam.qs.map(q=>({id:q.id,section:q.section,question:q.question,options:q.options,answer:q.answer,passage:q.passage||'',passageImage:q.passageImage||q.imageUrl||q.image_url||'',explanation:q.explanation||'',difficulty:q.difficulty||'medium'})),duration:EXAM_SEC-exam.left};
+  const result={id:Date.now().toString(),date:new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}),dateTime:new Date().toISOString(),label:`Tryout ${myR.length+1}`,finalScore:irt.finalScore,totalScore:irt.finalScore,groups:irt.groups,sections:irt.sections,answers:{...exam.ans},flags:[...exam.flags],questions:exam.qs.map(q=>({id:q.id,section:q.section,question:q.question,options:q.options,answer:q.answer,passage:q.passage||'',passageImage:getQuestionImage(q),passage_image:getQuestionImage(q),imageUrl:getQuestionImage(q),image_url:getQuestionImage(q),explanation:q.explanation||'',difficulty:q.difficulty||'medium'})),duration:EXAM_SEC-exam.left};
   addMyR(result);$('simActive').classList.add('hidden');renderResScreen(result);
 }
 function renderResScreen(r){
@@ -1531,7 +1550,7 @@ function saveSoal(){
   if(!question){toast('Pertanyaan wajib diisi!','error');return;}
   if(opts.length<2){toast('Minimal 2 pilihan jawaban!','error');return;}
   if(!answer){toast('Jawaban wajib diisi!','error');return;}
-  const q={id:Date.now().toString(),section,passage,passageImage,question,options:opts,answer,explanation,difficulty:diff};
+  const q={id:Date.now().toString(),section,passage,passageImage,passage_image:passageImage,imageUrl:passageImage,image_url:passageImage,question,options:opts,answer,explanation,difficulty:diff};
   if(!DB.questions[section])DB.questions[section]=[];
   const idx=parseInt($('soalEditIdx').value);
   const origSec=$('soalEditSec').value;
@@ -1868,7 +1887,7 @@ function importPTNFromPaste(){
 }
 function downloadSample(type){
   if(type==='soal-json'){
-    const sample=[{section:"Penalaran Umum",passage:"",passageImage:"images/contoh-soal-utbk.svg",question:"Jika semua A adalah B, dan sebagian B adalah C, maka...",options:["Semua A adalah C","Sebagian A adalah C","Tidak ada A adalah C","Tidak dapat disimpulkan","Semua C adalah A"],answer:"D",explanation:"Tidak dapat dipastikan hubungan A dan C",difficulty:"medium"},{section:"Pengetahuan Kuantitatif",question:"2x + 5 = 15, maka x = ?",options:["3","4","5","6","7"],answer:"C",difficulty:"easy"}];
+    const sample=[{section:"Penalaran Umum",passage:"",passageImage:DEFAULT_STIMULUS_IMG,question:"Jika semua A adalah B, dan sebagian B adalah C, maka...",options:["Semua A adalah C","Sebagian A adalah C","Tidak ada A adalah C","Tidak dapat disimpulkan","Semua C adalah A"],answer:"D",explanation:"Tidak dapat dipastikan hubungan A dan C",difficulty:"medium"},{section:"Pengetahuan Kuantitatif",question:"2x + 5 = 15, maka x = ?",options:["3","4","5","6","7"],answer:"C",difficulty:"easy"}];
     dl(JSON.stringify(sample,null,2),'contoh_soal.json','application/json');
   }else if(type==='soal-csv'){
     const csv='section,passage,passage_image,question,option_a,option_b,option_c,option_d,option_e,answer,explanation,difficulty\nPenalaran Umum,,images/contoh-soal-utbk.svg,Jika 2+2=?,3,4,5,6,7,B,Dasar matematika,easy';
@@ -1913,29 +1932,12 @@ window.addEventListener('beforeunload',e=>{if(exam.active){e.preventDefault();e.
 
 /* ══ DEFAULT PTN ══ */
 function defPTN(){return[
-  {ptn:"UNIVERSITAS INDONESIA",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:720,daya_tampung:60,peminat:1200,keketatan:0.05},
-  {ptn:"UNIVERSITAS INDONESIA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:745,daya_tampung:80,peminat:3200,keketatan:0.025},
-  {ptn:"UNIVERSITAS INDONESIA",prodi:"MANAJEMEN",jenjang:"Sarjana",pg:690,daya_tampung:90,peminat:1800,keketatan:0.05},
-  {ptn:"UNIVERSITAS GADJAH MADA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:750,daya_tampung:100,peminat:3800,keketatan:0.026},
-  {ptn:"UNIVERSITAS GADJAH MADA",prodi:"TEKNIK ELEKTRO",jenjang:"Sarjana",pg:695,daya_tampung:80,peminat:1100,keketatan:0.073},
-  {ptn:"INSTITUT TEKNOLOGI BANDUNG",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:735,daya_tampung:90,peminat:2100,keketatan:0.043},
-  {ptn:"INSTITUT TEKNOLOGI BANDUNG",prodi:"TEKNIK ELEKTRO",jenjang:"Sarjana",pg:710,daya_tampung:100,peminat:1500,keketatan:0.067},
-  {ptn:"INSTITUT TEKNOLOGI SEPULUH NOPEMBER",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:675,daya_tampung:120,peminat:1800,keketatan:0.067},
-  {ptn:"IPB UNIVERSITY",prodi:"KEDOKTERAN HEWAN",jenjang:"Sarjana",pg:660,daya_tampung:150,peminat:900,keketatan:0.167},
-  {ptn:"UNIVERSITAS PADJADJARAN",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:730,daya_tampung:100,peminat:2900,keketatan:0.034},
-  {ptn:"UNIVERSITAS DIPONEGORO",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:705,daya_tampung:120,peminat:2200,keketatan:0.055},
-  {ptn:"UNIVERSITAS AIRLANGGA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:735,daya_tampung:130,peminat:3100,keketatan:0.042},
-  {ptn:"UNIVERSITAS BRAWIJAYA",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:650,daya_tampung:120,peminat:1400,keketatan:0.086},
-  {ptn:"UNIVERSITAS HASANUDDIN",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:670,daya_tampung:120,peminat:1300,keketatan:0.092},
-  {ptn:"UNIVERSITAS SUMATERA UTARA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:685,daya_tampung:110,peminat:1500,keketatan:0.073},
-  {ptn:"UNIVERSITAS PENDIDIKAN INDONESIA",prodi:"PENDIDIKAN DOKTER",jenjang:"Sarjana",pg:640,daya_tampung:80,peminat:800,keketatan:0.1},
-  {ptn:"UIN SYARIF HIDAYATULLAH",prodi:"PENDIDIKAN AGAMA ISLAM",jenjang:"Sarjana",pg:560,daya_tampung:200,peminat:900,keketatan:0.22},
-  {ptn:"UNIVERSITAS NEGERI YOGYAKARTA",prodi:"PENDIDIKAN MATEMATIKA",jenjang:"Sarjana",pg:600,daya_tampung:100,peminat:700,keketatan:0.14},
+  {ptn:"UNIVERSITAS DUMY",prodi:"DUMY",jenjang:"Sarjana",pg:720,daya_tampung:60,peminat:1200,keketatan:0.05},
 ];}
 
 /* ══ INIT ══ */
 initTheme();load();
 window.getMyR=getMyR;
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1880911cf35dfa8',t:'MTc4MzYwNzUxOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a18c845a4fe4d47e',t:'MTc4MzY1NDUxMQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
