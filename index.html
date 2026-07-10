@@ -8,9 +8,11 @@
 <script src="assets/papaparse.min.js"></script>
 <script src="assets/chartjs-plugin-annotation.min.js"></script>
 <script>
-if (window.Chart && window['chartjs-plugin-annotation']) {
-  Chart.register(window['chartjs-plugin-annotation']);
-}
+try {
+  if (window.Chart && window['chartjs-plugin-annotation']) {
+    Chart.register(window['chartjs-plugin-annotation']);
+  }
+} catch(e) { console.warn('Annotation plugin gagal dimuat:', e && e.message); }
 </script>
 <style>
 :root{--r:14px;--rs:8px;--rl:20px;--tr:all .22s cubic-bezier(.4,0,.2,1);--sh:0 4px 24px rgba(0,0,0,.18);--shl:0 8px 40px rgba(0,0,0,.28)}
@@ -223,6 +225,11 @@ tr:hover td{background:var(--sf)}
 /* INLINE SEARCH BAR */
 .srch{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .srch .inp{max-width:280px}
+
+/* RASIO SPECIFIC */
+#rScD{display:flex}
+#rSum{display:grid}
+#rScD.hidden,#rSum.hidden{display:none!important}
 </style>
 </head>
 <body>
@@ -310,8 +317,11 @@ tr:hover td{background:var(--sf)}
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;font-size:12px;color:var(--tx2);line-height:1.7">
       <div><strong style="color:var(--tx)">✅ Tidak Ada Nilai Minus</strong><br>Jawaban salah = 0. Jawab semua soal!</div>
       <div><strong style="color:var(--tx)">⚖️ Bobot IRT</strong><br>Easy ×1.0 | Medium ×1.5 | Hard ×2.0</div>
-      <div><strong style="color:var(--tx)">📐 θ = (Σwt_benar/Σwt_total)×6−3</strong><br>Skor = 300+(θ+3)/6×500</div>
-      <div><strong style="color:var(--tx)">🏆 Final</strong><br>TPS=avg(PU,PPU,KMBM,PK)<br>Lit=avg(LBI,LBIng)<br>Final=(TPS+Lit+PM)/3</div>
+      <div><strong style="color:var(--tx)">📐 θ = (Σwt_benar/Σwt_total)×6−3</strong><br>Skor<sub>sub</sub> = 200+(θ+3)/6×600 → [200,800]</div>
+      <div><strong style="color:var(--tx)">🏆 Final</strong><br>TPS=avg(PU,PPU,KMBM,PK)<br>Lit=avg(LBI,LBIng)<br>Final = rerata 7 subtes</div>
+    </div>
+    <div style="margin-top:11px;padding:10px 12px;background:rgba(210,153,34,.08);border:1px dashed rgba(210,153,34,.35);border-radius:8px;font-size:11px;color:var(--yw);line-height:1.6">
+      ⚠️ <strong>Catatan:</strong> Bobot easy/medium/hard adalah <em>proksi heuristik</em> IRT untuk keperluan simulasi offline. IRT 3PL resmi SNPMB memerlukan kalibrasi parameter butir (a,b,c) dari respons seluruh peserta nasional yang tidak dapat dijalankan di browser. Rentang skor <strong>200–800</strong> dan formula rerata 7 subtes telah sesuai spesifikasi sertifikat UTBK-SNBT.
     </div>
   </div>
   <div class="card hidden" id="hRec">
@@ -334,7 +344,7 @@ tr:hover td{background:var(--sf)}
         </div>
         <div id="sInfo">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-            <div class="sc" style="--al:var(--ac);text-align:center"><div style="font-size:26px;margin-bottom:4px">⏱️</div><div class="sv">115 Mnt</div><div class="sl">Durasi</div></div>
+            <div class="sc" style="--al:var(--ac);text-align:center"><div style="font-size:26px;margin-bottom:4px">⏱️</div><div class="sv">195 Mnt</div><div class="sl">Durasi (3j15m)</div></div>
             <div class="sc" style="--al:var(--pu);text-align:center"><div style="font-size:26px;margin-bottom:4px">📝</div><div class="sv">160</div><div class="sl">Total Soal</div></div>
           </div>
           <div id="sSubI" style="margin-bottom:16px"></div>
@@ -347,10 +357,10 @@ tr:hover td{background:var(--sf)}
             <div style="font-size:12px;color:var(--tx2);line-height:2">
               <div><span style="color:var(--ac);font-weight:700">1.</span> Benar=bobot | Salah/Kosong=<strong style="color:var(--gn)">0</strong></div>
               <div><span style="color:var(--ac);font-weight:700">2.</span> θ=(Σwt_benar/Σwt_total)×6−3 → [−3,+3]</div>
-              <div><span style="color:var(--ac);font-weight:700">3.</span> Skor_sub=300+(θ+3)/6×500 → [300,800]</div>
-              <div><span style="color:var(--ac);font-weight:700">4.</span> TPS=avg(PU+PPU+KMBM+PK)</div>
-              <div><span style="color:var(--ac);font-weight:700">5.</span> Literasi=avg(LBI+LBIng)</div>
-              <div><span style="color:var(--ac);font-weight:700">6.</span> <strong style="color:var(--pu)">Final=(TPS+Literasi+PM)/3</strong></div>
+              <div><span style="color:var(--ac);font-weight:700">3.</span> Skor<sub>sub</sub>=200+(θ+3)/6×600 → [200,800]</div>
+              <div><span style="color:var(--ac);font-weight:700">4.</span> TPS=avg(PU+PPU+KMBM+PK) → [200,800]</div>
+              <div><span style="color:var(--ac);font-weight:700">5.</span> Literasi=avg(LBI+LBIng) → [200,800]</div>
+              <div><span style="color:var(--ac);font-weight:700">6.</span> <strong style="color:var(--pu)">Final = rerata ketujuh subtes (200–800)</strong></div>
             </div>
           </div>
         </div>
@@ -371,7 +381,7 @@ tr:hover td{background:var(--sf)}
         <span id="ePrg" style="font-size:11.5px;color:var(--tx2)"></span>
       </div>
       <div style="display:flex;align-items:center;gap:9px">
-        <div class="timer" id="eTimer">01:55:00</div>
+        <div class="timer" id="eTimer">03:15:00</div>
         <button class="btn btn-d btn-sm" onclick="confFinish()">Selesai</button>
       </div>
     </div>
@@ -465,9 +475,9 @@ tr:hover td{background:var(--sf)}
     <div class="cb">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:14px">
         <div><label class="lbl">Dari Hasil Tryout</label><select class="sel" id="rSel" onchange="onRSel()"><option value="">— Pilih —</option></select></div>
-        <div><label class="lbl">Input Manual (300–800)</label><input id="rMan" class="inp" type="number" min="300" max="800" placeholder="Contoh: 680" oninput="onRMan()"></div>
+        <div><label class="lbl">Input Manual (200–800)</label><input id="rMan" class="inp" type="number" min="200" max="800" placeholder="Contoh: 680" oninput="onRMan()"></div>
       </div>
-      <div id="rScD" class="hidden" style="background:var(--acg);border:1px solid rgba(88,166,255,.25);border-radius:var(--rs);padding:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div id="rScD" class="hidden" style="background:var(--acg);border:1px solid rgba(88,166,255,.25);border-radius:var(--rs);padding:14px;align-items:center;gap:14px;flex-wrap:wrap">
         <div><div style="font-size:10px;color:var(--tx2)">Skor IRT</div><div id="rScV" style="font-size:40px;font-weight:900;color:var(--ac);line-height:1">0</div></div>
         <div style="font-size:11.5px;color:var(--tx2);display:flex;gap:12px;flex-wrap:wrap"><span>🟢 Aman ≥PG+20</span><span>🟡 Peluang PG±20</span><span>🔴 Risiko &lt;PG−20</span></div>
       </div>
@@ -489,7 +499,7 @@ tr:hover td{background:var(--sf)}
       </div>
     </div>
   </div>
-  <div id="rSum" class="hidden" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+  <div id="rSum" class="hidden" style="grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
     <div class="sc" style="--al:var(--gn);text-align:center"><div class="sv" id="cA" style="color:var(--gn)">0</div><div class="sl">Aman</div></div>
     <div class="sc" style="--al:var(--yw);text-align:center"><div class="sv" id="cP" style="color:var(--yw)">0</div><div class="sl">Peluang</div></div>
     <div class="sc" style="--al:var(--rd);text-align:center"><div class="sv" id="cR" style="color:var(--rd)">0</div><div class="sl">Risiko</div></div>
@@ -652,7 +662,7 @@ Contoh JSON:
             <option value="selective">Pilihan (pilih data)</option>
           </select>
         </div>
-        <div id="rstOpts" class="hidden" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;font-size:12px">
+        <div id="rstOpts" class="hidden" style="flex-direction:column;gap:6px;margin-bottom:10px;font-size:12px">
           <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="rsQ" checked> 📚 Soal</label>
           <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="rsP" checked> 🏛 PTN</label>
           <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="rsR" checked> 🏆 Hasil</label>
@@ -737,7 +747,7 @@ Contoh JSON:
         <div class="fg"><label class="lbl">Jenjang</label>
           <select id="pJn" class="sel"><option value="Sarjana">Sarjana</option><option value="D3">D3</option><option value="D4">D4</option><option value="Magister">Magister</option></select>
         </div>
-        <div class="fg"><label class="lbl">Passing Grade *</label><input id="pPG" class="inp" type="number" min="300" max="800" placeholder="300–800"></div>
+        <div class="fg"><label class="lbl">Passing Grade *</label><input id="pPG" class="inp" type="number" min="200" max="800" placeholder="200–800"></div>
       </div>
       <div class="fg3">
         <div class="fg"><label class="lbl">Daya Tampung</label><input id="pDT" class="inp" type="number" min="0" placeholder="0"></div>
@@ -825,9 +835,11 @@ const SUBS=[
   {name:"Pengetahuan Kuantitatif",               code:"PK",   n:20,time:20,grp:"TPS",     col:"#d29922"},
   {name:"Literasi dalam Bahasa Indonesia",       code:"LBI",  n:30,time:45,grp:"Literasi",col:"#f85149"},
   {name:"Literasi dalam Bahasa Inggris",         code:"LBIng",n:20,time:30,grp:"Literasi",col:"#39c5cf"},
-  {name:"Penalaran Matematika",                  code:"PM",   n:20,time:30,grp:"PM",      col:"#ffa657"},
+  {name:"Penalaran Matematika",                  code:"PM",   n:20,time:30,grp:"PM",       col:"#ffa657"},
 ];
-const TOTAL_Q=160, EXAM_SEC=115*60;
+const TOTAL_Q=160, EXAM_SEC=195*60;   // 3j15m sesuai SNPMB 2026 (30+15+25+20+45+30+30)
+const SCORE_MIN=200, SCORE_MAX=800;   // Rentang skor resmi per subtes & skor akhir UTBK-SNBT
+const SCORE_RANGE=SCORE_MAX-SCORE_MIN;
 const IRT={easy:1.0,medium:1.5,hard:2.0};
 
 /* ══ IRT ENGINE ══ */
@@ -847,16 +859,18 @@ function calcIRT(qs,ans){
   SUBS.forEach(s=>{
     const d=sec[s.name];
     const ratio=d.wT>0?d.wC/d.wT:0;
-    const theta=ratio*6-3;
-    const score=Math.round(300+(theta+3)/6*500);
-    d.scaled=clamp(score,300,800);d.theta=Math.round(theta*100)/100;d.ratio=Math.round(ratio*1000)/10;
+    const theta=ratio*6-3;                                  // θ ∈ [-3,+3]
+    const score=Math.round(SCORE_MIN+(theta+3)/6*(SCORE_MAX-SCORE_MIN));  // → 200–800
+    d.scaled=clamp(score,SCORE_MIN,SCORE_MAX);d.theta=Math.round(theta*100)/100;d.ratio=Math.round(ratio*1000)/10;
     scaled[s.name]=d;
   });
-  const avg=ns=>{const v=ns.map(n=>scaled[n]?.scaled||300);return Math.round(v.reduce((a,b)=>a+b,0)/v.length);};
-  const TPS=avg(SUBS.filter(s=>s.grp==='TPS').map(s=>s.name));
-  const Lit=avg(SUBS.filter(s=>s.grp==='Literasi').map(s=>s.name));
-  const PM=avg(SUBS.filter(s=>s.grp==='PM').map(s=>s.name));
-  return{sections:scaled,groups:{TPS,Literasi:Lit,PM},finalScore:clamp(Math.round((TPS+Lit+PM)/3),300,800)};
+  // Final = rata-rata dari KETUJUH subtes (sesuai sertifikat SNPMB 2026: rerata 7 subtes)
+  const allScaled=SUBS.map(s=>scaled[s.name]?.scaled||SCORE_MIN);
+  const finalScore=Math.round(allScaled.reduce((a,b)=>a+b,0)/allScaled.length);
+  // Group scores (rata-rata per kelompok, untuk breakdown saja)
+  const grpAvg=grp=>{const v=SUBS.filter(s=>s.grp===grp).map(s=>scaled[s.name]?.scaled||SCORE_MIN);return Math.round(v.reduce((a,b)=>a+b,0)/v.length);};
+  const TPS=grpAvg('TPS'), Lit=grpAvg('Literasi'), PM=grpAvg('PM');
+  return{sections:scaled,groups:{TPS,Literasi:Lit,PM},finalScore:clamp(finalScore,SCORE_MIN,SCORE_MAX)};
 }
 function normAns(a){
   if(!a)return'A';
@@ -980,7 +994,9 @@ function load(){
       {id:'u2',username:'siswa',password:'siswa123',name:'Siswa Demo',role:'siswa',active:true},
     ];save();
   }
-  if(!DB.ptnData.length){DB.ptnData=defPTN();save();}
+  // Isi default PTN jika storage kosong atau masih versi lama (array kosong)
+  const def=defPTN();
+  if(!Array.isArray(DB.ptnData)||DB.ptnData.length===0){DB.ptnData=def;save();}
   const beforeQ=Object.values(DB.questions||{}).reduce((s,a)=>s+(a?.length||0),0);
   ensureSampleQuestions();
   const afterQ=Object.values(DB.questions||{}).reduce((s,a)=>s+(a?.length||0),0);
@@ -1035,16 +1051,17 @@ function closeMob(){$('mobNav').classList.remove('open');}
 
 /* ══ NAVIGATION ══ */
 function G(page){
-  document.querySelectorAll('[id^="pg-"]').forEach(el=>el.classList.add('hidden'));
+  ['home','sim','hasil','rasio','db','admin'].forEach(p=>{const el=$('pg-'+p);if(el)el.classList.add('hidden');});
   document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));
   const el=$('pg-'+page);if(el)el.classList.remove('hidden');
   document.querySelectorAll('.ni').forEach(btn=>{if(btn.getAttribute('onclick')?.includes(`'${page}'`))btn.classList.add('active');});
   if(page==='home')renderHome();
   if(page==='hasil')renderHasil();
-  if(page==='rasio')initRasio();
+  if(page==='rasio'){rScore=0;initRasio();renderRasio();}
   if(page==='db'&&CU?.role==='admin')initDB();
   if(page==='admin'&&CU?.role==='admin')initAdmin();
   if(page==='sim'&&!exam.active)renderSimReady();
+  window.scrollTo({top:0,behavior:'instant'});
 }
 
 /* ══ HOME ══ */
@@ -1216,7 +1233,9 @@ function clearPGRefs(){pgRefs=[];renderTrend();toast('Referensi PG dihapus','inf
 const TC=['#f85149','#d29922','#3fb950','#bc8cff','#39c5cf','#ffa657'];
 function renderTrend(){
   const r=getMyR();if(!r.length)return;
-  const ctx=$('tChart').getContext('2d');if(CH.trend)CH.trend.destroy();
+  const ctxEl=$('tChart');if(!ctxEl||typeof Chart!=='function')return;
+  const ctx=ctxEl.getContext('2d');if(CH.trend){try{CH.trend.destroy();}catch(e){}CH.trend=null;}
+  try{
   const scores=r.map(x=>x.finalScore||x.totalScore);
   const ma3=movAvg(scores,3),ma5=movAvg(scores,5);
   const isDark=darkMode,gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',tc=isDark?'#8b949e':'#656d76';
@@ -1229,7 +1248,8 @@ function renderTrend(){
     {label:'TPS',data:r.map(x=>x.groups?.TPS||null),borderColor:'#58a6ff',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
     {label:'Literasi',data:r.map(x=>x.groups?.Literasi||null),borderColor:'#f85149',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
     {label:'PM',data:r.map(x=>x.groups?.PM||null),borderColor:'#ffa657',backgroundColor:'transparent',borderDash:[3,3],borderWidth:1.5,pointRadius:3,hidden:true},
-  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:tc,font:{size:11},usePointStyle:true}},tooltip:{backgroundColor:isDark?'#1c2128':'#fff',titleColor:isDark?'#e6edf3':'#1f2328',bodyColor:tc,borderColor:isDark?'rgba(255,255,255,.12)':'rgba(0,0,0,.12)',borderWidth:1,padding:10},annotation:{annotations:annots}},scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},y:{min:300,max:800,ticks:{color:tc},grid:{color:gc}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:tc,font:{size:11},usePointStyle:true}},tooltip:{backgroundColor:isDark?'#1c2128':'#fff',titleColor:isDark?'#e6edf3':'#1f2328',bodyColor:tc,borderColor:isDark?'rgba(255,255,255,.12)':'rgba(0,0,0,.12)',borderWidth:1,padding:10},annotation:{annotations:annots}},scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},y:{min:SCORE_MIN,max:SCORE_MAX,ticks:{color:tc},grid:{color:gc}}}}});
+  }catch(e){console.warn('Gagal render trend chart:',e.message);}
 }
 function renderRTable(results){
   const t=$('rTbl');
@@ -1255,14 +1275,20 @@ function renderResultDetail(r){
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:7px">${SUBS.map(s=>{const ss=r.sections?.[s.name];return`<div class="sc" style="text-align:center;padding:10px;--al:${s.col}"><div style="font-size:9px;font-weight:700;color:${s.col};margin-bottom:2px">${s.code}</div><div style="font-size:18px;font-weight:700">${ss?.scaled||'—'}</div><div style="font-size:10px;color:var(--tx2)">${ss?.correct||0}/${ss?.total||0}</div><div style="font-size:9px;color:var(--pu)">θ=${ss?.theta||'—'}</div><div class="pb" style="height:3px;margin-top:5px"><div class="pf" style="width:${ss?.ratio||0}%;background:${s.col}"></div></div></div>`;}).join('')}</div>`;
 }
 function renderRadar(r){
-  const ctx=$('rChart').getContext('2d');if(CH.radar)CH.radar.destroy();
+  const ctxEl=$('rChart');if(!ctxEl||typeof Chart!=='function')return;
+  const ctx=ctxEl.getContext('2d');if(CH.radar){try{CH.radar.destroy();}catch(e){}CH.radar=null;}
+  try{
   const isDark=darkMode,gc=isDark?'rgba(255,255,255,.08)':'rgba(0,0,0,.08)',tc=isDark?'#8b949e':'#656d76';
-  CH.radar=new Chart(ctx,{type:'radar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor IRT',data:SUBS.map(s=>r.sections?.[s.name]?.scaled||300),backgroundColor:'rgba(88,166,255,.15)',borderColor:'#58a6ff',pointBackgroundColor:SUBS.map(s=>s.col),pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:300,max:800,ticks:{color:tc,font:{size:8},stepSize:100,backdropColor:'transparent'},grid:{color:gc},pointLabels:{color:tc,font:{size:10}}}}}});
+  CH.radar=new Chart(ctx,{type:'radar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor IRT',data:SUBS.map(s=>r.sections?.[s.name]?.scaled||SCORE_MIN),backgroundColor:'rgba(88,166,255,.15)',borderColor:'#58a6ff',pointBackgroundColor:SUBS.map(s=>s.col),pointRadius:4,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{min:SCORE_MIN,max:SCORE_MAX,ticks:{color:tc,font:{size:8},stepSize:100,backdropColor:'transparent'},grid:{color:gc},pointLabels:{color:tc,font:{size:10}}}}}});
+  }catch(e){console.warn('Gagal render radar chart:',e.message);}
 }
 function renderBar(r){
-  const ctx=$('bChart').getContext('2d');if(CH.bar)CH.bar.destroy();
+  const ctxEl=$('bChart');if(!ctxEl||typeof Chart!=='function')return;
+  const ctx=ctxEl.getContext('2d');if(CH.bar){try{CH.bar.destroy();}catch(e){}CH.bar=null;}
+  try{
   const isDark=darkMode,gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',tc=isDark?'#8b949e':'#656d76';
-  CH.bar=new Chart(ctx,{type:'bar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor',data:SUBS.map(s=>r.sections?.[s.name]?.scaled||300),backgroundColor:SUBS.map(s=>s.col+'88'),borderColor:SUBS.map(s=>s.col),borderWidth:2,borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{min:300,max:800,ticks:{color:tc},grid:{color:gc}}}}});
+  CH.bar=new Chart(ctx,{type:'bar',data:{labels:SUBS.map(s=>s.code),datasets:[{label:'Skor',data:SUBS.map(s=>r.sections?.[s.name]?.scaled||SCORE_MIN),backgroundColor:SUBS.map(s=>s.col+'88'),borderColor:SUBS.map(s=>s.col),borderWidth:2,borderRadius:5,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc},grid:{color:gc}},y:{min:SCORE_MIN,max:SCORE_MAX,ticks:{color:tc},grid:{color:gc}}}}});
+  }catch(e){console.warn('Gagal render bar chart:',e.message);}
 }
 function exportR(fmt){
   const r=getMyR();if(!r.length){toast('Belum ada hasil','error');return;}
@@ -1275,51 +1301,109 @@ function clearAllR(){if(!confirm('Hapus semua hasil tryout?'))return;const i=DB.
 function initRasio(){
   const sel=$('rSel');const r=getMyR();
   sel.innerHTML='<option value="">— Pilih —</option>'+r.map(x=>`<option value="${x.id}">${x.label} — ${x.date} (${x.finalScore})</option>`).join('');
-  if(rScore)renderRasio();
+  $('rMan').value='';$('fPTN').value='';$('fProdi').value='';
+  rMode='peluang';
+  ['aman','peluang','semua'].forEach(x=>{$('mB'+x[0]).className=x===rMode?'btn btn-p btn-sm':'btn btn-g btn-sm';});
+  renderRasio();
 }
 function onRSel(){const id=$('rSel').value;const r=getMyR().find(x=>x.id===id);if(r){rScore=r.finalScore||r.totalScore;$('rMan').value='';renderRasio();}}
-function onRMan(){const v=parseInt($('rMan').value);if(v>=300&&v<=800){rScore=v;$('rSel').value='';renderRasio();}}
+function onRMan(){const raw=$('rMan').value.trim();if(raw===''){rScore=0;$('rSel').value='';renderRasio();return;}const v=parseInt(raw,10);if(!isNaN(v)&&v>=SCORE_MIN&&v<=SCORE_MAX){rScore=v;$('rSel').value='';renderRasio();}}
 function setRM(m){rMode=m;['aman','peluang','semua'].forEach(x=>{$('mB'+x[0]).className=x===m?'btn btn-p btn-sm':'btn btn-g btn-sm';});renderRasio();}
 function resetRasio(){$('fPTN').value='';$('fProdi').value='';setRM('peluang');}
 function renderRasio(){
-  if(!rScore){$('rEmp').classList.remove('hidden');$('rScD').classList.add('hidden');$('rSum').style.display='none';$('rList').innerHTML='';$('rChC').classList.add('hidden');return;}
-  $('rEmp').classList.add('hidden');$('rScD').classList.remove('hidden');$('rScD').style.display='flex';$('rScV').textContent=rScore;$('rSum').style.display='grid';$('rChC').classList.remove('hidden');
-  const fp=$('fPTN').value.toLowerCase(),fpr=$('fProdi').value.toLowerCase();
-  const all=DB.ptnData.map(p=>{const d=rScore-p.pg;return{...p,diff:d,status:d>=20?'aman':d>=-20?'peluang':'risiko'};}).sort((a,b)=>b.pg-a.pg);
+  const emp=$('rEmp'),scd=$('rScD'),sum=$('rSum'),chc=$('rChC'),list=$('rList');
+  if(!rScore){
+    emp.classList.remove('hidden');
+    scd.classList.add('hidden');
+    sum.classList.add('hidden');
+    chc.classList.add('hidden');
+    list.innerHTML='';
+    try{if(CH.rasio){CH.rasio.destroy();CH.rasio=null;}}catch(e){}
+    return;
+  }
+  // Tampilkan panel skor & summary, sembunyikan empty state
+  emp.classList.add('hidden');
+  scd.classList.remove('hidden');
+  $('rScV').textContent=rScore;
+  sum.classList.remove('hidden');
+  chc.classList.remove('hidden');
+
+  const fp=($('fPTN')?.value||'').toLowerCase();
+  const fpr=($('fProdi')?.value||'').toLowerCase();
+
+  if(!Array.isArray(DB.ptnData)||!DB.ptnData.length){
+    list.innerHTML=`<div class="card" style="text-align:center;padding:36px;color:var(--tx2)">
+      <div style="font-size:38px;margin-bottom:10px">🏛</div>
+      <p>Belum ada data PTN. Tambahkan melalui menu <strong>Database → PTN</strong> (login sebagai admin).</p>
+    </div>`;
+    $('cA').textContent='0';$('cP').textContent='0';$('cR').textContent='0';
+    try{if(CH.rasio){CH.rasio.destroy();CH.rasio=null;}}catch(e){}
+    return;
+  }
+
+  const all=DB.ptnData
+    .filter(p=>p&&typeof p.pg==='number')
+    .map(p=>{const d=rScore-p.pg;return{...p,diff:d,status:d>=20?'aman':d>=-20?'peluang':'risiko'};})
+    .sort((a,b)=>b.pg-a.pg);
   $('cA').textContent=all.filter(x=>x.status==='aman').length;
   $('cP').textContent=all.filter(x=>x.status==='peluang').length;
   $('cR').textContent=all.filter(x=>x.status==='risiko').length;
-  const filtered=all.filter(p=>(!fp||p.ptn.toLowerCase().includes(fp))&&(!fpr||p.prodi.toLowerCase().includes(fpr))&&(rMode==='semua'||(rMode==='aman'&&p.status==='aman')||(rMode==='peluang'&&p.status!=='risiko')));
-  renderRasioChart(filtered.slice(0,10));
-  if(!filtered.length){$('rList').innerHTML=`<div class="card" style="text-align:center;padding:36px;color:var(--tx2)">Tidak ada PTN sesuai filter</div>`;return;}
-  $('rList').innerHTML=filtered.map(p=>{
-    const bc=p.status==='aman'?'var(--gn)':p.status==='peluang'?'var(--yw)':'rgba(248,81,73,.4)';
-    const bCls=p.status==='aman'?'bg-green':p.status==='peluang'?'bg-yellow':'bg-red';
-    const dc=p.diff>=0?'var(--gn)':'var(--rd)';
-    const myP=Math.min(100,(rScore/800)*100),pgP=Math.min(100,(p.pg/800)*100);
-    return`<div class="ptncard ${p.status}" style="border-color:${bc}">
-      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:9px;margin-bottom:10px">
-        <div>
-          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span class="badge ${bCls}">${p.status.toUpperCase()}</span><span class="badge bg-purple">${p.jenjang}</span></div>
-          <div style="font-weight:800;font-size:13px;color:var(--tx)">${p.ptn}</div>
-          <div style="color:var(--ac);font-size:12px;font-weight:500">${p.prodi}</div>
+
+  const filtered=all.filter(p=>
+    (!fp||p.ptn.toLowerCase().includes(fp)) &&
+    (!fpr||p.prodi.toLowerCase().includes(fpr)) &&
+    (rMode==='semua'||(rMode==='aman'&&p.status==='aman')||(rMode==='peluang'&&p.status!=='risiko'))
+  );
+
+  // Render list DULU (ini yang user lihat), baru chart menyusul (biar kalau chart error list tetap ada)
+  if(!filtered.length){
+    list.innerHTML=`<div class="card" style="text-align:center;padding:36px;color:var(--tx2)">Tidak ada PTN sesuai filter. Coba ubah kata kunci atau mode tampilan.</div>`;
+  }else{
+    list.innerHTML=filtered.map(p=>{
+      const bc=p.status==='aman'?'var(--gn)':p.status==='peluang'?'var(--yw)':'rgba(248,81,73,.4)';
+      const bCls=p.status==='aman'?'bg-green':p.status==='peluang'?'bg-yellow':'bg-red';
+      const dc=p.diff>=0?'var(--gn)':'var(--rd)';
+      const myP=Math.min(100,(rScore/SCORE_MAX)*100),pgP=Math.min(100,(p.pg/SCORE_MAX)*100);
+      return`<div class="ptncard ${p.status}" style="border-color:${bc}">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:9px;margin-bottom:10px">
+          <div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span class="badge ${bCls}">${p.status.toUpperCase()}</span><span class="badge bg-purple">${p.jenjang||'Sarjana'}</span></div>
+            <div style="font-weight:800;font-size:13px;color:var(--tx)">${p.ptn}</div>
+            <div style="color:var(--ac);font-size:12px;font-weight:500">${p.prodi}</div>
+          </div>
+          <div style="display:flex;gap:13px;flex-wrap:wrap;text-align:center">
+            <div><div style="font-size:18px;font-weight:700">${p.pg}</div><div style="font-size:10px;color:var(--tx2)">PG</div></div>
+            <div><div style="font-size:18px;font-weight:700;color:${dc}">${p.diff>=0?'+':''}${p.diff}</div><div style="font-size:10px;color:var(--tx2)">Selisih</div></div>
+            <div><div style="font-size:16px;font-weight:700">${p.daya_tampung||0}</div><div style="font-size:10px;color:var(--tx2)">DT</div></div>
+            <div><div style="font-size:16px;font-weight:700">${(p.peminat||0).toLocaleString('id-ID')}</div><div style="font-size:10px;color:var(--tx2)">Peminat</div></div>
+            <div><div style="font-size:16px;font-weight:700">${((p.keketatan||0)*100).toFixed(1)}%</div><div style="font-size:10px;color:var(--tx2)">Keketatan</div></div>
+          </div>
         </div>
-        <div style="display:flex;gap:13px;flex-wrap:wrap;text-align:center">
-          <div><div style="font-size:18px;font-weight:700">${p.pg}</div><div style="font-size:10px;color:var(--tx2)">PG</div></div>
-          <div><div style="font-size:18px;font-weight:700;color:${dc}">${p.diff>=0?'+':''}${p.diff}</div><div style="font-size:10px;color:var(--tx2)">Selisih</div></div>
-          <div><div style="font-size:16px;font-weight:700">${p.daya_tampung}</div><div style="font-size:10px;color:var(--tx2)">DT</div></div>
-          <div><div style="font-size:16px;font-weight:700">${(p.peminat||0).toLocaleString('id-ID')}</div><div style="font-size:10px;color:var(--tx2)">Peminat</div></div>
-          <div><div style="font-size:16px;font-weight:700">${((p.keketatan||0)*100).toFixed(1)}%</div><div style="font-size:10px;color:var(--tx2)">Keketatan</div></div>
-        </div>
-      </div>
-      <div class="sbar"><div class="sbar-f" style="width:${myP}%"></div><div class="sbar-m" style="left:${pgP}%"></div><div class="sbar-l" style="left:${pgP}%">PG ${p.pg}</div></div>
-    </div>`;
-  }).join('');
+        <div class="sbar"><div class="sbar-f" style="width:${myP}%"></div><div class="sbar-m" style="left:${pgP}%"></div><div class="sbar-l" style="left:${pgP}%">PG ${p.pg}</div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Chart dirender setelah browser sempat reflow (requestAnimationFrame), dibungkus try/catch
+  const chartData=filtered.slice(0,10);
+  requestAnimationFrame(()=>{
+    try{
+      renderRasioChart(chartData);
+    }catch(e){
+      console.warn('Gagal render rasio chart:',e&&e.message);
+      try{if(CH.rasio){CH.rasio.destroy();CH.rasio=null;}}catch(_){}
+    }
+  });
 }
 function renderRasioChart(data){
-  const ctx=$('rasioChart').getContext('2d');if(CH.rasio)CH.rasio.destroy();
+  const canvas=$('rasioChart');
+  if(!canvas||typeof Chart!=='function'){if(CH.rasio){try{CH.rasio.destroy();}catch(e){}CH.rasio=null;}return;}
+  if(!data||!data.length){if(CH.rasio){try{CH.rasio.destroy();}catch(e){}CH.rasio=null;}return;}
+  const ctx=canvas.getContext('2d');
+  if(!ctx){if(CH.rasio){try{CH.rasio.destroy();}catch(e){}CH.rasio=null;}return;}
+  if(CH.rasio){try{CH.rasio.destroy();}catch(e){}CH.rasio=null;}
   const isDark=darkMode,gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)',tc=isDark?'#8b949e':'#656d76';
-  CH.rasio=new Chart(ctx,{type:'bar',data:{labels:data.map(d=>`${d.ptn.split(' ').pop()}-${d.prodi.split(' ')[0]}`),datasets:[{label:'Passing Grade',data:data.map(d=>d.pg),backgroundColor:'rgba(210,153,34,.6)',borderColor:'#d29922',borderWidth:1.5,borderRadius:5},{label:'Skor IRT',data:data.map(()=>rScore),backgroundColor:'rgba(88,166,255,.6)',borderColor:'#58a6ff',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{min:300,max:800,ticks:{color:tc},grid:{color:gc}}}}});
+  CH.rasio=new Chart(ctx,{type:'bar',data:{labels:data.map(d=>`${(d.ptn||'').split(' ').pop()}-${((d.prodi||'').split(' ')[0])||''}`),datasets:[{label:'Passing Grade',data:data.map(d=>d.pg),backgroundColor:'rgba(210,153,34,.6)',borderColor:'#d29922',borderWidth:1.5,borderRadius:5},{label:'Skor IRT',data:data.map(()=>rScore),backgroundColor:'rgba(88,166,255,.6)',borderColor:'#58a6ff',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:tc}}},scales:{x:{ticks:{color:tc,font:{size:9}},grid:{color:gc}},y:{min:SCORE_MIN,max:SCORE_MAX,ticks:{color:tc},grid:{color:gc}}}}});
 }
 
 /* ══ DATABASE ══ */
@@ -1553,7 +1637,7 @@ function savePTN(){
   const dt=parseInt($('pDT').value)||0;
   const pem=parseInt($('pPem').value)||0;
   const kek=parseFloat($('pKek').value)||0;
-  if(!ptn||!prodi||!pg||pg<300||pg>800){toast('PTN, Prodi, dan PG (300-800) wajib diisi!','error');return;}
+  if(!ptn||!prodi||!pg||pg<SCORE_MIN||pg>SCORE_MAX){toast(`PTN, Prodi, dan PG (${SCORE_MIN}-${SCORE_MAX}) wajib diisi!`,'error');return;}
   const obj={ptn,prodi,jenjang,pg,daya_tampung:dt,peminat:pem,keketatan:kek};
   const idx=parseInt($('ptnEditIdx').value);
   if(idx>=0){DB.ptnData[idx]=obj;toast('✅ Data PTN diperbarui','success');}
@@ -1652,7 +1736,7 @@ function resetPW(id){const u=DB.users.find(x=>x.id===id);if(!u)return;const p=pr
 function renderAdmStats(){
   const allS=DB.results.flatMap(r=>r.results.map(x=>x.finalScore||x.totalScore||0));
   $('aStG').innerHTML=[['👥 User',DB.users.length,'var(--ac)'],['📚 Soal',Object.values(DB.questions).flat().length,'var(--pu)'],['🏛 PTN',DB.ptnData.length,'var(--gn)'],['🏆 Tryout',DB.results.reduce((s,r)=>s+(r.results?.length||0),0),'var(--or)'],['📊 Avg',allS.length?Math.round(allS.reduce((a,b)=>a+b,0)/allS.length):'—','var(--cy)'],['🏅 Max',allS.length?Math.max(...allS):'—','var(--yw)']].map(([l,v,c])=>`<div class="sc" style="--al:${c}"><div class="sv" style="color:${c}">${v}</div><div class="sl">${l}</div></div>`).join('');
-  if(allS.length){const ctx=$('aChart').getContext('2d');if(CH.adm)CH.adm.destroy();const bins=Array(10).fill(0);allS.forEach(s=>{const i=Math.min(9,Math.floor((s-300)/50));bins[Math.max(0,i)]++;});const isDark=darkMode,tc=isDark?'#8b949e':'#656d76',gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';CH.adm=new Chart($('aChart').getContext('2d'),{type:'bar',data:{labels:bins.map((_,i)=>`${300+i*50}–${349+i*50}`),datasets:[{label:'Siswa',data:bins,backgroundColor:'rgba(88,166,255,.6)',borderColor:'#58a6ff',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc,font:{size:9}}},y:{ticks:{color:tc},grid:{color:gc}}}}});}
+  if(allS.length&&typeof Chart==='function'){try{const ctxEl=$('aChart');if(!ctxEl)return;const ctx=ctxEl.getContext('2d');if(CH.adm){try{CH.adm.destroy();}catch(e){}CH.adm=null;}const binSize=50;const nBins=Math.ceil(SCORE_RANGE/binSize);const bins=Array(nBins).fill(0);allS.forEach(s=>{const i=Math.min(nBins-1,Math.floor((s-SCORE_MIN)/binSize));bins[Math.max(0,i)]++;});const isDark=darkMode,tc=isDark?'#8b949e':'#656d76',gc=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';CH.adm=new Chart(ctx,{type:'bar',data:{labels:bins.map((_,i)=>`${SCORE_MIN+i*binSize}–${SCORE_MIN+i*binSize+binSize-1}`),datasets:[{label:'Siswa',data:bins,backgroundColor:'rgba(88,166,255,.6)',borderColor:'#58a6ff',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:tc,font:{size:9}}},y:{ticks:{color:tc},grid:{color:gc}}}}});}catch(e){console.warn('Gagal render admin chart:',e.message);}}
 }
 
 /* ─── ADMIN ANSWER REVIEW ─── */
@@ -1829,12 +1913,29 @@ window.addEventListener('beforeunload',e=>{if(exam.active){e.preventDefault();e.
 
 /* ══ DEFAULT PTN ══ */
 function defPTN(){return[
-  
+  {ptn:"UNIVERSITAS INDONESIA",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:720,daya_tampung:60,peminat:1200,keketatan:0.05},
+  {ptn:"UNIVERSITAS INDONESIA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:745,daya_tampung:80,peminat:3200,keketatan:0.025},
+  {ptn:"UNIVERSITAS INDONESIA",prodi:"MANAJEMEN",jenjang:"Sarjana",pg:690,daya_tampung:90,peminat:1800,keketatan:0.05},
+  {ptn:"UNIVERSITAS GADJAH MADA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:750,daya_tampung:100,peminat:3800,keketatan:0.026},
+  {ptn:"UNIVERSITAS GADJAH MADA",prodi:"TEKNIK ELEKTRO",jenjang:"Sarjana",pg:695,daya_tampung:80,peminat:1100,keketatan:0.073},
+  {ptn:"INSTITUT TEKNOLOGI BANDUNG",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:735,daya_tampung:90,peminat:2100,keketatan:0.043},
+  {ptn:"INSTITUT TEKNOLOGI BANDUNG",prodi:"TEKNIK ELEKTRO",jenjang:"Sarjana",pg:710,daya_tampung:100,peminat:1500,keketatan:0.067},
+  {ptn:"INSTITUT TEKNOLOGI SEPULUH NOPEMBER",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:675,daya_tampung:120,peminat:1800,keketatan:0.067},
+  {ptn:"IPB UNIVERSITY",prodi:"KEDOKTERAN HEWAN",jenjang:"Sarjana",pg:660,daya_tampung:150,peminat:900,keketatan:0.167},
+  {ptn:"UNIVERSITAS PADJADJARAN",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:730,daya_tampung:100,peminat:2900,keketatan:0.034},
+  {ptn:"UNIVERSITAS DIPONEGORO",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:705,daya_tampung:120,peminat:2200,keketatan:0.055},
+  {ptn:"UNIVERSITAS AIRLANGGA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:735,daya_tampung:130,peminat:3100,keketatan:0.042},
+  {ptn:"UNIVERSITAS BRAWIJAYA",prodi:"TEKNIK INFORMATIKA",jenjang:"Sarjana",pg:650,daya_tampung:120,peminat:1400,keketatan:0.086},
+  {ptn:"UNIVERSITAS HASANUDDIN",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:670,daya_tampung:120,peminat:1300,keketatan:0.092},
+  {ptn:"UNIVERSITAS SUMATERA UTARA",prodi:"KEDOKTERAN",jenjang:"Sarjana",pg:685,daya_tampung:110,peminat:1500,keketatan:0.073},
+  {ptn:"UNIVERSITAS PENDIDIKAN INDONESIA",prodi:"PENDIDIKAN DOKTER",jenjang:"Sarjana",pg:640,daya_tampung:80,peminat:800,keketatan:0.1},
+  {ptn:"UIN SYARIF HIDAYATULLAH",prodi:"PENDIDIKAN AGAMA ISLAM",jenjang:"Sarjana",pg:560,daya_tampung:200,peminat:900,keketatan:0.22},
+  {ptn:"UNIVERSITAS NEGERI YOGYAKARTA",prodi:"PENDIDIKAN MATEMATIKA",jenjang:"Sarjana",pg:600,daya_tampung:100,peminat:700,keketatan:0.14},
 ];}
 
 /* ══ INIT ══ */
 initTheme();load();
 window.getMyR=getMyR;
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a05fd43bfb806d03',t:'MTc4MDUwMTU2OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1880911cf35dfa8',t:'MTc4MzYwNzUxOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
